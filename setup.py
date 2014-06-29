@@ -11,5 +11,5 @@ setup(
     license='MIT',
     author='saskyrardisaskyr',
     author_email='saeschdivara@gmail.com',
-    description=''
+    description='Driver for ArangoDB'
 )
