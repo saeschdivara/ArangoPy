@@ -1,9 +1,12 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='ArangoPy',
     version='0.0.1',
-    packages=['slumber', 'arangodb'],
+    packages=['arangodb'],
+    requires=[
+        'slumber',
+    ],
     url='https://github.com/saeschdivara/ArangoPy',
     license='MIT',
     author='saskyrardisaskyr',
