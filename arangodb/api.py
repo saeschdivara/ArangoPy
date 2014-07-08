@@ -68,6 +68,7 @@ class Query(object):
         """
 
         self.collections = []
+        self.filters = []
 
 
     def append_collection(self, collection_name):
@@ -75,6 +76,39 @@ class Query(object):
         """
 
         self.collections.append(collection_name)
+
+        return self
+
+
+    def filter(self, **kwargs):
+
+        for key, value in kwargs:
+
+            splitted_filter = key.split('__')
+
+            if len(splitted_filter) is 1:
+
+                self.filters.append(
+                    QueryFilterStatement(
+                        collection=self.collections[-1],
+                        attribute=key,
+                        operator=QueryFilterStatement.EQUAL_OPERATOR,
+                        value=value,
+                    )
+                )
+
+            else:
+
+                self.filters.append(
+                    QueryFilterStatement(
+                        collection=splitted_filter[0],
+                        attribute=splitted_filter[1],
+                        operator=QueryFilterStatement.EQUAL_OPERATOR,
+                        value=value,
+                    )
+                )
+
+        return self
 
 
     def execute(self):
@@ -85,6 +119,14 @@ class Query(object):
 
         for collection in self.collections:
             query_data += 'FOR %s in %s' % ( collection + '_123', collection )
+
+        for filter_statement in self.filters:
+            query_data += 'FILTER %s.%s %s %s' % (
+                filter_statement.collection,
+                filter_statement.attribute,
+                filter_statement.operator,
+                filter_statement.value,
+            )
 
         query_data += 'RETURN %s' % collection + '_123'
 
@@ -97,6 +139,20 @@ class Query(object):
         result = api.query.post(data=post_data)
 
         return  result
+
+
+class QueryFilterStatement(object):
+
+    EQUAL_OPERATOR = '=='
+
+    def __init__(self, collection, attribute, operator, value):
+        """
+        """
+
+        self.collection = collection
+        self.attribute = attribute
+        self.operator = operator
+        self.value = value
 
 
 class Traveser(object):
