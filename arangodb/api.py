@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import slumber
+
 
 class Client(object):
 
@@ -31,8 +34,6 @@ class Client(object):
                 cls.class_instance.hostname = port
 
         return cls.class_instance
-
-
 
     def collection(self, name):
         """
@@ -69,13 +70,11 @@ class Query(object):
 
         self.collections = []
 
-
     def append_collection(self, collection_name):
         """
         """
 
         self.collections.append(collection_name)
-
 
     def execute(self):
         """
@@ -84,7 +83,7 @@ class Query(object):
         query_data = ''
 
         for collection in self.collections:
-            query_data += 'FOR %s in %s' % ( collection + '_123', collection )
+            query_data += 'FOR %s in %s' % (collection + '_123', collection)
 
         query_data += 'RETURN %s' % collection + '_123'
 
@@ -172,7 +171,6 @@ class Database(object):
         self.name = name
         self.api = api
 
-
     def create_collection(self, name):
         """
         """
@@ -205,7 +203,6 @@ class Collection(object):
 
         return collection
 
-
     def __init__(self, name, api, **kwargs):
         """
         """
@@ -215,7 +212,6 @@ class Collection(object):
 
         self.resource = api.collection
         self.api = api
-
 
     def setData(self, **kwargs):
         """
@@ -251,7 +247,6 @@ class Collection(object):
         else:
             self.id = '0'
 
-
     def get(self):
         """
         """
@@ -262,13 +257,11 @@ class Collection(object):
 
         return data
 
-
     def create_document(self):
         """
         """
 
         return Document.create(collection=self)
-
 
     def create_edge(self, from_doc, to_doc, edge_data={}):
         """
@@ -281,14 +274,16 @@ class Collection(object):
             edge_data=edge_data
         )
 
-
     def get_document_by_example(self, example_data):
         """
         """
 
         all_docs = []
 
-        result_dict = SimpleQuery.getByExample(collection=self.name, example_data=example_data)
+        result_dict = SimpleQuery.getByExample(
+            collection=self.name,
+            example_data=example_data
+        )
 
         if result_dict['count'] > 0:
             for result in result_dict['result']:
@@ -303,7 +298,6 @@ class Collection(object):
 
         return all_docs
 
-
     def documents(self):
         """
         """
@@ -315,7 +309,12 @@ class Collection(object):
             document_key = splitted_uri[-1]
             document_id = "%s/%s" % (self.name, document_key)
 
-            doc = Document(id=document_id, key=document_key, collection=self, api=self.api)
+            doc = Document(
+                id=document_id,
+                key=document_key,
+                collection=self,
+                api=self.api
+            )
             document_list.append(doc)
 
         return document_list
@@ -357,7 +356,6 @@ class Document(object):
 
         self.is_loaded = False
 
-
     def get(self):
         """
         """
@@ -367,13 +365,11 @@ class Document(object):
 
         return data
 
-
     def save(self):
         """
         """
 
         self.resource(self.id).patch(data=self.data)
-
 
     def getData(self, key):
         """
@@ -386,14 +382,11 @@ class Document(object):
 
         return self.data[key]
 
-
     def setData(self, key, value):
         """
         """
 
         self.data[key] = value
-
-
 
     def __repr__(self):
         """
