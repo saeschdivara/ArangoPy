@@ -111,7 +111,7 @@ class Query(object):
         return self
 
 
-    def execute(self):
+    def execute(self, batch_size=30):
         """
         """
 
@@ -131,12 +131,13 @@ class Query(object):
         query_data += 'RETURN %s' % collection + '_123'
 
         post_data = {
-            'query': query_data
+            'query': query_data,
+            'batchSize': batch_size,
         }
 
         api = Client.instance().api
 
-        result = api.query.post(data=post_data)
+        result = api.cursor.post(data=post_data)
 
         return  result
 
