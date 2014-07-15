@@ -126,7 +126,7 @@ class Query(object):
         if order is None:
             order = self.SORTING_ASC
 
-        self.sortings.append({
+        self.sorting.append({
             'field': field,
             'order': order,
             'collection': collection,
