@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import slumber
+
 
 class Client(object):
 
@@ -31,8 +34,6 @@ class Client(object):
                 cls.class_instance.hostname = port
 
         return cls.class_instance
-
-
 
     def collection(self, name):
         """
@@ -68,8 +69,6 @@ class Query(object):
         """
 
         self.collections = []
-        self.filters = []
-
 
     def append_collection(self, collection_name):
         """
@@ -77,83 +76,26 @@ class Query(object):
 
         self.collections.append(collection_name)
 
-        return self
-
-
-    def filter(self, **kwargs):
-
-        for key, value in kwargs:
-
-            splitted_filter = key.split('__')
-
-            if len(splitted_filter) is 1:
-
-                self.filters.append(
-                    QueryFilterStatement(
-                        collection=self.collections[-1],
-                        attribute=key,
-                        operator=QueryFilterStatement.EQUAL_OPERATOR,
-                        value=value,
-                    )
-                )
-
-            else:
-
-                self.filters.append(
-                    QueryFilterStatement(
-                        collection=splitted_filter[0],
-                        attribute=splitted_filter[1],
-                        operator=QueryFilterStatement.EQUAL_OPERATOR,
-                        value=value,
-                    )
-                )
-
-        return self
-
-
-    def execute(self, batch_size=30):
+    def execute(self):
         """
         """
 
         query_data = ''
 
         for collection in self.collections:
-            query_data += 'FOR %s in %s' % ( collection + '_123', collection )
-
-        for filter_statement in self.filters:
-            query_data += 'FILTER %s.%s %s %s' % (
-                filter_statement.collection,
-                filter_statement.attribute,
-                filter_statement.operator,
-                filter_statement.value,
-            )
+            query_data += 'FOR %s in %s' % (collection + '_123', collection)
 
         query_data += 'RETURN %s' % collection + '_123'
 
         post_data = {
-            'query': query_data,
-            'batchSize': batch_size,
+            'query': query_data
         }
 
         api = Client.instance().api
 
-        result = api.cursor.post(data=post_data)
+        result = api.query.post(data=post_data)
 
         return  result
-
-
-class QueryFilterStatement(object):
-
-    EQUAL_OPERATOR = '=='
-
-    def __init__(self, collection, attribute, operator, value):
-        """
-        """
-
-        self.collection = collection
-        self.attribute = attribute
-        self.operator = operator
-        self.value = value
 
 
 class Traveser(object):
@@ -229,7 +171,6 @@ class Database(object):
         self.name = name
         self.api = api
 
-
     def create_collection(self, name):
         """
         """
@@ -262,7 +203,6 @@ class Collection(object):
 
         return collection
 
-
     def __init__(self, name, api, **kwargs):
         """
         """
@@ -272,7 +212,6 @@ class Collection(object):
 
         self.resource = api.collection
         self.api = api
-
 
     def setData(self, **kwargs):
         """
@@ -308,7 +247,6 @@ class Collection(object):
         else:
             self.id = '0'
 
-
     def get(self):
         """
         """
@@ -319,13 +257,11 @@ class Collection(object):
 
         return data
 
-
     def create_document(self):
         """
         """
 
         return Document.create(collection=self)
-
 
     def create_edge(self, from_doc, to_doc, edge_data={}):
         """
@@ -338,14 +274,16 @@ class Collection(object):
             edge_data=edge_data
         )
 
-
     def get_document_by_example(self, example_data):
         """
         """
 
         all_docs = []
 
-        result_dict = SimpleQuery.getByExample(collection=self.name, example_data=example_data)
+        result_dict = SimpleQuery.getByExample(
+            collection=self.name,
+            example_data=example_data
+        )
 
         if result_dict['count'] > 0:
             for result in result_dict['result']:
@@ -360,7 +298,6 @@ class Collection(object):
 
         return all_docs
 
-
     def documents(self):
         """
         """
@@ -372,7 +309,12 @@ class Collection(object):
             document_key = splitted_uri[-1]
             document_id = "%s/%s" % (self.name, document_key)
 
-            doc = Document(id=document_id, key=document_key, collection=self, api=self.api)
+            doc = Document(
+                id=document_id,
+                key=document_key,
+                collection=self,
+                api=self.api
+            )
             document_list.append(doc)
 
         return document_list
@@ -414,7 +356,6 @@ class Document(object):
 
         self.is_loaded = False
 
-
     def get(self):
         """
         """
@@ -424,13 +365,11 @@ class Document(object):
 
         return data
 
-
     def save(self):
         """
         """
 
         self.resource(self.id).patch(data=self.data)
-
 
     def getData(self, key):
         """
@@ -443,14 +382,11 @@ class Document(object):
 
         return self.data[key]
 
-
     def setData(self, key, value):
         """
         """
 
         self.data[key] = value
-
-
 
     def __repr__(self):
         """
