@@ -117,11 +117,11 @@ class Query(object):
 
         return self
 
-    def limit(count, start=-1):
+    def limit(self, count, start=-1):
         self.start = start
         self.count = count
 
-    def order_by(field, order=Query.SORTING_ASC, collection=None):
+    def order_by(self, field, order=Query.SORTING_ASC, collection=None):
 
         self.sortings.append({
             'field': field,
@@ -195,7 +195,7 @@ class Query(object):
 
         return  result
 
-    def _get_collection_ident(collection_name):
+    def _get_collection_ident(self, collection_name):
         return collection_name + '_123'
 
 
