@@ -71,6 +71,9 @@ class Query(object):
         self.collections = []
         self.filters = []
 
+        self.start = -1
+        self.count = -1
+
 
     def append_collection(self, collection_name):
         """
@@ -111,6 +114,10 @@ class Query(object):
 
         return self
 
+    def limit(count, start=-1):
+        self.start = start
+        self.count = count
+
 
     def execute(self):
         """
@@ -128,6 +135,13 @@ class Query(object):
                 filter_statement.operator,
                 filter_statement.value,
             )
+
+        if self.count is not -1:
+
+            if self.start is not -1:
+                query_data += 'LIMIT %s, %s' % (self.start, self.count)
+            else:
+                query_data += 'LIMIT %s' % self.count
 
         query_data += 'RETURN %s' % collection + '_123'
 
