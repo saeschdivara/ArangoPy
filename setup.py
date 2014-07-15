@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ArangoPy',
-    version='0.0.11',
+    version='0.0.12',
     packages=['arangodb'],
     requires=[
         'slumber',

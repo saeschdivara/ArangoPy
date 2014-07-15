@@ -189,18 +189,43 @@ class Query(object):
 
         query_data += ' RETURN %s' % collection + '_123'
 
-        print(query_data)
-
         post_data = {
             'query': query_data
         }
 
         api = Client.instance().api
 
-        result = None
+        result = []
 
         try:
-            result = api.cursor.post(data=post_data)
+            post_result = api.cursor.post(data=post_data)
+
+            result_dict_list = post_result['result']
+
+            # Create documents
+            for result_dict in result_dict_list:
+
+                collection_name = result_dict['_id'].split('/')[0]
+
+                doc = Document(
+                    id=result_dict['_id'],
+                    key=result_dict['_key'],
+                    collection=collection_name,
+                    api=api,
+                )
+
+                del result_dict['_id']
+                del result_dict['_key']
+                del result_dict['_rev']
+
+                for result_key in result_dict:
+                    result_value = result_dict[result_key]
+
+                    doc.setData(key=result_key, value=result_value)
+
+                result.append(doc)
+
+
         except Exception as err:
             print(err.message)
 
