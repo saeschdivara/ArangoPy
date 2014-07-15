@@ -64,6 +64,9 @@ class SimpleQuery(object):
 
 class Query(object):
 
+    SORTING_ASC = 'ASC'
+    SORTING_DESC = 'DESC'
+
     def __init__(self):
         """
         """
@@ -74,6 +77,7 @@ class Query(object):
         self.start = -1
         self.count = -1
 
+        self.sortings = []
 
     def append_collection(self, collection_name):
         """
@@ -82,7 +86,6 @@ class Query(object):
         self.collections.append(collection_name)
 
         return self
-
 
     def filter(self, **kwargs):
 
@@ -118,6 +121,13 @@ class Query(object):
         self.start = start
         self.count = count
 
+    def order_by(field, order=Query.SORTING_ASC, collection=None):
+
+        self.sortings.append({
+            'field': field,
+            'order': order,
+            'collection': collection,
+        })
 
     def execute(self):
         """
@@ -126,7 +136,10 @@ class Query(object):
         query_data = ''
 
         for collection in self.collections:
-            query_data += 'FOR %s in %s' % ( collection + '_123', collection )
+            query_data += 'FOR %s in %s' % (
+                self._get_collection_ident(collection),
+                collection
+            )
 
         for filter_statement in self.filters:
             query_data += 'FILTER %s.%s %s %s' % (
@@ -135,6 +148,33 @@ class Query(object):
                 filter_statement.operator,
                 filter_statement.value,
             )
+
+        is_first = True
+
+        for sorting_entry in self.sorting:
+
+            if is_first:
+                query_data += 'SORT '
+
+                is_first = False
+
+            if sorting_entry['field'] is not None:
+
+                if not is_first:
+                    query_data += ', '
+
+                if sorting_entry['collection'] is not None:
+                    query_data += '%s.%s %s' % (
+                        self._get_collection_ident(sorting_entry['collection']),
+                        sorting_entry['field'],
+                        sorting_entry['order'],
+                    )
+                else:
+                    query_data += '%s.%s %s' % (
+                        self._get_collection_ident(collection[0]),
+                        sorting_entry['field'],
+                        sorting_entry['order'],
+                    )
 
         if self.count is not -1:
 
@@ -154,6 +194,9 @@ class Query(object):
         result = api.cursor.post(data=post_data)
 
         return  result
+
+    def _get_collection_ident(collection_name):
+        return collection_name + '_123'
 
 
 class Traveser(object):
