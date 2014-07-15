@@ -121,7 +121,10 @@ class Query(object):
         self.start = start
         self.count = count
 
-    def order_by(self, field, order=Query.SORTING_ASC, collection=None):
+    def order_by(self, field, order=None, collection=None):
+
+        if order is None:
+            order = self.SORTING_ASC
 
         self.sortings.append({
             'field': field,
