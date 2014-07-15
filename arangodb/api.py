@@ -194,7 +194,10 @@ class Query(object):
 
         api = Client.instance().api
 
-        result = api.cursor.post(data=post_data)
+        try:
+            result = api.cursor.post(data=post_data)
+        except Exception as err:
+            print(err.message)
 
         return  result
 
