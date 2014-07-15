@@ -139,13 +139,13 @@ class Query(object):
         query_data = ''
 
         for collection in self.collections:
-            query_data += 'FOR %s in %s' % (
+            query_data += ' FOR %s in %s' % (
                 self._get_collection_ident(collection),
                 collection
             )
 
         for filter_statement in self.filters:
-            query_data += 'FILTER %s.%s %s %s' % (
+            query_data += ' FILTER %s.%s %s %s' % (
                 filter_statement.collection,
                 filter_statement.attribute,
                 filter_statement.operator,
@@ -157,7 +157,7 @@ class Query(object):
         for sorting_entry in self.sorting:
 
             if is_first:
-                query_data += 'SORT '
+                query_data += ' SORT '
 
                 is_first = False
 
@@ -182,11 +182,11 @@ class Query(object):
         if self.count is not -1:
 
             if self.start is not -1:
-                query_data += 'LIMIT %s, %s' % (self.start, self.count)
+                query_data += ' LIMIT %s, %s' % (self.start, self.count)
             else:
-                query_data += 'LIMIT %s' % self.count
+                query_data += ' LIMIT %s' % self.count
 
-        query_data += 'RETURN %s' % collection + '_123'
+        query_data += ' RETURN %s' % collection + '_123'
 
         print(query_data)
 
