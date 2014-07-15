@@ -77,7 +77,7 @@ class Query(object):
         self.start = -1
         self.count = -1
 
-        self.sortings = []
+        self.sorting = []
 
     def append_collection(self, collection_name):
         """
