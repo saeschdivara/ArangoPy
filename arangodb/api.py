@@ -174,7 +174,7 @@ class Query(object):
                     )
                 else:
                     query_data += '%s.%s %s' % (
-                        self._get_collection_ident(collection[0]),
+                        self._get_collection_ident(self.collections[0]),
                         sorting_entry['field'],
                         sorting_entry['order'],
                     )
@@ -195,6 +195,8 @@ class Query(object):
         }
 
         api = Client.instance().api
+
+        result = None
 
         try:
             result = api.cursor.post(data=post_data)
