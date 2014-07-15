@@ -159,8 +159,6 @@ class Query(object):
             if is_first:
                 query_data += ' SORT '
 
-                is_first = False
-
             if sorting_entry['field'] is not None:
 
                 if not is_first:
@@ -178,6 +176,9 @@ class Query(object):
                         sorting_entry['field'],
                         sorting_entry['order'],
                     )
+
+                if is_first:
+                    is_first = False
 
         if self.count is not -1:
 
