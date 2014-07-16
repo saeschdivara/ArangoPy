@@ -62,6 +62,20 @@ class SimpleQuery(object):
         return api.simple('by-example').put(data=query)
 
 
+class QueryFilterStatement(object):
+
+    EQUAL_OPERATOR = '=='
+
+    def __init__(self, collection, attribute, operator, value):
+        """
+        """
+
+        self.collection = collection
+        self.attribute = attribute
+        self.operator = operator
+        self.value = value
+
+
 class Query(object):
 
     SORTING_ASC = 'ASC'
