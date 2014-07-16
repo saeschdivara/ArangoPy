@@ -89,7 +89,7 @@ class Query(object):
 
     def filter(self, **kwargs):
 
-        for key, value in kwargs:
+        for key, value in kwargs.iteritems():
 
             splitted_filter = key.split('__')
 
