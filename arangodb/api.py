@@ -203,6 +203,8 @@ class Query(object):
 
         query_data += ' RETURN %s' % collection + '_123'
 
+        print(query_data)
+
         post_data = {
             'query': query_data
         }
