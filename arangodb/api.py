@@ -159,12 +159,21 @@ class Query(object):
             )
 
         for filter_statement in self.filters:
-            query_data += ' FILTER %s.%s %s %s' % (
-                filter_statement.collection,
-                filter_statement.attribute,
-                filter_statement.operator,
-                filter_statement.value,
-            )
+
+            if isinstance(filter_statement.value, basestring):
+                query_data += ' FILTER %s.%s %s "%s"' % (
+                    self._get_collection_ident(filter_statement.collection),
+                    filter_statement.attribute,
+                    filter_statement.operator,
+                    filter_statement.value,
+                )
+            else:
+                query_data += ' FILTER %s.%s %s %s' % (
+                    self._get_collection_ident(filter_statement.collection),
+                    filter_statement.attribute,
+                    filter_statement.operator,
+                    filter_statement.value,
+                )
 
         is_first = True
 
