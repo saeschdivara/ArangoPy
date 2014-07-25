@@ -3,12 +3,14 @@
 import slumber
 
 
+SYSTEM_DATABASE = '_system'
+
 class Client(object):
 
     class_instance = None
 
 
-    def __init__(self, hostname, protocol='http', port=8529, database='_system'):
+    def __init__(self, hostname, protocol='http', port=8529, database=SYSTEM_DATABASE):
         """
         """
 
@@ -370,9 +372,21 @@ class Database(object):
         """
         """
 
-        api = Client.instance().api
+        client = Client.instance()
 
+        new_current_database = None
+
+        if client.database != name:
+            new_current_database = name
+
+        # Deletions are only possible from the system database
+        client.set_database(name=SYSTEM_DATABASE)
+
+        api = client.api
         api.database(name).delete()
+
+        if new_current_database is not None:
+            client.set_database(name=SYSTEM_DATABASE)
 
 
     def __init__(self, name, api, **kwargs):
