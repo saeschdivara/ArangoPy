@@ -1,11 +1,14 @@
 import unittest
-from arangodb.api import Client, Database
+from arangodb.api import Client, Database, Collection
 
 
 class DatabaseTestCase(unittest.TestCase):
 
     def setUp(self):
         self.client = Client(hostname='localhost')
+
+    def tearDown(self):
+        pass
 
     def test_create_and_delete_database(self):
 
@@ -30,6 +33,31 @@ class DatabaseTestCase(unittest.TestCase):
 
         for db in databases:
             self.assertTrue(isinstance(db, Database))
+
+
+class CollectionTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.client = Client(hostname='localhost')
+
+    def tearDown(self):
+        pass
+
+    def test_create_and_delete_collection_without_extra_db(self):
+
+        collection_name = 'test_foo_123'
+
+        try:
+            col = Collection.create(name=collection_name)
+        except Exception as err:
+            self.fail('Create threw execption: %s' % err.message)
+
+        self.assertIsNotNone(col)
+
+        try:
+            Collection.remove(name=collection_name)
+        except Exception as err:
+            self.fail('Remove threw execption: %s' % err.message)
 
 class AqlQueryTestCase(unittest.TestCase):
 
