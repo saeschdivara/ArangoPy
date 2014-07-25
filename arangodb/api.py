@@ -326,6 +326,30 @@ class Database(object):
 
         return db
 
+    @classmethod
+    def get_all(cls):
+        """
+        """
+
+        api = Client.instance().api
+
+        data = api.database.get()
+
+        database_names = data['result']
+
+        return database_names
+
+
+    @classmethod
+    def remove(cls, name):
+        """
+        """
+
+        api = Client.instance().api
+
+        api.database(name).delete()
+
+
     def __init__(self, name, api, **kwargs):
         """
         """
