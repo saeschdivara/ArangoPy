@@ -14,9 +14,24 @@ class Client(object):
 
         Client.class_instance = self
 
-        url = '%s://%s:%s/_db/%s/_api/' % (protocol, hostname, port, database)
-        self.api = slumber.API(url, append_slash=False)
+        self.hostname = hostname
+        self.protocol = protocol
+        self.port = port
+        self.database = database
 
+        self._create_api()
+
+    def set_database(self, name):
+        """
+        """
+
+        self.database = name
+        self._create_api()
+
+    def _create_api(self):
+
+        url = '%s://%s:%s/_db/%s/_api/' % (self.protocol, self.hostname, self.port, self.database)
+        self.api = slumber.API(url, append_slash=False)
 
     @classmethod
     def instance(cls, hostname=None, protocol=None, port=None, database=None):
@@ -35,6 +50,8 @@ class Client(object):
 
             if database is not None:
                 cls.class_instance.database = database
+
+            cls.class_instance._create_api()
 
         return cls.class_instance
 
