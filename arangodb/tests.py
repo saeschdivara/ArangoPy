@@ -63,6 +63,8 @@ class CollectionTestCase(unittest.TestCase):
 
     def test_get_collection(self):
 
+        self.client.set_database(name=self.database_name)
+
         collection_name = 'test_foo_123'
 
         try:
