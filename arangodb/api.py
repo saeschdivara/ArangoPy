@@ -496,6 +496,13 @@ class Collection(object):
 
         return data
 
+    def get_figures(self):
+        """
+        """
+
+        data = self.resource(self.name).figures.get()
+        return data['figures']
+
     def create_document(self):
         """
         """
