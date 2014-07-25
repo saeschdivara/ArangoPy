@@ -19,10 +19,10 @@ class Client(object):
 
 
     @classmethod
-    def instance(cls, hostname=None, protocol=None, port=None):
+    def instance(cls, hostname=None, protocol=None, port=None, database=None):
 
         if cls.class_instance is None:
-            cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port)
+            cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port, database=database)
         else:
             if hostname is not None:
                 cls.class_instance.hostname = hostname
@@ -32,6 +32,9 @@ class Client(object):
 
             if port is not None:
                 cls.class_instance.hostname = port
+
+            if database is not None:
+                cls.class_instance.database = database
 
         return cls.class_instance
 
