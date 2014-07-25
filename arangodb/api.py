@@ -399,12 +399,12 @@ class Collection(object):
         """
         self.name = name
 
-        self.setData(**kwargs)
+        self.set_data(**kwargs)
 
         self.resource = api.collection
         self.api = api
 
-    def setData(self, **kwargs):
+    def set_data(self, **kwargs):
         """
         """
 
@@ -444,7 +444,7 @@ class Collection(object):
 
         data = self.resource.get()
 
-        self.setData(**data)
+        self.set_data(**data)
 
         return data
 
@@ -547,7 +547,7 @@ class Document(object):
 
         self.is_loaded = False
 
-    def get(self):
+    def retrieve(self):
         """
         """
 
@@ -562,18 +562,18 @@ class Document(object):
 
         self.resource(self.id).patch(data=self.data)
 
-    def getData(self, key):
+    def get(self, key):
         """
         """
 
         if not self.is_loaded:
-            self.get()
+            self.retrieve()
 
             self.is_loaded = True
 
         return self.data[key]
 
-    def setData(self, key, value):
+    def set(self, key, value):
         """
         """
 
