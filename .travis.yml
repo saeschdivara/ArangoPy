@@ -5,5 +5,8 @@ python:
   - "3.3"
 # command to install dependencies
 install: "pip install -r requirements/requirements.txt"
+# All before the actual tests
+before_script:
+  - sh ./scripts/ArangoDB/arangodb_startup.sh
 # command to run tests
 script: python tests.py
