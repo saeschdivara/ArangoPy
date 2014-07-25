@@ -24,9 +24,12 @@ class DatabaseTestCase(unittest.TestCase):
             self.fail('Remove threw execption: %s' % err.message)
 
     def test_get_all_databases(self):
-        database_names = Database.get_all()
+        databases = Database.get_all()
 
-        self.assertTrue(len(database_names) >= 1)
+        self.assertTrue(len(databases) >= 1)
+
+        for db in databases:
+            self.assertTrue(isinstance(db, Database))
 
 class AqlQueryTestCase(unittest.TestCase):
 

@@ -336,8 +336,13 @@ class Database(object):
         data = api.database.get()
 
         database_names = data['result']
+        databases = []
 
-        return database_names
+        for name in database_names:
+            db = Database(name=name, api=api)
+            databases.append(db)
+
+        return databases
 
 
     @classmethod
