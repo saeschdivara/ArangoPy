@@ -394,6 +394,16 @@ class Collection(object):
 
         return collection
 
+    @classmethod
+    def remove(cls, name):
+        """
+        """
+
+        api = Client.instance().api
+
+        api.collection(name).delete()
+
+
     def __init__(self, name, api, **kwargs):
         """
         """
