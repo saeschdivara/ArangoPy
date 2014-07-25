@@ -39,9 +39,11 @@ class CollectionTestCase(unittest.TestCase):
 
     def setUp(self):
         self.client = Client(hostname='localhost')
+        self.database_name = 'testcase_collection_123'
+        self.db = Database.create(name=self.database_name)
 
     def tearDown(self):
-        pass
+        Database.remove(name=self.database_name)
 
     def test_create_and_delete_collection_without_extra_db(self):
 
@@ -53,6 +55,28 @@ class CollectionTestCase(unittest.TestCase):
             self.fail('Create threw execption: %s' % err.message)
 
         self.assertIsNotNone(col)
+
+        try:
+            Collection.remove(name=collection_name)
+        except Exception as err:
+            self.fail('Remove threw execption: %s' % err.message)
+
+    def test_get_collection(self):
+
+        collection_name = 'test_foo_123'
+
+        try:
+            col = Collection.create(name=collection_name)
+        except Exception as err:
+            self.fail('Create threw execption: %s' % err.message)
+
+        self.assertIsNotNone(col)
+
+        retrieved_col = Collection.get_loaded_collection(name=collection_name)
+
+        self.assertEqual(col.id, retrieved_col.id)
+        self.assertEqual(col.name, retrieved_col.name)
+        self.assertEqual(col.type, retrieved_col.type)
 
         try:
             Collection.remove(name=collection_name)

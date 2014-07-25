@@ -395,6 +395,24 @@ class Collection(object):
         return collection
 
     @classmethod
+    def get_loaded_collection(cls, name):
+        """
+        """
+
+        api = Client.instance().api
+
+        data = api.collection(name).properties.get()
+
+        collection = Collection(
+            name=name,
+            api_resource=api.collection,
+            api=api,
+            kwargs=data
+        )
+
+        return collection
+
+    @classmethod
     def remove(cls, name):
         """
         """
@@ -432,6 +450,26 @@ class Collection(object):
             self.isVolatile = kwargs['isVolatile']
         else:
             self.isVolatile = False
+
+        if 'doCompact' in kwargs:
+            self.doCompact = kwargs['doCompact']
+        else:
+            self.doCompact = None
+
+        if 'journalSize' in kwargs:
+            self.journalSize = kwargs['journalSize']
+        else:
+            self.journalSize = -1
+
+        if 'numberOfShards' in kwargs:
+            self.numberOfShards = kwargs['numberOfShards']
+        else:
+            self.numberOfShards = 0
+
+        if 'shardKeys' in kwargs:
+            self.shardKeys = kwargs['shardKeys']
+        else:
+            self.shardKeys = None
 
         if 'isSystem' in kwargs:
             self.isSystem = kwargs['isSystem']
