@@ -396,11 +396,11 @@ class Database(object):
         self.name = name
         self.api = api
 
-    def create_collection(self, name):
+    def create_collection(self, name, type=2):
         """
         """
 
-        return Collection.create(name=name, database=self)
+        return Collection.create(name=name, type=type)
 
 
 class Collection(object):
