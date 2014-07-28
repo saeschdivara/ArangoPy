@@ -1,5 +1,19 @@
 import unittest
-from arangodb.api import Client, Database, Collection
+from arangodb.api import Client, Database, Collection, Query
+
+
+class ExtendedTestCase(unittest.TestCase):
+
+    def assertDocumentsEqual(self, doc1, doc2):
+        """
+        """
+
+        for prop in doc1.data:
+
+            doc1_val = doc1.data[prop]
+            doc2_val = doc2.data[prop]
+
+            self.assertEqual(doc1_val, doc2_val)
 
 
 class DatabaseTestCase(unittest.TestCase):
@@ -85,18 +99,42 @@ class CollectionTestCase(unittest.TestCase):
         except Exception as err:
             self.fail('Remove threw execption: %s' % err.message)
 
-class AqlQueryTestCase(unittest.TestCase):
+class AqlQueryTestCase(ExtendedTestCase):
 
     def setUp(self):
-        pass
+        self.client = Client(hostname='localhost')
+        self.database_name = 'testcase_aqlquery_123'
+        self.db = Database.create(name=self.database_name)
 
-    def test_this(self):  ## test method names begin 'test*'
-        self.assertEqual((1 + 2), 3)
-        self.assertEqual(0 + 1, 1)
+        self.test_1_col = self.db.create_collection('foo_1')
+        self.test_2_col = self.db.create_collection('foo_2')
 
-    def testMultiply(self):
-        self.assertEqual((0 * 10), 0)
-        self.assertEqual((5 * 8), 40)
+        self.col1_doc1 = self.test_1_col.create_document()
+        self.col1_doc1.set(key='ta', value='fa')
+        self.col1_doc1.save()
+
+        self.col2_doc1 = self.test_2_col.create_document()
+        self.col2_doc1.set(key='ta', value='fa2')
+        self.col2_doc1.save()
+
+    def tearDown(self):
+
+        # They need to be deleted
+        Collection.remove(name=self.test_1_col.name)
+        Collection.remove(name=self.test_2_col.name)
+
+        Database.remove(name=self.database_name)
+
+    def test_get_all_doc_from_1_collection(self):
+
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc1 = docs[0]
+        self.assertDocumentsEqual(doc1, self.col1_doc1)
 
 if __name__ == '__main__':
     unittest.main()
