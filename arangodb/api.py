@@ -268,7 +268,7 @@ class Query(object):
                 for result_key in result_dict:
                     result_value = result_dict[result_key]
 
-                    doc.setData(key=result_key, value=result_value)
+                    doc.set(key=result_key, value=result_value)
 
                 result.append(doc)
 
