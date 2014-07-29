@@ -1,6 +1,6 @@
 import unittest
 from arangodb.api import Client, Database, Collection, Query
-from arangodb.models import CollectionModel, ModelField
+from arangodb.models import CollectionModel, ModelField, TextField
 
 
 class ExtendedTestCase(unittest.TestCase):
@@ -157,7 +157,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
         self.assertEqual(model_collection_name, "TestModel")
 
-        Collection.remove(name=model_collection_name)
+        TestModel.destroy()
 
     def test_own_name_init_and_delete(self):
 
@@ -169,7 +169,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
         self.assertEqual(model_collection_name, "test_model")
 
-        Collection.remove(name=model_collection_name)
+        TestModel.destroy()
 
     def test_empty_name(self):
 
@@ -188,12 +188,15 @@ class CollectionModelTestCase(unittest.TestCase):
 
         class TestModel(CollectionModel):
 
-            test_field = ModelField(is_required=False)
+            test_field = TextField(is_required=False)
 
         TestModel.init()
 
         model = TestModel()
         model.save()
+
+        all_docs = TestModel.collection_instance.documents()
+        self.assertEqual(len(all_docs), 1)
 
         TestModel.destroy()
 

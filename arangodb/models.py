@@ -3,11 +3,31 @@ from arangodb.api import Collection
 
 class ModelField(object):
 
-    def __init__(self, is_required=True):
+    def __init__(self, is_required=True, **kwargs):
         """
         """
 
         self.is_required = is_required
+
+    def dumps(self):
+        """
+        """
+
+        return u''
+
+    def loads(self):
+        """
+        """
+
+        return u''
+
+class TextField(ModelField):
+
+    def __init__(self, is_required=True, **kwargs):
+        """
+        """
+
+        super(TextField, self).__init__(**kwargs)
 
 class CollectionModel(object):
 
@@ -56,5 +76,25 @@ class CollectionModel(object):
         """
         """
 
-        for attribute in self.__dict__:
-            print(attribute)
+        all_fields = self._get_fields()
+
+        for field_name in all_fields:
+            field = all_fields[field_name]
+            field_value = field.dumps()
+
+            self.document.set(key=field_name, value=field_value)
+
+        self.document.save()
+
+    def _get_fields(self):
+        fields = {}
+
+        for attribute in dir(self):
+
+            attr_val = getattr(self, attribute)
+            attr_cls = attr_val.__class__
+
+            if issubclass(attr_cls, ModelField):
+                fields[attribute] = attr_val
+
+        return fields
