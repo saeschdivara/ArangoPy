@@ -17,10 +17,7 @@ class CollectionModel(object):
     @classmethod
     def init(cls):
 
-        if cls.collection_name is not None and len(cls.collection_name) > 0:
-            name = cls.collection_name
-        else:
-            name = cls.__name__
+        name = cls.get_collection_name()
 
         try:
             collection_type = getattr(cls, 'collection_type')
@@ -33,6 +30,21 @@ class CollectionModel(object):
             cls.collection_instance = Collection.get_loaded_collection(name=name)
 
         return cls()
+
+    @classmethod
+    def destroy(cls):
+        name = cls.get_collection_name()
+        Collection.remove(name=name)
+
+    @classmethod
+    def get_collection_name(cls):
+
+        if cls.collection_name is not None and len(cls.collection_name) > 0:
+            name = cls.collection_name
+        else:
+            name = cls.__name__
+
+        return name
 
     def __init__(self):
         """
