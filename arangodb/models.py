@@ -4,13 +4,14 @@ from arangodb.api import Collection
 class CollectionModel(object):
 
     collection_instance = None
+    collection_name = None
 
     @classmethod
     def init(cls):
 
-        try:
+        if cls.collection_name is not None and len(cls.collection_name) > 0:
             name = cls.collection_name
-        except:
+        else:
             name = cls.__name__
 
         try:

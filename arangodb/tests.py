@@ -159,5 +159,29 @@ class CollectionModelTestCase(unittest.TestCase):
 
         Collection.remove(name=model_collection_name)
 
+    def test_own_name_init_and_delete(self):
+
+        class TestModel(CollectionModel):
+            collection_name = "test_model"
+
+        TestModel.init()
+        model_collection_name = TestModel.collection_instance.name
+
+        self.assertEqual(model_collection_name, "test_model")
+
+        Collection.remove(name=model_collection_name)
+
+    def test_empty_name(self):
+
+        class TestModel(CollectionModel):
+            collection_name = ""
+
+        TestModel.init()
+        model_collection_name = TestModel.collection_instance.name
+
+        self.assertEqual(model_collection_name, "TestModel")
+
+        Collection.remove(name=model_collection_name)
+
 if __name__ == '__main__':
     unittest.main()
