@@ -1,5 +1,6 @@
 import unittest
 from arangodb.api import Client, Database, Collection, Query
+from arangodb.models import CollectionModel
 
 
 class ExtendedTestCase(unittest.TestCase):
@@ -135,6 +136,28 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         doc1 = docs[0]
         self.assertDocumentsEqual(doc1, self.col1_doc1)
+
+class CollectionModelTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.client = Client(hostname='localhost')
+        self.database_name = 'testcase_collection_model_123'
+        self.db = Database.create(name=self.database_name)
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_init_and_delete_collection_model(self):
+
+        class TestModel(CollectionModel):
+            pass
+
+        TestModel.init()
+        model_collection_name = TestModel.collection_instance.name
+
+        self.assertEqual(model_collection_name, "TestModel")
+
+        Collection.remove(name=model_collection_name)
 
 if __name__ == '__main__':
     unittest.main()
