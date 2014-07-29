@@ -15,11 +15,17 @@ class ModelField(object):
 
         return u''
 
-    def loads(self):
+    def loads(self, string_val):
         """
         """
 
-        return u''
+        pass
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        pass
 
 class TextField(ModelField):
 
@@ -28,6 +34,27 @@ class TextField(ModelField):
         """
 
         super(TextField, self).__init__(**kwargs)
+
+        self.text = u''
+
+    def dumps(self):
+        """
+        """
+
+        return u'%s' % self.text
+
+    def loads(self, string_val):
+        """
+        """
+
+        self.text = string_val
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            self.text = args[0]
 
 class CollectionModel(object):
 
