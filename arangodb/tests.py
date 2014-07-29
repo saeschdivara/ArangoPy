@@ -177,11 +177,12 @@ class CollectionModelTestCase(unittest.TestCase):
             collection_name = ""
 
         TestModel.init()
+
         model_collection_name = TestModel.collection_instance.name
 
         self.assertEqual(model_collection_name, "TestModel")
 
-        Collection.remove(name=model_collection_name)
+        TestModel.destroy()
 
     def test_save_model_with_one_field(self):
 
@@ -189,7 +190,12 @@ class CollectionModelTestCase(unittest.TestCase):
 
             test_field = ModelField(is_required=False)
 
-        model = TestModel
+        TestModel.init()
+
+        model = TestModel()
+        model.save()
+
+        TestModel.destroy()
 
 if __name__ == '__main__':
     unittest.main()
