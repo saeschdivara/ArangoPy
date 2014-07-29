@@ -8,7 +8,10 @@ class CollectionModel(object):
     @classmethod
     def init(cls):
 
-        name = cls.__name__
+        try:
+            name = cls.collection_name
+        except:
+            name = cls.__name__
 
         try:
             collection_type = cls.collection_type
