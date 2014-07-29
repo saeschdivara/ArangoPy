@@ -1,6 +1,14 @@
 from arangodb.api import Collection
 
 
+class ModelField(object):
+
+    def __init__(self, is_required=True):
+        """
+        """
+
+        self.is_required = is_required
+
 class CollectionModel(object):
 
     collection_instance = None
@@ -15,7 +23,7 @@ class CollectionModel(object):
             name = cls.__name__
 
         try:
-            collection_type = cls.collection_type
+            collection_type = getattr(cls, 'collection_type')
         except:
             collection_type = 2
 
@@ -30,4 +38,11 @@ class CollectionModel(object):
         """
         """
 
-        pass
+        self.document = self.collection_instance.create_document()
+
+    def save(self):
+        """
+        """
+
+        for attribute in self.__dict__:
+            print(attribute)

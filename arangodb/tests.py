@@ -1,6 +1,6 @@
 import unittest
 from arangodb.api import Client, Database, Collection, Query
-from arangodb.models import CollectionModel
+from arangodb.models import CollectionModel, ModelField
 
 
 class ExtendedTestCase(unittest.TestCase):
@@ -182,6 +182,14 @@ class CollectionModelTestCase(unittest.TestCase):
         self.assertEqual(model_collection_name, "TestModel")
 
         Collection.remove(name=model_collection_name)
+
+    def test_save_model_with_one_field(self):
+
+        class TestModel(CollectionModel):
+
+            test_field = ModelField(is_required=False)
+
+        model = TestModel
 
 if __name__ == '__main__':
     unittest.main()
