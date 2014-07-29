@@ -385,8 +385,8 @@ class Database(object):
         api = client.api
         api.database(name).delete()
 
-        if new_current_database is not None:
-            client.set_database(name=SYSTEM_DATABASE)
+        if new_current_database:
+            client.set_database(name=new_current_database)
 
 
     def __init__(self, name, api, **kwargs):
