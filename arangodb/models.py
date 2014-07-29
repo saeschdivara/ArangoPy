@@ -20,6 +20,7 @@ class CollectionModel(object):
         except:
             cls.collection_instance = Collection.get_loaded_collection(name=name)
 
+        return cls()
 
     def __init__(self):
         """
