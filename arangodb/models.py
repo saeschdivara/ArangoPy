@@ -49,8 +49,6 @@ class CollectionModel(object):
         except:
             cls.collection_instance = Collection.get_loaded_collection(name=name)
 
-        return cls()
-
     @classmethod
     def destroy(cls):
         name = cls.get_collection_name()
