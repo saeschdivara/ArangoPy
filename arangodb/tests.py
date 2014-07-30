@@ -1,6 +1,7 @@
 import unittest
 from arangodb.api import Client, Database, Collection, Query
-from arangodb.models import CollectionModel, ModelField, TextField
+from arangodb.fields import TextField
+from arangodb.models import CollectionModel
 
 
 class ExtendedTestCase(unittest.TestCase):

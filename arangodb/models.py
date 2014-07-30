@@ -1,3 +1,5 @@
+import copy
+
 from arangodb.api import Collection
 from arangodb.fields import ModelField
 
@@ -42,6 +44,16 @@ class CollectionModel(object):
         """
 
         self.document = self.collection_instance.create_document()
+        self._fields = []
+
+        for attribute in self._get_fields():
+
+            attr_val = getattr(self, attribute)
+            attr_cls = attr_val.__class__
+
+            if issubclass(attr_cls, ModelField):
+                self._fields[attribute] = copy.deepcopy(attr_val)
+
 
     def save(self):
         """

@@ -25,6 +25,12 @@ class ModelField(object):
 
         pass
 
+    def contribute_to_model(self, model):
+        """
+        """
+
+        #
+
 class TextField(ModelField):
 
     def __init__(self, is_required=True, **kwargs):
