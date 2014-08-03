@@ -3,7 +3,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   cd $DIR
 
-  VERSION=2.2
+  VERSION=2.2.1
   NAME=ArangoDB-$VERSION
 
   if [ ! -d "$DIR/$NAME" ]; then
@@ -21,7 +21,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   ARANGODB_DIR="$DIR/$NAME"
 
   ARANGOD="${ARANGODB_DIR}/bin/arangod"
-  if [ "$ARCH" == "x86_64" ]; then
+
+  if [ "$ARCH" -eq "x86_64" ]; then
   ARANGOD="${ARANGOD}_x86_64"
   fi
 
@@ -50,14 +51,15 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   echo "Check for arangod process"
   process=$(ps auxww | grep "bin/arangod" | grep -v grep)
 
-  if [ "x$process" == "x" ]; then
+  if [ "$process" == "x" ]; then
     echo "no 'arangod' process found"
     echo "ARCH = $ARCH"
     exit 1
   fi
 
   echo "Waiting until ArangoDB is ready on port 8529"
-  while [[ -z `curl -s 'http://127.0.0.1:8529/_api/version' ` ]] ; do
+  while [ -z `curl -s 'http://127.0.0.1:8529/_api/version' ` ]
+  do
     echo -n "."
     sleep 2s
   done
