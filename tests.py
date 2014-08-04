@@ -2,7 +2,7 @@
 import unittest
 
 # Test suites
-from arangodb.tests import DatabaseTestCase, CollectionTestCase, AqlQueryTestCase
+from arangodb.tests import DatabaseTestCase, CollectionTestCase, AqlQueryTestCase, CollectionModelTestCase
 
 
 
@@ -13,9 +13,10 @@ errors = 0
 failures = 0
 
 # Test suites
-test_suites.append( unittest.TestLoader().loadTestsFromTestCase(DatabaseTestCase) )
-test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionTestCase) )
-test_suites.append( unittest.TestLoader().loadTestsFromTestCase(AqlQueryTestCase) )
+test_suites.append(unittest.TestLoader().loadTestsFromTestCase(DatabaseTestCase))
+test_suites.append(unittest.TestLoader().loadTestsFromTestCase(CollectionTestCase))
+test_suites.append(unittest.TestLoader().loadTestsFromTestCase(AqlQueryTestCase))
+test_suites.append(unittest.TestLoader().loadTestsFromTestCase(CollectionModelTestCase))
 
 for test_suite in test_suites:
 
