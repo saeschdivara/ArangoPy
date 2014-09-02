@@ -5,8 +5,8 @@ import slumber
 
 SYSTEM_DATABASE = '_system'
 
-class Client(object):
 
+class Client(object):
     class_instance = None
 
 
@@ -69,7 +69,6 @@ class Client(object):
 
 
 class SimpleQuery(object):
-
     @classmethod
     def getByExample(cls, collection, example_data):
         """
@@ -85,7 +84,6 @@ class SimpleQuery(object):
 
 
 class QueryFilterStatement(object):
-
     EQUAL_OPERATOR = '=='
 
     def __init__(self, collection, attribute, operator, value):
@@ -99,7 +97,6 @@ class QueryFilterStatement(object):
 
 
 class Query(object):
-
     SORTING_ASC = 'ASC'
     SORTING_DESC = 'DESC'
 
@@ -276,17 +273,15 @@ class Query(object):
         except Exception as err:
             print(err.message)
 
-        return  result
+        return result
 
     def _get_collection_ident(self, collection_name):
         return collection_name + '_123'
 
 
 class Traveser(object):
-
     @classmethod
     def follow(cls, start_vertex, edge_collection, direction):
-
         related_docs = []
 
         request_data = {
@@ -303,7 +298,6 @@ class Traveser(object):
         vertices.remove(vertices[0])
 
         for vertice in vertices:
-
             collection_name = vertice['_id'].split('/')[0]
 
             doc = Document(
@@ -325,7 +319,6 @@ class Traveser(object):
 
 
 class Database(object):
-
     @classmethod
     def create(cls, name):
         """
@@ -404,7 +397,6 @@ class Database(object):
 
 
 class Collection(object):
-
     @classmethod
     def create(cls, name, type=2):
         """
@@ -601,7 +593,6 @@ class Collection(object):
 
 
 class Document(object):
-
     @classmethod
     def create(cls, collection):
         """
@@ -609,16 +600,12 @@ class Document(object):
 
         api = Client.instance().api
 
-        data = api.document.post(data={}, collection=collection.name)
-
         doc = Document(
-            id=data['_id'],
-            key=data['_key'],
+            id='',
+            key='',
             collection=collection.name,
             api=api,
         )
-
-        doc.is_loaded = True
 
         return doc
 
@@ -649,7 +636,12 @@ class Document(object):
         """
         """
 
-        self.resource(self.id).patch(data=self.data)
+        if not self.is_loaded:
+            data = self.api.document.post(data=self.data, collection=self.collection)
+            self.id = data['_id'],
+            self.key = data['_key'],
+        else:
+            self.resource(self.id).patch(data=self.data)
 
     def get(self, key):
         """
@@ -681,7 +673,6 @@ class Document(object):
 
 
 class Edge(Document):
-
     @classmethod
     def create(cls, collection, from_doc, to_doc, edge_data={}):
         """

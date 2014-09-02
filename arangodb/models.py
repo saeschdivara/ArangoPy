@@ -44,7 +44,7 @@ class CollectionModel(object):
         """
 
         self.document = self.collection_instance.create_document()
-        self._fields = []
+        self._fields = {}
 
         for attribute in self._get_fields():
 
