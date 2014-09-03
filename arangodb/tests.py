@@ -1,6 +1,6 @@
 import unittest
 from arangodb.api import Client, Database, Collection, Query
-from arangodb.fields import TextField
+from arangodb.fields import CharField
 from arangodb.models import CollectionModel
 
 
@@ -183,7 +183,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
         class TestModel(CollectionModel):
 
-            test_field = TextField(required=False)
+            test_field = CharField(required=False)
 
         TestModel.init()
 
@@ -218,7 +218,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
         class TestModel(CollectionModel):
 
-            test_field = TextField(required=True)
+            test_field = CharField(required=True)
 
         TestModel.init()
 

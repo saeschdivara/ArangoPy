@@ -41,7 +41,7 @@ class ModelField(object):
     def __unicode__(self):
         return self.dumps()
 
-class TextField(ModelField):
+class CharField(ModelField):
 
     class TooLongStringException(Exception):
         """
@@ -52,7 +52,7 @@ class TextField(ModelField):
         """
         """
 
-        super(TextField, self).__init__(**kwargs)
+        super(CharField, self).__init__(**kwargs)
 
         self.max_length = max_length
 
@@ -78,11 +78,11 @@ class TextField(ModelField):
         """
 
         if self.text is None and self.null is False:
-            raise TextField.NotNullableFieldException()
+            raise CharField.NotNullableFieldException()
 
         if self.text:
             if len(self.text) > self.max_length:
-                raise TextField.TooLongStringException()
+                raise CharField.TooLongStringException()
 
     def set(self, *args, **kwargs):
         """
