@@ -214,6 +214,46 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_save_model_with_one_field_required(self):
+
+        class TestModel(CollectionModel):
+
+            test_field = TextField(required=True)
+
+        TestModel.init()
+
+        model_1 = TestModel()
+
+        model_2 = TestModel()
+        model_2.test_field = "model_2_text"
+
+        try:
+            model_1.save()
+            self.assertTrue(False, 'Save needs to throw an exception because field is required and not set')
+        except:
+            pass
+
+        model_2.save()
+
+        all_docs = TestModel.collection_instance.documents()
+        self.assertEqual(len(all_docs), 2)
+
+        retrieved_model_1 = None
+        retrieved_model_2 = None
+
+        for doc in all_docs:
+            if doc.get(key='_key') == model_1.document.get(key='_key'):
+                retrieved_model_1 = doc
+            else:
+                retrieved_model_2 = doc
+
+        if retrieved_model_1:
+            self.assertEqual(retrieved_model_1.get('test_field'), None)
+        if retrieved_model_2:
+            self.assertEqual(retrieved_model_2.get('test_field'), "model_2_text")
+
+        TestModel.destroy()
+
 
 if __name__ == '__main__':
     unittest.main()
