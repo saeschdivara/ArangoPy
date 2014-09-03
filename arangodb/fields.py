@@ -26,6 +26,12 @@ class ModelField(object):
 
         pass
 
+    def validate(self):
+        """
+        """
+
+        pass
+
     def set(self, *args, **kwargs):
         """
         """
@@ -52,9 +58,6 @@ class TextField(ModelField):
         """
         """
 
-        if self.text is None and self.null is False:
-            raise TextField.NotNullableFieldException()
-
         return self.text
 
     def loads(self, string_val):
@@ -62,6 +65,13 @@ class TextField(ModelField):
         """
 
         self.text = string_val
+
+    def validate(self):
+        """
+        """
+
+        if self.text is None and self.null is False:
+            raise TextField.NotNullableFieldException()
 
     def set(self, *args, **kwargs):
         """

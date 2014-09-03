@@ -80,7 +80,11 @@ class CollectionModel(object):
             is_field_required = local_field.required
 
             if field_name in self._instance_meta_data._fields:
+                # Get field
                 field = self._instance_meta_data._fields[field_name]
+                # Validate content by field
+                field.validate()
+                # Get content
                 field_value = field.dumps()
             else:
                 if not is_field_required:
