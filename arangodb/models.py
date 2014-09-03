@@ -11,6 +11,12 @@ class CollectionModel(object):
 
     _instance_meta_data = None
 
+    class RequiredFieldNoValue(Exception):
+        """
+            Field needs value
+        """
+
+
     class MetaDataObj(object):
 
         def __init__(self):
@@ -70,11 +76,18 @@ class CollectionModel(object):
 
         for field_name in all_fields:
 
+            local_field = all_fields[field_name]
+            is_field_required = local_field.required
+
             if field_name in self._instance_meta_data._fields:
                 field = self._instance_meta_data._fields[field_name]
                 field_value = field.dumps()
             else:
-                field_value = None
+                if not is_field_required:
+                    field_value = None
+                else:
+                    raise CollectionModel.RequiredFieldNoValue()
+
 
             self.document.set(key=field_name, value=field_value)
 

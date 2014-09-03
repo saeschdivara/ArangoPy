@@ -189,15 +189,16 @@ class CollectionModelTestCase(unittest.TestCase):
 
         class TestModel(CollectionModel):
 
-            test_field = TextField(is_required=False)
+            test_field = TextField(required=False)
 
         TestModel.init()
 
         model_1 = TestModel()
-        model_1.save()
 
         model_2 = TestModel()
         model_2.test_field = "model_2_text"
+
+        model_1.save()
         model_2.save()
 
         all_docs = TestModel.collection_instance.documents()
