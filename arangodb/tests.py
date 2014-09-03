@@ -5,13 +5,11 @@ from arangodb.models import CollectionModel
 
 
 class ExtendedTestCase(unittest.TestCase):
-
     def assertDocumentsEqual(self, doc1, doc2):
         """
         """
 
         for prop in doc1.data:
-
             doc1_val = doc1.data[prop]
             doc2_val = doc2.data[prop]
 
@@ -19,7 +17,6 @@ class ExtendedTestCase(unittest.TestCase):
 
 
 class DatabaseTestCase(unittest.TestCase):
-
     def setUp(self):
         self.client = Client(hostname='localhost')
 
@@ -52,7 +49,6 @@ class DatabaseTestCase(unittest.TestCase):
 
 
 class CollectionTestCase(unittest.TestCase):
-
     def setUp(self):
         self.client = Client(hostname='localhost')
         self.database_name = 'testcase_collection_123'
@@ -101,8 +97,8 @@ class CollectionTestCase(unittest.TestCase):
         except Exception as err:
             self.fail('Remove threw execption: %s' % err.message)
 
-class AqlQueryTestCase(ExtendedTestCase):
 
+class AqlQueryTestCase(ExtendedTestCase):
     def setUp(self):
         self.client = Client(hostname='localhost')
         self.database_name = 'testcase_aqlquery_123'
@@ -120,7 +116,6 @@ class AqlQueryTestCase(ExtendedTestCase):
         self.col2_doc1.save()
 
     def tearDown(self):
-
         # They need to be deleted
         Collection.remove(name=self.test_1_col.name)
         Collection.remove(name=self.test_2_col.name)
@@ -128,7 +123,6 @@ class AqlQueryTestCase(ExtendedTestCase):
         Database.remove(name=self.database_name)
 
     def test_get_all_doc_from_1_collection(self):
-
         q = Query()
         q.append_collection(self.test_1_col.name)
         docs = q.execute()
@@ -138,8 +132,8 @@ class AqlQueryTestCase(ExtendedTestCase):
         doc1 = docs[0]
         self.assertDocumentsEqual(doc1, self.col1_doc1)
 
-class CollectionModelTestCase(unittest.TestCase):
 
+class CollectionModelTestCase(unittest.TestCase):
     def setUp(self):
         self.client = Client(hostname='localhost')
         self.database_name = 'testcase_collection_model_123'
@@ -204,13 +198,22 @@ class CollectionModelTestCase(unittest.TestCase):
         all_docs = TestModel.collection_instance.documents()
         self.assertEqual(len(all_docs), 2)
 
-        retrieved_model_1 = all_docs[0]
-        retrieved_model_2 = all_docs[1]
+        retrieved_model_1 = None
+        retrieved_model_2 = None
 
-        self.assertEqual(retrieved_model_1.get('test_field'), None)
-        self.assertEqual(retrieved_model_2.get('test_field'), "model_2_text")
+        for doc in all_docs:
+            if doc.get(key='_key') == model_1.document.get(key='_key'):
+                retrieved_model_1 = doc
+            else:
+                retrieved_model_2 = doc
+
+        if retrieved_model_1:
+            self.assertEqual(retrieved_model_1.get('test_field'), None)
+        if retrieved_model_2:
+            self.assertEqual(retrieved_model_2.get('test_field'), "model_2_text")
 
         TestModel.destroy()
+
 
 if __name__ == '__main__':
     unittest.main()
