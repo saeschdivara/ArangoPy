@@ -43,11 +43,18 @@ class ModelField(object):
 
 class TextField(ModelField):
 
-    def __init__(self, **kwargs):
+    class TooLongStringException(Exception):
+        """
+        String is too long
+        """
+
+    def __init__(self, max_length=255, **kwargs):
         """
         """
 
         super(TextField, self).__init__(**kwargs)
+
+        self.max_length = max_length
 
         if self.null:
             self.text = None
@@ -72,6 +79,10 @@ class TextField(ModelField):
 
         if self.text is None and self.null is False:
             raise TextField.NotNullableFieldException()
+
+        if self.text:
+            if len(self.text) > self.max_length:
+                raise TextField.TooLongStringException()
 
     def set(self, *args, **kwargs):
         """
