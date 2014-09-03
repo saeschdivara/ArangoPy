@@ -9,6 +9,13 @@ class CollectionModel(object):
     collection_instance = None
     collection_name = None
 
+    _instance_meta_data = None
+
+    class MetaDataObj(object):
+
+        def __init__(self):
+            self._fields = {}
+
     @classmethod
     def init(cls):
 
@@ -44,7 +51,7 @@ class CollectionModel(object):
         """
 
         self.document = self.collection_instance.create_document()
-        self._fields = {}
+        self._instance_meta_data = CollectionModel.MetaDataObj()
 
         for attribute in self._get_fields():
 
@@ -52,7 +59,7 @@ class CollectionModel(object):
             attr_cls = attr_val.__class__
 
             if issubclass(attr_cls, ModelField):
-                self._fields[attribute] = copy.deepcopy(attr_val)
+                self._instance_meta_data._fields[attribute] = copy.deepcopy(attr_val)
 
 
     def save(self):
@@ -62,8 +69,12 @@ class CollectionModel(object):
         all_fields = self._get_fields()
 
         for field_name in all_fields:
-            field = all_fields[field_name]
-            field_value = field.dumps()
+
+            if field_name in self._instance_meta_data._fields:
+                field = self._instance_meta_data._fields[field_name]
+                field_value = field.dumps()
+            else:
+                field_value = None
 
             self.document.set(key=field_name, value=field_value)
 
@@ -81,3 +92,22 @@ class CollectionModel(object):
                 fields[attribute] = attr_val
 
         return fields
+
+    def __getattr__(self, item):
+        if self._instance_meta_data is None:
+            return super(CollectionModel, self).__getattr__(item)
+
+        if item in self._instance_meta_data._fields:
+            return self._instance_meta_data._fields[item]
+        else:
+            return super(CollectionModel, self).__getattr__(item)
+
+    def __setattr__(self, key, value):
+        if self._instance_meta_data is None:
+            super(CollectionModel, self).__setattr__(key, value)
+            return
+
+        if key in self._instance_meta_data._fields:
+            self._instance_meta_data._fields[key].set(value)
+        else:
+            super(CollectionModel, self).__setattr__(key, value)

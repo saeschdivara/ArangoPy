@@ -1,17 +1,24 @@
 
 class ModelField(object):
 
-    def __init__(self, is_required=True, **kwargs):
+    class NotNullableFieldException(Exception):
+        """
+            Field cannot be null
+        """
+
+    def __init__(self, required=True, blank=False, null=True, **kwargs):
         """
         """
 
-        self.is_required = is_required
+        self.required = required
+        self.blank = blank
+        self.null = null
 
     def dumps(self):
         """
         """
 
-        return u''
+        return None
 
     def loads(self, string_val):
         """
@@ -25,27 +32,30 @@ class ModelField(object):
 
         pass
 
-    def contribute_to_model(self, model):
-        """
-        """
-
-        #
+    def __unicode__(self):
+        return self.dumps()
 
 class TextField(ModelField):
 
-    def __init__(self, is_required=True, **kwargs):
+    def __init__(self, **kwargs):
         """
         """
 
         super(TextField, self).__init__(**kwargs)
 
-        self.text = u''
+        if self.null:
+            self.text = None
+        else:
+            self.text = u''
 
     def dumps(self):
         """
         """
 
-        return u'%s' % self.text
+        if self.text is None and self.null is False:
+            raise TextField.NotNullableFieldException()
+
+        return self.text
 
     def loads(self, string_val):
         """
@@ -58,4 +68,4 @@ class TextField(ModelField):
         """
 
         if len(args) is 1:
-            self.text = args[0]
+            self.text = u'%s' % args[0]

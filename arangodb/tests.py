@@ -185,7 +185,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
-    def test_save_model_with_one_field(self):
+    def test_save_model_with_one_field_not_required(self):
 
         class TestModel(CollectionModel):
 
@@ -193,11 +193,21 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.init()
 
-        model = TestModel()
-        model.save()
+        model_1 = TestModel()
+        model_1.save()
+
+        model_2 = TestModel()
+        model_2.test_field = "model_2_text"
+        model_2.save()
 
         all_docs = TestModel.collection_instance.documents()
-        self.assertEqual(len(all_docs), 1)
+        self.assertEqual(len(all_docs), 2)
+
+        retrieved_model_1 = all_docs[0]
+        retrieved_model_2 = all_docs[1]
+
+        self.assertEqual(retrieved_model_1.get('test_field'), None)
+        self.assertEqual(retrieved_model_2.get('test_field'), "model_2_text")
 
         TestModel.destroy()
 

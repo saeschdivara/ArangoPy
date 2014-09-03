@@ -652,7 +652,10 @@ class Document(object):
 
             self.is_loaded = True
 
-        return self.data[key]
+        if key in self.data:
+            return self.data[key]
+        else:
+            return None
 
     def set(self, key, value):
         """
