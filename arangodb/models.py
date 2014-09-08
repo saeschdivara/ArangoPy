@@ -4,6 +4,16 @@ from arangodb.api import Collection, SimpleQuery
 from arangodb.fields import ModelField
 
 
+class CollectionModelManager(object):
+
+    def __init__(self):
+        self._model_class = None
+
+    def get(self, **kwargs):
+
+        return SimpleQuery.getByExample(collection=self._model_class.get_collection_name(), example_data=kwargs)
+
+
 class CollectionModel(object):
 
     collection_instance = None
@@ -133,13 +143,3 @@ class CollectionModel(object):
             self._instance_meta_data._fields[key].set(value)
         else:
             super(CollectionModel, self).__setattr__(key, value)
-
-
-class CollectionModelManager(object):
-
-    def __init__(self):
-        self._model_class = None
-
-    def get(self, **kwargs):
-
-        return SimpleQuery.getByExample(collection=self._model_class.get_collection_name(), example_data=kwargs)

@@ -1,6 +1,6 @@
 import unittest
 from arangodb.api import Client, Database, Collection, Query
-from arangodb.fields import CharField
+from arangodb.fields import CharField, ForeignKeyField
 from arangodb.models import CollectionModel
 
 
@@ -254,6 +254,44 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+
+class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
+    def setUp(self):
+        self.client = Client(hostname='localhost')
+        self.database_name = 'testcase_collection_model_123'
+        self.db = Database.create(name=self.database_name)
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_foreign_key_field(self):
+
+        class ForeignTestModel(CollectionModel):
+
+            test_field = CharField(required=True)
+
+        class TestModel(CollectionModel):
+
+            other = ForeignKeyField(to=ForeignTestModel, required=True)
+
+        # Init collections
+        ForeignTestModel.init()
+        TestModel.init()
+
+        # Init models
+        model_1 = ForeignTestModel()
+        model_1.test_field = 'ddd'
+
+        model_2 = TestModel()
+        model_2.other = model_1
+
+        # Save models
+        model_1.save()
+        model_2.save()
+
+        # Destroy collections
+        ForeignTestModel.destroy()
+        TestModel.destroy()
 
 if __name__ == '__main__':
     unittest.main()

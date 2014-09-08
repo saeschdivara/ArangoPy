@@ -1,6 +1,3 @@
-from arangodb.models import CollectionModel
-
-
 class ModelField(object):
 
     class NotNullableFieldException(Exception):
@@ -215,8 +212,4 @@ class ForeignKeyField(ModelField):
 
         if len(args) is 1:
             relation_model = args[0]
-
-            if isinstance(relation_model, CollectionModel):
-                self.relation_model = args[0]
-            else:
-                raise ForeignKeyField.WrongInputTypeException()
+            self.relation_model = relation_model
