@@ -6,13 +6,19 @@ class ModelField(object):
             Field cannot be null
         """
 
-    def __init__(self, required=True, blank=False, null=True, **kwargs):
+    class WrongInputTypeException(Exception):
+        """
+            Field cannot be null
+        """
+
+    def __init__(self, required=True, blank=False, null=True, default=None, **kwargs):
         """
         """
 
         self.required = required
         self.blank = blank
         self.null = null
+        self.default = default
 
     def dumps(self):
         """
@@ -56,10 +62,15 @@ class CharField(ModelField):
 
         self.max_length = max_length
 
+        # If null is allowed, default value is None
         if self.null:
             self.text = None
         else:
-            self.text = u''
+            # If default value was set
+            if self.default:
+                self.text = self.default
+            else:
+                self.text = u''
 
     def dumps(self):
         """
@@ -89,4 +100,62 @@ class CharField(ModelField):
         """
 
         if len(args) is 1:
-            self.text = u'%s' % args[0]
+            text = args[0]
+
+            if isinstance(text, basestring):
+                self.text = u'%s' % args[0]
+            else:
+                raise CharField.WrongInputTypeException()
+
+class NumberField(ModelField):
+
+    def __init__(self, **kwargs):
+        """
+        """
+
+        super(NumberField, self).__init__(**kwargs)
+
+
+        # If null is allowed, default value is None
+        if self.null:
+            self.number = None
+        else:
+            # If default value was set
+            if self.default:
+                self.number = self.default
+            else:
+                self.number = 0
+
+    def dumps(self):
+        """
+        """
+
+        return self.number
+
+    def loads(self, number_val):
+        """
+        """
+
+        self.number = number_val
+
+    def validate(self):
+        """
+        """
+
+        if self.number is None and self.null is False:
+            raise NumberField.NotNullableFieldException()
+
+        if self.number:
+            pass
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            number = args[0]
+
+            if isinstance(number, int) or isinstance(number, float):
+                self.number = args[0]
+            else:
+                raise NumberField.WrongInputTypeException()
