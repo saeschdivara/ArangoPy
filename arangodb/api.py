@@ -663,6 +663,12 @@ class Document(object):
 
         self.data[key] = value
 
+    def attributes(self):
+        """
+        """
+
+        return self.data
+
     def __repr__(self):
         """
         """
