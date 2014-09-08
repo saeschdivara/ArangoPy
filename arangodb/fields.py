@@ -1,3 +1,5 @@
+from arangodb.models import CollectionModel
+
 
 class ModelField(object):
 
@@ -159,3 +161,58 @@ class NumberField(ModelField):
                 self.number = args[0]
             else:
                 raise NumberField.WrongInputTypeException()
+
+class ForeignKeyField(ModelField):
+
+    def __init__(self, to, **kwargs):
+        """
+        """
+
+        super(ForeignKeyField, self).__init__(**kwargs)
+
+
+        # If null is allowed, default value is None
+        if self.null:
+            self.relation_model = None
+        else:
+            # If default value was set
+            if self.default:
+                self.relation_model = self.default
+            else:
+                self.relation_model = ''
+
+        self.relation_class = to
+
+    def dumps(self):
+        """
+        """
+
+        return self.relation_model
+
+    def loads(self, model_key):
+        """
+        """
+
+        self.relation_model = model_key
+
+    def validate(self):
+        """
+        """
+
+        if self.relation_model is None and self.null is False:
+            raise NumberField.NotNullableFieldException()
+
+        if self.relation_model:
+            pass
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            relation_model = args[0]
+
+            if isinstance(relation_model, CollectionModel):
+                self.relation_model = args[0]
+            else:
+                raise ForeignKeyField.WrongInputTypeException()
