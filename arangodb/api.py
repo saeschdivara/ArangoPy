@@ -663,7 +663,7 @@ class Document(object):
 
         self.data[key] = value
 
-    def attributes(self):
+    def get_attributes(self):
         """
         """
 
