@@ -22,6 +22,8 @@ class ModelField(object):
         self.null = null
         self.default = default
 
+        self._model_instance = None
+
     def dumps(self):
         """
         """
@@ -187,13 +189,15 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        return self.relation_model
+        return u'%s/%s' % ( self.relation_class.get_collection_name(), self.relation_model )
 
-    def loads(self, model_key):
+    def loads(self, model_id):
         """
         """
 
-        self.relation_model = model_key
+        model = self._model_instance.objects.get(_id=model_id)
+
+        self.relation_model = model
 
     def validate(self):
         """

@@ -1,6 +1,6 @@
 import copy
 
-from arangodb.api import Collection
+from arangodb.api import Collection, SimpleQuery
 from arangodb.fields import ModelField
 
 
@@ -8,6 +8,8 @@ class CollectionModel(object):
 
     collection_instance = None
     collection_name = None
+
+    objects = CollectionModelManager()
 
     _instance_meta_data = None
 
@@ -36,6 +38,8 @@ class CollectionModel(object):
             cls.collection_instance = Collection.create(name=name, type=collection_type)
         except:
             cls.collection_instance = Collection.get_loaded_collection(name=name)
+
+        cls.objects._model_class = cls
 
     @classmethod
     def destroy(cls):
@@ -66,6 +70,7 @@ class CollectionModel(object):
 
             if issubclass(attr_cls, ModelField):
                 self._instance_meta_data._fields[attribute] = copy.deepcopy(attr_val)
+                self._instance_meta_data._fields[attribute]._model_instance = self
 
 
     def save(self):
@@ -128,3 +133,13 @@ class CollectionModel(object):
             self._instance_meta_data._fields[key].set(value)
         else:
             super(CollectionModel, self).__setattr__(key, value)
+
+
+class CollectionModelManager(object):
+
+    def __init__(self):
+        self._model_class = None
+
+    def get(self, **kwargs):
+
+        return SimpleQuery.getByExample(collection=self._model_class.get_collection_name(), example_data=kwargs)
