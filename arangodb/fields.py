@@ -186,14 +186,13 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        return u'%s/%s' % ( self.relation_class.get_collection_name(), self.relation_model )
+        return u'%s' % self.relation_model.document
 
     def loads(self, model_id):
         """
         """
 
         model = self._model_instance.objects.get(_id=model_id)
-
         self.relation_model = model
 
     def validate(self):
