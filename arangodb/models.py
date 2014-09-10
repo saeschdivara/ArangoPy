@@ -13,6 +13,28 @@ class CollectionModelManager(object):
 
         return SimpleQuery.getByExample(collection=self._model_class.get_collection_name(), example_data=kwargs)
 
+    def all(self):
+
+        docs = self._model_class.collection_instance.documents()
+        models = []
+
+        for doc in docs:
+            model = self._model_class()
+            models.append(model)
+
+            doc.retrieve()
+
+            attributes = doc.get_attributes()
+            for attribute_name in attributes:
+
+                if not attribute_name.startswith('_'):
+                    field = getattr(model, attribute_name)
+                    attribute_value = attributes[attribute_name]
+                    field._model_instance = self._model_class
+                    field.loads(attribute_value)
+
+        return models
+
 
 class CollectionModel(object):
 
@@ -79,8 +101,8 @@ class CollectionModel(object):
             attr_cls = attr_val.__class__
 
             if issubclass(attr_cls, ModelField):
-                self._instance_meta_data._fields[attribute] = copy.deepcopy(attr_val)
-                self._instance_meta_data._fields[attribute]._model_instance = self
+                field = copy.deepcopy(attr_val)
+                self._instance_meta_data._fields[attribute] = field
 
 
     def save(self):
@@ -126,6 +148,7 @@ class CollectionModel(object):
         return fields
 
     def __getattr__(self, item):
+
         if self._instance_meta_data is None:
             return super(CollectionModel, self).__getattr__(item)
 
