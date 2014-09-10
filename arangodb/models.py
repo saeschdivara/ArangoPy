@@ -92,8 +92,9 @@ class CollectionModel(object):
         """
         """
 
-        self.document = self.collection_instance.create_document()
+        # _instance_meta_data has to be set first otherwise the whole thing doesn't work
         self._instance_meta_data = CollectionModel.MetaDataObj()
+        self.document = self.collection_instance.create_document()
 
         for attribute in self._get_fields():
 
@@ -147,15 +148,15 @@ class CollectionModel(object):
 
         return fields
 
-    def __getattr__(self, item):
+    def __getattribute__(self, item):
 
-        if self._instance_meta_data is None:
-            return super(CollectionModel, self).__getattr__(item)
+        if item == '_instance_meta_data':
+            return object.__getattribute__(self, item)
 
         if item in self._instance_meta_data._fields:
-            return self._instance_meta_data._fields[item]
+            return self._instance_meta_data._fields[item].get()
         else:
-            return super(CollectionModel, self).__getattr__(item)
+            return super(CollectionModel, self).__getattribute__(item)
 
     def __setattr__(self, key, value):
         if self._instance_meta_data is None:
