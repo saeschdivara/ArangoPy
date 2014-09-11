@@ -350,6 +350,8 @@ class Database(object):
             kwargs=data
         )
 
+        Client.instance().set_database(name=name)
+
         return db
 
     @classmethod
