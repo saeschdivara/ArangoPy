@@ -68,6 +68,28 @@ class Client(object):
         )
 
 
+def _create_document_from_result_dict(result_dict, api):
+    collection_name = result_dict['_id'].split('/')[0]
+
+    doc = Document(
+        id=result_dict['_id'],
+        key=result_dict['_key'],
+        collection=collection_name,
+        api=api,
+    )
+
+    del result_dict['_id']
+    del result_dict['_key']
+    del result_dict['_rev']
+
+    for result_key in result_dict:
+        result_value = result_dict[result_key]
+
+        doc.set(key=result_key, value=result_value)
+
+    return doc
+
+
 class SimpleQuery(object):
     @classmethod
     def getByExample(cls, collection, example_data):
@@ -80,7 +102,15 @@ class SimpleQuery(object):
         }
 
         api = Client.instance().api
-        return api.simple('by-example').put(data=query)
+        result_dict = api.simple('by-example').put(data=query)
+
+        if result_dict['count'] == 0:
+            return None
+
+        try:
+            return _create_document_from_result_dict(result_dict['result'][0], api)
+        except:
+            return result_dict
 
 
 class QueryFilterStatement(object):
@@ -231,8 +261,6 @@ class Query(object):
 
         query_data += ' RETURN %s' % collection + '_123'
 
-        print(query_data)
-
         post_data = {
             'query': query_data
         }
@@ -248,25 +276,7 @@ class Query(object):
 
             # Create documents
             for result_dict in result_dict_list:
-
-                collection_name = result_dict['_id'].split('/')[0]
-
-                doc = Document(
-                    id=result_dict['_id'],
-                    key=result_dict['_key'],
-                    collection=collection_name,
-                    api=api,
-                )
-
-                del result_dict['_id']
-                del result_dict['_key']
-                del result_dict['_rev']
-
-                for result_key in result_dict:
-                    result_value = result_dict[result_key]
-
-                    doc.set(key=result_key, value=result_value)
-
+                doc = _create_document_from_result_dict(result_dict, api)
                 result.append(doc)
 
 
@@ -274,6 +284,7 @@ class Query(object):
             print(err.message)
 
         return result
+
 
     def _get_collection_ident(self, collection_name):
         return collection_name + '_123'
