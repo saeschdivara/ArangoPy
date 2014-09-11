@@ -6,15 +6,12 @@ from arangodb.fields import ModelField
 
 class CollectionModelManager(object):
 
-    def __init__(self):
-        self._model_class = None
+    def __init__(self, cls):
+        self._model_class = cls
 
     def get(self, **kwargs):
 
-        print("kwargs: %s" % kwargs)
         collection_name = self._model_class.get_collection_name()
-
-        print("nae: %s" % collection_name)
 
         doc = SimpleQuery.getByExample(collection=collection_name, example_data=kwargs)
 
@@ -68,7 +65,7 @@ class CollectionModel(object):
     collection_instance = None
     collection_name = None
 
-    objects = CollectionModelManager()
+    objects = CollectionModelManager
 
     _instance_meta_data = None
 
@@ -98,7 +95,7 @@ class CollectionModel(object):
         except:
             cls.collection_instance = Collection.get_loaded_collection(name=name)
 
-        cls.objects._model_class = cls
+        cls.objects = cls.objects(cls)
 
     @classmethod
     def destroy(cls):
