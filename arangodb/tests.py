@@ -1,5 +1,5 @@
 import unittest
-from arangodb.api import Client, Database, Collection, Query
+from arangodb.api import Client, Database, Collection, Query, Document
 from arangodb.fields import CharField, ForeignKeyField
 from arangodb.models import CollectionModel
 
@@ -98,6 +98,23 @@ class CollectionTestCase(unittest.TestCase):
             self.fail('Remove threw execption: %s' % err.message)
 
 
+class DocumentTestCase(unittest.TestCase):
+    def setUp(self):
+        self.client = Client(hostname='localhost')
+
+    def tearDown(self):
+        pass
+
+    def test_document_access_values_by_attribute_getter(self):
+        doc = Document(id='', key='', collection='', api=self.client.api)
+        # set this to true so it won't make requests to nothing
+        doc.is_loaded = True
+        doc_attr_value = 'foo_bar'
+        doc.set(key='test', value=doc_attr_value)
+
+        self.assertEqual(doc.test, doc_attr_value)
+
+
 class AqlQueryTestCase(ExtendedTestCase):
     def setUp(self):
         self.client = Client(hostname='localhost')
@@ -131,6 +148,19 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         doc1 = docs[0]
         self.assertDocumentsEqual(doc1, self.col1_doc1)
+
+
+class SimpleQueryTestCase(unittest.TestCase):
+    def setUp(self):
+        self.client = Client(hostname='localhost')
+        self.database_name = 'testcase_simple_query_123'
+        self.db = Database.create(name=self.database_name)
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_get_document_by_example(self):
+        pass
 
 
 class CollectionModelTestCase(unittest.TestCase):
