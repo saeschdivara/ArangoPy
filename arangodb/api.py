@@ -700,10 +700,10 @@ class Document(object):
 
         # Set internal variables normally
         if key in ['data', 'is_loaded', 'id', 'key', 'collection', 'api', 'resource']:
+            print(value)
             super(Document, self).__setattr__(key, value)
         else:
             self.set(key=key, value=value)
-
 
     def __repr__(self):
         """
