@@ -11,7 +11,19 @@ class CollectionModelManager(object):
 
     def get(self, **kwargs):
 
-        return SimpleQuery.getByExample(collection=self._model_class.get_collection_name(), example_data=kwargs)
+        print("kwargs: %s" % kwargs)
+        collection_name = self._model_class.get_collection_name()
+
+        print("nae: %s" % collection_name)
+
+        doc = SimpleQuery.getByExample(collection=collection_name, example_data=kwargs)
+
+        if doc is None:
+            return None
+
+        model = self._create_model_from_doc(doc=doc)
+
+        return model
 
     def all(self):
 
@@ -19,21 +31,36 @@ class CollectionModelManager(object):
         models = []
 
         for doc in docs:
-            model = self._model_class()
+            model = self._create_model_from_doc(doc=doc)
             models.append(model)
 
-            doc.retrieve()
-
-            attributes = doc.get_attributes()
-            for attribute_name in attributes:
-
-                if not attribute_name.startswith('_'):
-                    field = getattr(model, attribute_name)
-                    attribute_value = attributes[attribute_name]
-                    field._model_instance = self._model_class
-                    field.loads(attribute_value)
-
         return models
+
+
+    def _create_model_from_doc(self, doc):
+
+        doc.retrieve()
+
+        attributes = doc.get_attributes()
+
+        model = self._create_model_from_dict(attribute_dict=attributes)
+
+        return model
+
+
+    def _create_model_from_dict(self, attribute_dict):
+        model = self._model_class()
+
+        attributes = attribute_dict
+        for attribute_name in attributes:
+
+            if not attribute_name.startswith('_'):
+                field = model.get_field(name=attribute_name)
+                attribute_value = attributes[attribute_name]
+                field._model_instance = self._model_class
+                field.loads(attribute_value)
+
+        return model
 
 
 class CollectionModel(object):
@@ -110,7 +137,7 @@ class CollectionModel(object):
         """
         """
 
-        all_fields = self._get_fields()
+        all_fields = self._instance_meta_data._fields
 
         for field_name in all_fields:
 
@@ -134,6 +161,9 @@ class CollectionModel(object):
             self.document.set(key=field_name, value=field_value)
 
         self.document.save()
+
+    def get_field(self, name):
+        return self._instance_meta_data._fields[name]
 
     def _get_fields(self):
         fields = {}
