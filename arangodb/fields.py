@@ -45,7 +45,22 @@ class ModelField(object):
 
         pass
 
+    def get(self):
+        """
+        """
+
+        return self
+
+    def __eq__(self, other):
+        """
+        """
+
+        return self.__class__ == other.__class__
+
     def __unicode__(self):
+        """
+        """
+
         return self.dumps()
 
 class CharField(ModelField):
@@ -108,6 +123,16 @@ class CharField(ModelField):
             else:
                 raise CharField.WrongInputTypeException()
 
+    def __eq__(self, other):
+        """
+        """
+
+        if super(CharField, self).__eq__(other):
+            return self.text == other.text
+        else:
+            return False
+
+
 class NumberField(ModelField):
 
     def __init__(self, **kwargs):
@@ -161,6 +186,16 @@ class NumberField(ModelField):
             else:
                 raise NumberField.WrongInputTypeException()
 
+    def __eq__(self, other):
+        """
+        """
+
+        if super(NumberField, self).__eq__(other):
+            return self.number == other.number
+        else:
+            return False
+
+
 class ForeignKeyField(ModelField):
 
     def __init__(self, to, **kwargs):
@@ -192,7 +227,7 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        model = self._model_instance.objects.get(_id=model_id)
+        model = self.relation_class.objects.get(_id=model_id)
         self.relation_model = model
 
     def validate(self):
@@ -212,3 +247,18 @@ class ForeignKeyField(ModelField):
         if len(args) is 1:
             relation_model = args[0]
             self.relation_model = relation_model
+
+    def get(self):
+        """
+        """
+
+        return self.relation_model
+
+    def __eq__(self, other):
+        """
+        """
+
+        if super(ForeignKeyField, self).__eq__(other):
+            return self.relation_model == other.relation_model
+        else:
+            return False
