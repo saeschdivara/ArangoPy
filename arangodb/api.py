@@ -626,15 +626,15 @@ class Document(object):
         """
         """
 
+        self.data = {}
+        self.is_loaded = False
+
         self.id = id
         self.key = key
         self.collection = collection
         self.api = api
         self.resource = api.document
 
-        self.data = {}
-
-        self.is_loaded = False
 
     def retrieve(self):
         """
@@ -665,7 +665,7 @@ class Document(object):
 
             self.is_loaded = True
 
-        if key in self.data:
+        if self.has(key=key):
             return self.data[key]
         else:
             return None
@@ -676,11 +676,34 @@ class Document(object):
 
         self.data[key] = value
 
+    def has(self, key):
+        """
+        """
+
+        return key in self.data
+
     def get_attributes(self):
         """
         """
 
         return self.data
+
+    def __getattr__(self, item):
+        """
+        """
+
+        return self.get(key=item)
+
+    def __setattr__(self, key, value):
+        """
+        """
+
+        # Set internal variables normally
+        if key in ['data', 'is_loaded', 'id', 'key', 'collection', 'api', 'resource']:
+            super(Document, self).__setattr__(key, value)
+        else:
+            self.set(key=key, value=value)
+
 
     def __repr__(self):
         """
