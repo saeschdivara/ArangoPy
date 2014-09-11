@@ -260,6 +260,7 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
         self.client = Client(hostname='localhost')
         self.database_name = 'testcase_collection_model_123'
         self.db = Database.create(name=self.database_name)
+        self.client.set_database(self.database_name)
 
     def tearDown(self):
         Database.remove(name=self.database_name)
@@ -288,6 +289,13 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
         # Save models
         model_1.save()
         model_2.save()
+
+        all_test_models = TestModel.objects.all()
+        self.assertEqual(len(all_test_models), 1)
+
+        real_model = all_test_models[0]
+
+        self.assertEqual(real_model.other.test_field, model_1.test_field)
 
         # Destroy collections
         ForeignTestModel.destroy()
