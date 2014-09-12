@@ -18,7 +18,7 @@ class SimpleQuery(object):
 
 
     @classmethod
-    def getByExample(cls, collection, example_data, skip=None, limit=None):
+    def getByExample(cls, collection, example_data, allow_multiple=False, skip=None, limit=None):
         """
         """
 
@@ -27,7 +27,9 @@ class SimpleQuery(object):
             'limit': limit,
         }
 
-        return cls._construct_query(name='by-example', collection=collection, example=example_data, **kwargs)
+        return cls._construct_query(name='by-example',
+                                    collection=collection, example=example_data, multiple=allow_multiple,
+                                    **kwargs)
 
 
     @classmethod
