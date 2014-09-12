@@ -6,6 +6,8 @@ from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query
 
 
+client = Client(hostname='localhost')
+
 class ExtendedTestCase(unittest.TestCase):
     def assertDocumentsEqual(self, doc1, doc2):
         """
@@ -20,7 +22,7 @@ class ExtendedTestCase(unittest.TestCase):
 
 class DatabaseTestCase(unittest.TestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
+        pass
 
     def tearDown(self):
         pass
@@ -52,7 +54,6 @@ class DatabaseTestCase(unittest.TestCase):
 
 class CollectionTestCase(unittest.TestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
         self.database_name = 'testcase_collection_123'
         self.db = Database.create(name=self.database_name)
 
@@ -77,8 +78,6 @@ class CollectionTestCase(unittest.TestCase):
 
     def test_get_collection(self):
 
-        self.client.set_database(name=self.database_name)
-
         collection_name = 'test_foo_123'
 
         try:
@@ -102,13 +101,13 @@ class CollectionTestCase(unittest.TestCase):
 
 class DocumentTestCase(unittest.TestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
+        pass
 
     def tearDown(self):
         pass
 
     def test_document_access_values_by_attribute_getter(self):
-        doc = Document(id='', key='', collection='', api=self.client.api)
+        doc = Document(id='', key='', collection='', api=client.api)
         # set this to true so it won't make requests to nothing
         doc.is_loaded = True
         doc_attr_value = 'foo_bar'
@@ -117,7 +116,7 @@ class DocumentTestCase(unittest.TestCase):
         self.assertEqual(doc.test, doc_attr_value)
 
     def test_document_access_values_by_attribute_setter(self):
-        doc = Document(id='', key='', collection='', api=self.client.api)
+        doc = Document(id='', key='', collection='', api=client.api)
         # set this to true so it won't make requests to nothing
         doc.is_loaded = True
         doc_attr_value = 'foo_bar'
@@ -129,7 +128,6 @@ class DocumentTestCase(unittest.TestCase):
 
 class AqlQueryTestCase(ExtendedTestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
         self.database_name = 'testcase_aqlquery_123'
         self.db = Database.create(name=self.database_name)
 
@@ -164,7 +162,6 @@ class AqlQueryTestCase(ExtendedTestCase):
 
 class SimpleQueryTestCase(ExtendedTestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
         self.database_name = 'testcase_simple_query_123'
         self.db = Database.create(name=self.database_name)
 
@@ -197,7 +194,6 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
 class CollectionModelTestCase(unittest.TestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
         self.database_name = 'testcase_collection_model_123'
         self.db = Database.create(name=self.database_name)
 
@@ -319,10 +315,8 @@ class CollectionModelTestCase(unittest.TestCase):
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
-        self.client = Client(hostname='localhost')
         self.database_name = 'testcase_collection_model_123'
         self.db = Database.create(name=self.database_name)
-        self.client.set_database(self.database_name)
 
     def tearDown(self):
         Database.remove(name=self.database_name)

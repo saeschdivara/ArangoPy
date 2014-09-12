@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from arangodb.api import Client
-from arangodb.query.utils.document import create_document_from_result_dict
+from api import Client
+from query.utils.document import create_document_from_result_dict
 
 
 class SimpleQuery(object):
@@ -16,6 +16,7 @@ class SimpleQuery(object):
         }
 
         api = Client.instance().api
+        print(Client.instance().hostname)
         result_dict = api.simple('by-example').put(data=query)
 
         if result_dict['count'] == 0:

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import slumber
-from arangodb.query.simple import SimpleQuery
 
+# There seems to be a problem with the import
+try:
+    from query.simple import SimpleQuery
+except:
+    pass
 
 SYSTEM_DATABASE = '_system'
 
@@ -40,7 +44,10 @@ class Client(object):
     def instance(cls, hostname=None, protocol=None, port=None, database=None):
 
         if cls.class_instance is None:
-            cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port, database=database)
+            if hostname is None and protocol is None and port is None and database is None:
+                cls.class_instance = Client(hostname='localhost')
+            else:
+                cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port, database=database)
         else:
             if hostname is not None:
                 cls.class_instance.hostname = hostname

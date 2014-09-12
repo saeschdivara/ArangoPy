@@ -1,4 +1,4 @@
-from arangodb.api import Document
+from api import Document
 
 
 def create_document_from_result_dict(result_dict, api):
