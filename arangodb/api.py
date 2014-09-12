@@ -113,6 +113,28 @@ class SimpleQuery(object):
             return result_dict
 
 
+    @classmethod
+    def random(cls, collection):
+        """
+        """
+
+        query = {
+            'collection': collection,
+        }
+
+        api = Client.instance().api
+        result_dict = api.simple('any').put(data=query)
+
+        if result_dict['count'] == 0:
+            return None
+
+        try:
+            return _create_document_from_result_dict(result_dict['result'][0], api)
+        except:
+            return result_dict
+
+
+
 class QueryFilterStatement(object):
     EQUAL_OPERATOR = '=='
 
