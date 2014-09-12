@@ -67,14 +67,14 @@ class CollectionTestCase(unittest.TestCase):
         try:
             col = Collection.create(name=collection_name)
         except Exception as err:
-            self.fail('Create threw execption: %s' % err.message)
+            self.fail('Create threw exception: %s' % err.message)
 
         self.assertIsNotNone(col)
 
         try:
             Collection.remove(name=collection_name)
         except Exception as err:
-            self.fail('Remove threw execption: %s' % err.message)
+            self.fail('Remove threw exception: %s' % err.message)
 
     def test_get_collection(self):
 
@@ -83,7 +83,7 @@ class CollectionTestCase(unittest.TestCase):
         try:
             col = Collection.create(name=collection_name)
         except Exception as err:
-            self.fail('Create threw execption: %s' % err.message)
+            self.fail('Create threw exception: %s' % err.message)
 
         self.assertIsNotNone(col)
 
@@ -96,7 +96,7 @@ class CollectionTestCase(unittest.TestCase):
         try:
             Collection.remove(name=collection_name)
         except Exception as err:
-            self.fail('Remove threw execption: %s' % err.message)
+            self.fail('Remove threw exception: %s' % err.message)
 
 
 class DocumentTestCase(unittest.TestCase):
