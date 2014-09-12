@@ -186,9 +186,8 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
     def test_get_document_by_example(self):
         uid = self.col1_doc1.id
-        print("ty: %s val: %s" % (type(uid), uid))
-        doc = SimpleQuery.getByExample(collection=self.test_1_col, example_data={
-            '_id': uid
+        doc = SimpleQuery.getByExample(collection=self.test_1_col.name, example_data={
+            '_id': uid,
         })
 
         self.assertDocumentsEqual(doc, self.col1_doc1)
