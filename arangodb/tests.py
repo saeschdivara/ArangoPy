@@ -4,6 +4,7 @@ from arangodb.api import Client, Database, Collection, Document
 from arangodb.orm.fields import CharField, ForeignKeyField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query
+from query.simple import SimpleQuery
 
 
 client = Client(hostname='localhost')
@@ -173,6 +174,10 @@ class SimpleQueryTestCase(ExtendedTestCase):
         self.col1_doc1.ta='fa'
         self.col1_doc1.save()
 
+        self.col1_doc2 = self.test_1_col.create_document()
+        self.col1_doc2.ta='fa'
+        self.col1_doc2.save()
+
         self.col2_doc1 = self.test_2_col.create_document()
         self.col2_doc1.save()
 
@@ -190,6 +195,17 @@ class SimpleQueryTestCase(ExtendedTestCase):
         })
 
         self.assertDocumentsEqual(doc, self.col1_doc1)
+
+    def test_get_all_documents(self):
+
+        docs = SimpleQuery.all(collection=self.test_1_col)
+
+        self.assertEqual(len(docs), 2)
+
+        doc1 = docs[0]
+        doc2 = docs[1]
+
+        self.assertNotEqual(doc1, doc2)
 
 
 class CollectionModelTestCase(unittest.TestCase):

@@ -14,13 +14,15 @@ class SimpleQuery(object):
         """
         """
 
+        return cls._construct_query(name='all', collection=collection, multiple=True)
+
 
     @classmethod
     def getByExample(cls, collection, example_data):
         """
         """
 
-        return SimpleQuery._construct_query(name='by-example', collection=collection, example=example_data)
+        return cls._construct_query(name='by-example', collection=collection, example=example_data)
 
 
     @classmethod
@@ -28,11 +30,11 @@ class SimpleQuery(object):
         """
         """
 
-        return SimpleQuery._construct_query(name='any', collection=collection)
+        return cls._construct_query(name='any', collection=collection)
 
 
     @classmethod
-    def _construct_query(cls, name, collection, **kwargs):
+    def _construct_query(cls, name, collection, multiple=False, **kwargs):
         """
         """
 
@@ -52,7 +54,18 @@ class SimpleQuery(object):
         if result_dict['count'] == 0:
             return None
 
-        try:
-            return create_document_from_result_dict(result_dict['result'][0], api)
-        except:
-            return result_dict
+        if multiple is True:
+
+            docs = []
+
+            for result_dict_obj in result_dict['result']:
+                doc = create_document_from_result_dict(result_dict_obj, api)
+                docs.append(doc)
+
+            return docs
+
+        else:
+            try:
+                return create_document_from_result_dict(result_dict['result'][0], api)
+            except:
+                return result_dict
