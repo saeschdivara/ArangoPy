@@ -153,16 +153,20 @@ class Database(object):
         """
         """
 
-        return Collection.create(name=name, type=type)
+        return Collection.create(name=name, database=self.name, type=type)
 
 
 class Collection(object):
     @classmethod
-    def create(cls, name, type=2):
+    def create(cls, name, database=SYSTEM_DATABASE, type=2):
         """
         """
 
-        api = Client.instance().api
+        client = Client.instance()
+        api = client.api
+
+        if client.database != database:
+            database = client.database
 
         collection_data = {
             'name': name,
@@ -173,6 +177,7 @@ class Collection(object):
 
         collection = Collection(
             name=name,
+            database=database,
             api_resource=api.collection,
             api=api,
             kwargs=data
@@ -208,10 +213,11 @@ class Collection(object):
         api.collection(name).delete()
 
 
-    def __init__(self, name, api, **kwargs):
+    def __init__(self, name, api, database=SYSTEM_DATABASE, **kwargs):
         """
         """
         self.name = name
+        self.database = database
 
         self.set_data(**kwargs)
 
@@ -311,7 +317,7 @@ class Collection(object):
         """
 
         result = SimpleQuery.getByExample(
-            collection=self.name,
+            collection=self,
             example_data=example_data
         )
 

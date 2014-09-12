@@ -11,12 +11,13 @@ class SimpleQuery(object):
         """
 
         query = {
-            'collection': collection,
+            'collection': collection.name,
             'example': example_data,
         }
 
-        api = Client.instance().api
-        print(Client.instance().hostname)
+        client = Client.instance()
+        client.set_database(collection.database)
+        api = client.api
         result_dict = api.simple('by-example').put(data=query)
 
         if result_dict['count'] == 0:

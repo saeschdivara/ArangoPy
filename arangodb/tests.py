@@ -184,9 +184,9 @@ class SimpleQueryTestCase(ExtendedTestCase):
         Database.remove(name=self.database_name)
 
     def test_get_document_by_example(self):
-        uid = self.col1_doc1.id
+        uid = self.col1_doc1.key
         doc = self.test_1_col.get_document_by_example(example_data={
-            '_id': uid,
+            '_key': uid,
         })
 
         self.assertDocumentsEqual(doc, self.col1_doc1)
@@ -315,7 +315,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
-        self.database_name = 'testcase_collection_model_123'
+        self.database_name = 'testcase_foreign_key_field_123'
         self.db = Database.create(name=self.database_name)
 
     def tearDown(self):
