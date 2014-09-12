@@ -1,7 +1,7 @@
 import copy
 
 from arangodb.api import Collection, SimpleQuery
-from arangodb.fields import ModelField
+from arangodb.orm.fields import ModelField
 
 
 class CollectionModelManager(object):

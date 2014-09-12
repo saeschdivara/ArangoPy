@@ -1,7 +1,8 @@
 import unittest
+
 from arangodb.api import Client, Database, Collection, Document
-from arangodb.fields import CharField, ForeignKeyField
-from arangodb.models import CollectionModel
+from arangodb.orm.fields import CharField, ForeignKeyField
+from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query
 
 
