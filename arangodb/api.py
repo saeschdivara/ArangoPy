@@ -651,8 +651,8 @@ class Document(object):
 
         if not self.is_loaded:
             data = self.api.document.post(data=self.data, collection=self.collection)
-            self.id = data['_id'],
-            self.key = data['_key'],
+            self.id = data['_id']
+            self.key = data['_key']
         else:
             self.resource(self.id).patch(data=self.data)
 
@@ -692,7 +692,8 @@ class Document(object):
         """
         """
 
-        return self.get(key=item)
+        val = self.get(key=item)
+        return val
 
     def __setattr__(self, key, value):
         """
@@ -700,7 +701,6 @@ class Document(object):
 
         # Set internal variables normally
         if key in ['data', 'is_loaded', 'id', 'key', 'collection', 'api', 'resource']:
-            print(value)
             super(Document, self).__setattr__(key, value)
         else:
             self.set(key=key, value=value)
