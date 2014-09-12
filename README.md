@@ -17,18 +17,18 @@ python setup.py
 Features
 ------------
 
-- Create and destroy databases
-- Create and delete collections in specific databases
-- Create, update and delete documents in collections
-- Use the following simple queries:
--- by-example
--- any
-- Use queries where you can set filters and sorting
-- ORM
--- Models which have fields:
---- Char field
---- Number field
---- Foreign key field
+1. Create and destroy databases
+2. Create and delete collections in specific databases
+3. Create, update and delete documents in collections
+4. Use the following simple queries:
+    - by-example
+    - any
+5. Use queries where you can set filters and sorting
+6. ORM
+    1. Models which have fields:
+        - Char field
+        - Number field
+        - Foreign key field
 
 Usage
 ------------
@@ -38,5 +38,5 @@ Usage
 
 from arangodb.api import Client
 
-client = Client(host='localhost')
+client = Client(hostname='localhost')
 ```
