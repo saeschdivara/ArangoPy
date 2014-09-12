@@ -1,0 +1,48 @@
+# -*- coding: utf-8 -*-
+
+from arangodb.api import Client
+from arangodb.query.utils.document import create_document_from_result_dict
+
+
+class SimpleQuery(object):
+    @classmethod
+    def getByExample(cls, collection, example_data):
+        """
+        """
+
+        query = {
+            'collection': collection,
+            'example': example_data,
+        }
+
+        api = Client.instance().api
+        result_dict = api.simple('by-example').put(data=query)
+
+        if result_dict['count'] == 0:
+            return None
+
+        try:
+            return create_document_from_result_dict(result_dict['result'][0], api)
+        except:
+            return result_dict
+
+
+    @classmethod
+    def random(cls, collection):
+        """
+        """
+
+        query = {
+            'collection': collection,
+        }
+
+        api = Client.instance().api
+        result_dict = api.simple('any').put(data=query)
+
+        if result_dict['count'] == 0:
+            return None
+
+        try:
+            return create_document_from_result_dict(result_dict['result'][0], api)
+        except:
+            return result_dict

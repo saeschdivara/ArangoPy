@@ -1,7 +1,8 @@
 import unittest
-from arangodb.api import Client, Database, Collection, Query, Document, SimpleQuery
+from arangodb.api import Client, Database, Collection, Document
 from arangodb.fields import CharField, ForeignKeyField
 from arangodb.models import CollectionModel
+from arangodb.query.advanced import Query
 
 
 class ExtendedTestCase(unittest.TestCase):
