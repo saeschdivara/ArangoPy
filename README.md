@@ -75,6 +75,25 @@ all_docs = col1.documents()
 
 ## Queries
 
+### Get all documents
+```python
+
+from arangodb.api import Collection
+from arangodb.query.simple import SimpleQuery
+
+col1 = Collection.create(name='test_collection_nb_1')
+
+doc1 = col1.create_document()
+doc1.extra_value = 'foo -- 123'
+doc1.save()
+
+doc2 = col1.create_document()
+doc2.extra_value = 'aa'
+doc2.save()
+
+docs = SimpleQuery.all(collection=col1)
+```
+
 ### Get by example
 ```python
 
@@ -93,4 +112,23 @@ doc2.save()
 doc = col1.get_document_by_example(example_data={
     'extra_value': doc1.extra_value
 })
+```
+
+### Get random document
+```python
+
+from arangodb.api import Collection
+from arangodb.query.simple import SimpleQuery
+
+col1 = Collection.create(name='test_collection_nb_1')
+
+doc1 = col1.create_document()
+doc1.extra_value = 'foo -- 123'
+doc1.save()
+
+doc2 = col1.create_document()
+doc2.extra_value = 'aa'
+doc2.save()
+
+doc = SimpleQuery.random(collection=col1)
 ```
