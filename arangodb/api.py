@@ -563,25 +563,12 @@ class Collection(object):
         """
         """
 
-        all_docs = []
-
-        result_dict = SimpleQuery.getByExample(
+        result = SimpleQuery.getByExample(
             collection=self.name,
             example_data=example_data
         )
 
-        if result_dict['count'] > 0:
-            for result in result_dict['result']:
-                doc = Document(
-                    id=result['_id'],
-                    key=result['_key'],
-                    collection=self.name,
-                    api=self.api,
-                )
-
-                all_docs.append(doc)
-
-        return all_docs
+        return result
 
     def documents(self):
         """
