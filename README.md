@@ -33,10 +33,20 @@ Features
 Usage
 ------------
 
-## Start with client connection setup
+## Basic
+
+### Start with client connection setup
 ```python
 
 from arangodb.api import Client
 
 client = Client(hostname='localhost')
+```
+
+### Create collection
+```python
+
+from arangodb.api import Collection
+
+col1 = Collection.create(name='test_collection_nb_1')
 ```
