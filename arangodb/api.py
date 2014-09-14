@@ -2,9 +2,6 @@
 
 import slumber
 
-# There seems to be a problem with the import
-# from arangodb.query.simple import SimpleQuery
-
 SYSTEM_DATABASE = '_system'
 
 
@@ -308,17 +305,6 @@ class Collection(object):
             to_doc=to_doc,
             edge_data=edge_data
         )
-
-    # def get_document_by_example(self, example_data):
-    #     """
-    #     """
-    #
-    #     result = SimpleQuery.getByExample(
-    #         collection=self,
-    #         example_data=example_data
-    #     )
-    #
-    #     return result
 
     def documents(self):
         """
