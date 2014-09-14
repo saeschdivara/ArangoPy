@@ -190,7 +190,7 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
     def test_get_document_by_example(self):
         uid = self.col1_doc1.key
-        doc = self.test_1_col.get_document_by_example(example_data={
+        doc = SimpleQuery.get_by_example(collection=self.test_1_col, example_data={
             '_key': uid,
         })
 

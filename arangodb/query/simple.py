@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from api import Client
-from query.utils.document import create_document_from_result_dict
+from arangodb.api import Client
+from arangodb.query.utils.document import create_document_from_result_dict
 
 
 class SimpleQuery(object):
@@ -18,7 +18,7 @@ class SimpleQuery(object):
 
 
     @classmethod
-    def getByExample(cls, collection, example_data, allow_multiple=False, skip=None, limit=None):
+    def get_by_example(cls, collection, example_data, allow_multiple=False, skip=None, limit=None):
         """
         """
 

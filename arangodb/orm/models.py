@@ -14,7 +14,7 @@ class CollectionModelManager(object):
 
         collection = self._model_class.collection_instance
 
-        doc = SimpleQuery.getByExample(collection=collection, example_data=kwargs)
+        doc = SimpleQuery.get_by_example(collection=collection, example_data=kwargs)
 
         if doc is None:
             return None
