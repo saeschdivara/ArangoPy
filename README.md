@@ -4,6 +4,9 @@ ArangoPy
 Python Framework to access https://github.com/triAGENS/ArangoDB
 
 
+[![Build Status](https://travis-ci.org/saeschdivara/ArangoPy.png?branch=0.1)](https://travis-ci.org/saeschdivara/ArangoPy)
+
+
 Installation
 ------------
 
