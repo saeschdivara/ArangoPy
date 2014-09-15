@@ -9,7 +9,7 @@ install:
 before_script:
   - sh ./scripts/ArangoDB/arangodb_startup.sh
 # command to run tests
-script: coverage run --source=tests.py
+script: coverage run --source=python tests.py
 # Run after all finished correctly
 after_success:
   coveralls
