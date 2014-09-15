@@ -5,6 +5,7 @@ from arangodb.orm.fields import CharField, ForeignKeyField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query
 from query.simple import SimpleQuery
+from transaction.controller import Transaction, TransactionController
 
 
 client = Client(hostname='localhost')
@@ -372,6 +373,21 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
         # Destroy collections
         ForeignTestModel.destroy()
         TestModel.destroy()
+
+
+class TransactionTestCase(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_create_collection(self):
+        trans = Transaction(collections=[])
+        
+        ctrl = TransactionController()
+
+        ctrl.start(transaction=trans)
 
 if __name__ == '__main__':
     unittest.main()
