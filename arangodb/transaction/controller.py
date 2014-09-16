@@ -33,8 +33,11 @@ class Transaction(object):
         return TransactionDatabase(name=name, transaction=self)
 
     def add_action(self, action):
-        pass
+        self.actions.append(action)
 
     def compile(self):
         """
         """
+
+        for action in self.actions:
+            print(self.js.compile_action(action=action))
