@@ -1,3 +1,6 @@
+from arangodb.transaction.action import CollectionAction
+
+
 class TransactionDatabase(object):
     """
     """
@@ -13,7 +16,7 @@ class TransactionDatabase(object):
         """
         """
 
-        self.transaction.add_action(action='')
+        self.transaction.add_action(action=CollectionAction.create())
         return TransactionCollection(name=name, transaction=self.transaction)
 
 
