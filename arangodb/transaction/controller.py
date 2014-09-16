@@ -1,3 +1,8 @@
+from arangodb.api import SYSTEM_DATABASE
+from arangodb.transaction.api import TransactionDatabase
+from arangodb.transaction.javascript.code import Generator
+
+
 class TransactionController(object):
     """
     """
@@ -18,12 +23,18 @@ class Transaction(object):
         """
 
         self.collections = collections
+        self.js = Generator()
+        self.actions = []
+
+    def database(self, name=SYSTEM_DATABASE):
+        """
+        """
+
+        return TransactionDatabase(name=name, transaction=self)
+
+    def add_action(self, action):
+        pass
 
     def compile(self):
         """
         """
-
-
-class TransactionAction(object):
-    """
-    """

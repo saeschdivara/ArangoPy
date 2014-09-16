@@ -384,6 +384,7 @@ class TransactionTestCase(unittest.TestCase):
 
     def test_create_collection(self):
         trans = Transaction(collections=[])
+        trans.database().create_collection(name='foo_test')
         
         ctrl = TransactionController()
 
