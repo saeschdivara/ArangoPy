@@ -10,7 +10,7 @@ before_script:
   - sh ./scripts/ArangoDB/arangodb_startup.sh
 # command to run tests
 script:
-  - coverage run tests.py
+  - coverage run --source=arangodb tests.py
   - coverage report
 # Run after all finished correctly
 after_success:
