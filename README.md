@@ -5,7 +5,8 @@ Python Framework to access https://github.com/triAGENS/ArangoDB
 
 
 [![Build Status](https://travis-ci.org/saeschdivara/ArangoPy.png?branch=0.1)](https://travis-ci.org/saeschdivara/ArangoPy)
-[![Coverage Status](https://coveralls.io/repos/saeschdivara/ArangoPy/badge.png?branch=0.1)](https://coveralls.io/r/saeschdivara/ArangoPy?branch=0.1)
+Master: [![Coverage Status](https://coveralls.io/repos/saeschdivara/ArangoPy/badge.png?branch=master)](https://coveralls.io/r/saeschdivara/ArangoPy?branch=master)
+Dev: [![Coverage Status](https://coveralls.io/repos/saeschdivara/ArangoPy/badge.png?branch=0.1)](https://coveralls.io/r/saeschdivara/ArangoPy?branch=0.1)
 [![Version](https://pypip.in/v/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
 [![Downloads](https://pypip.in/d/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
 [![License](https://pypip.in/license/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
