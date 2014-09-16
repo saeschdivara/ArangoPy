@@ -139,3 +139,62 @@ doc2.save()
 
 doc = SimpleQuery.random(collection=col1)
 ```
+
+## ORM
+
+### Basic Model
+```python
+
+from arangodb.orm.models import CollectionModel
+from arangodb.orm.fields import CharField
+
+
+class TestModel(CollectionModel):
+
+    test_field = CharField(required=True)
+
+# Init collection
+TestModel.init()
+
+# Init model
+model_1 = TestModel()
+model_1.test_field = 'ddd'
+
+# Save model
+model_1.save()
+
+all_test_models = TestModel.objects.all()
+```
+
+### Foreign key field with Model
+```python
+
+from arangodb.orm.models import CollectionModel
+from arangodb.orm.fields import CharField, ForeignKeyField
+
+
+class ForeignTestModel(CollectionModel):
+
+    test_field = CharField(required=True)
+
+class TestModel(CollectionModel):
+
+    other = ForeignKeyField(to=ForeignTestModel, required=True)
+
+# Init collections
+ForeignTestModel.init()
+TestModel.init()
+
+# Init models
+model_1 = ForeignTestModel()
+model_1.test_field = 'ddd'
+
+model_2 = TestModel()
+model_2.other = model_1
+
+# Save models
+model_1.save()
+model_2.save()
+
+all_test_models = TestModel.objects.all()
+```
