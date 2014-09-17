@@ -396,7 +396,8 @@ class TransactionTestCase(unittest.TestCase):
             ]
         })
 
-        collection = trans.database().collection(name=self.operating_collection)
+        # Uses already chosen database as usual
+        collection = trans.collection(name=self.operating_collection)
         collection.create_document(data={
             'test': 'foo'
         })

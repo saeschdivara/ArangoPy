@@ -1,7 +1,7 @@
 import logging
 from slumber.exceptions import HttpClientError
-from arangodb.api import SYSTEM_DATABASE, Client
-from arangodb.transaction.api import TransactionDatabase
+from arangodb.api import Client
+from arangodb.transaction.api import TransactionCollection
 from arangodb.transaction.javascript.code import Generator
 
 
@@ -49,11 +49,11 @@ class Transaction(object):
         self.js = Generator()
         self.actions = []
 
-    def database(self, name=SYSTEM_DATABASE):
+    def collection(self, name):
         """
         """
 
-        return TransactionDatabase(name=name, transaction=self)
+        return TransactionCollection(name=name, transaction=self)
 
     def add_action(self, action):
         self.actions.append(action)

@@ -1,24 +1,6 @@
 from arangodb.transaction.action import DocumentAction
 
 
-class TransactionDatabase(object):
-    """
-    """
-
-    def __init__(self, name, transaction):
-        """
-        """
-
-        self.name = name
-        self.transaction = transaction
-
-    def collection(self, name):
-        """
-        """
-
-        return TransactionCollection(name=name, transaction=self.transaction)
-
-
 class TransactionCollection(object):
     """
     """
