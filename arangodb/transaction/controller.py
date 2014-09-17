@@ -1,8 +1,11 @@
+import logging
 from slumber.exceptions import HttpClientError
 from arangodb.api import SYSTEM_DATABASE, Client
 from arangodb.transaction.api import TransactionDatabase
 from arangodb.transaction.javascript.code import Generator
 
+
+logger = logging.getLogger(name='ArangoPy')
 
 class TransactionController(object):
     """
@@ -25,10 +28,11 @@ class TransactionController(object):
             'action': statements,
         }
 
-        print(query)
+        logger.debug(query)
 
         try:
             val = api.transaction.post(data=query)
+            return val
         except HttpClientError as err:
             raise TransactionController.InvalidTransactionException(err.content)
 
