@@ -377,15 +377,25 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
 
 class TransactionTestCase(unittest.TestCase):
     def setUp(self):
-        pass
+
+        # self.database_name = 'testcase_transaction_123'
+        # self.db = Database.create(name=self.database_name)
+
+        self.operating_collection = 'foo_test'
+        self.test_1_col = Collection.create(name=self.operating_collection)
 
     def tearDown(self):
-        pass
+        Collection.remove(name=self.operating_collection)
 
     def test_create_collection(self):
-        trans = Transaction(collections=[])
-        trans.database().create_collection(name='foo_test')
-        
+
+        trans = Transaction(collections=[self.operating_collection])
+
+        collection = trans.database().collection(name=self.operating_collection)
+        collection.create_document(data={
+            'test': 'foo'
+        })
+
         ctrl = TransactionController()
 
         ctrl.start(transaction=trans)

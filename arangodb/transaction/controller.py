@@ -1,3 +1,4 @@
+from slumber.exceptions import HttpClientError
 from arangodb.api import SYSTEM_DATABASE, Client
 from arangodb.transaction.api import TransactionDatabase
 from arangodb.transaction.javascript.code import Generator
@@ -7,6 +8,10 @@ class TransactionController(object):
     """
     """
 
+    class InvalidTransactionException(Exception):
+        """
+        """
+
     def start(self, transaction):
         """
         """
@@ -15,13 +20,17 @@ class TransactionController(object):
         client = Client.instance()
         api = client.api
 
+        query = {
+            'collections': transaction.collections,
+            'action': statements,
+        }
+
+        print(query)
+
         try:
-            val = api.transaction.post(data={
-                'collections': transaction.collections,
-                'action': statements,
-            })
-        except Exception as err:
-            print(err.content)
+            val = api.transaction.post(data=query)
+        except HttpClientError as err:
+            raise TransactionController.InvalidTransactionException(err.content)
 
 
 class Transaction(object):
@@ -49,9 +58,7 @@ class Transaction(object):
         """
         """
 
-        action_statements = ''
-
         for action in self.actions:
-            action_statements += self.js.compile_action(action=action)
+            self.js.compile_action(action=action)
 
-        return action_statements
+        return self.js.code()

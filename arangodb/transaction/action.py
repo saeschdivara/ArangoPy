@@ -2,31 +2,26 @@ class TransactionAction(object):
     """
     """
 
-    base_type = None
-
     def __init__(self, action_type):
         self.action_type = action_type
 
 
-class CollectionAction(TransactionAction):
+class DocumentAction(TransactionAction):
     """
     """
 
-    base_type = 'collection'
-
-    def __init__(self, action_type, name, database, collection_type):
+    def __init__(self, action_type, collection_name, document_data):
         """
         """
 
-        super(CollectionAction, self).__init__(action_type)
+        super(DocumentAction, self).__init__(action_type)
 
-        self.name = name
-        self.database = database
-        self.collection_type = collection_type
+        self.collection_name = collection_name
+        self.document_data = document_data
 
     @classmethod
-    def create(cls, name, database, collection_type=2):
+    def create(cls, collection_name, document_data):
         """
         """
 
-        return cls(action_type='create', name=name, database=database, collection_type=collection_type)
+        return cls(action_type='create', collection_name=collection_name, document_data=document_data)
