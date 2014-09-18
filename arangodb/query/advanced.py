@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from arangodb.api import Client, Document
 from arangodb.query.utils.document import create_document_from_result_dict
 
+
+logger = logging.getLogger(name='ArangoPy')
 
 class QueryFilterStatement(object):
     EQUAL_OPERATOR = '=='
@@ -158,6 +161,8 @@ class Query(object):
                 query_data += ' LIMIT %s' % self.count
 
         query_data += ' RETURN %s' % collection + '_123'
+
+        logger.debug(query_data)
 
         post_data = {
             'query': query_data

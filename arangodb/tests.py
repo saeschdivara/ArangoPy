@@ -123,14 +123,17 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.little_number = 33
+        self.col1_doc1.small_text = "lll aa"
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
         self.col1_doc2.little_number = 1
+        self.col1_doc2.small_text = "aaa aa"
         self.col1_doc2.save()
 
         self.col1_doc3 = self.test_1_col.create_document()
         self.col1_doc3.little_number = 3
+        self.col1_doc3.small_text = "xxx tt"
         self.col1_doc3.save()
 
         self.col2_doc1 = self.test_2_col.create_document()
@@ -154,8 +157,29 @@ class AqlQueryTestCase(ExtendedTestCase):
         doc1 = docs[0]
         self.assertDocumentsEqual(doc1, self.col2_doc1)
 
-    def test_filter_for_document(self):
-        pass
+    def test_filter_number_field_in_document(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.filter(little_number=self.col1_doc3.little_number)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc = docs[0]
+        self.assertDocumentsEqual(doc, self.col1_doc3)
+
+    def test_filter_string_field_in_document(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.filter(small_text=self.col1_doc2.small_text)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc = docs[0]
+        self.assertDocumentsEqual(doc, self.col1_doc2)
 
     def test_sorting_asc_document_list(self):
         q = Query()
