@@ -457,7 +457,6 @@ class Edge(Document):
         try:
             data = api.edge.post(data=edge_data, **parameters)
         except Exception as err:
-            print(err.content)
             raise err
 
         doc = Edge(

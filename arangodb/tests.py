@@ -3,7 +3,7 @@ import unittest
 from arangodb.api import Client, Database, Collection, Document
 from arangodb.orm.fields import CharField, ForeignKeyField
 from arangodb.orm.models import CollectionModel
-from arangodb.query.advanced import Query
+from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
 from query.simple import SimpleQuery
 from transaction.controller import Transaction, TransactionController
@@ -192,6 +192,41 @@ class SimpleQueryTestCase(ExtendedTestCase):
         doc2 = docs[1]
 
         self.assertNotEqual(doc1, doc2)
+
+
+class TraveserTestCase(ExtendedTestCase):
+    def setUp(self):
+        self.database_name = 'testcase_simple_query_123'
+        self.db = Database.create(name=self.database_name)
+
+        # Create collections
+        self.test_1_doc_col = self.db.create_collection('doc_col_1')
+        self.test_1_edge_col = self.db.create_collection('edge_col_1', type=3)
+
+        # Create test data
+        self.doc1 = self.test_1_doc_col.create_document()
+        self.doc1.ta='fa'
+        self.doc1.save()
+
+        self.doc2 = self.test_1_doc_col.create_document()
+        self.doc2.ta='foo'
+        self.doc2.save()
+
+        # Create test relation
+        self.edge1 = self.test_1_edge_col.create_edge(from_doc=self.doc1, to_doc=self.doc2, edge_data={
+            'data': 'in_between'
+        })
+
+    def tearDown(self):
+        # They need to be deleted
+        Collection.remove(name=self.test_1_doc_col.name)
+        Collection.remove(name=self.test_1_edge_col.name)
+
+        Database.remove(name=self.database_name)
+
+    def test_traverse_relation(self):
+        pass
+        # Traveser.follow(start_vertex='', edge_collection='', direction='')
 
 
 class CollectionModelTestCase(unittest.TestCase):
