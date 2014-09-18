@@ -42,6 +42,8 @@ class Query(object):
         return self
 
     def filter(self, **kwargs):
+        """
+        """
 
         for key, value in kwargs.iteritems():
 
@@ -72,10 +74,15 @@ class Query(object):
         return self
 
     def limit(self, count, start=-1):
+        """
+        """
+
         self.start = start
         self.count = count
 
     def order_by(self, field, order=None, collection=None):
+        """
+        """
 
         if order is None:
             order = self.SORTING_ASC

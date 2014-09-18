@@ -122,11 +122,19 @@ class AqlQueryTestCase(ExtendedTestCase):
         self.test_2_col = self.db.create_collection('foo_2')
 
         self.col1_doc1 = self.test_1_col.create_document()
-        self.col1_doc1.set(key='ta', value='fa')
+        self.col1_doc1.little_number = 33
         self.col1_doc1.save()
 
+        self.col1_doc2 = self.test_1_col.create_document()
+        self.col1_doc2.little_number = 1
+        self.col1_doc2.save()
+
+        self.col1_doc3 = self.test_1_col.create_document()
+        self.col1_doc3.little_number = 3
+        self.col1_doc3.save()
+
         self.col2_doc1 = self.test_2_col.create_document()
-        self.col2_doc1.set(key='ta', value='fa2')
+        self.col2_doc1.little_number = 2
         self.col2_doc1.save()
 
     def tearDown(self):
@@ -138,13 +146,33 @@ class AqlQueryTestCase(ExtendedTestCase):
 
     def test_get_all_doc_from_1_collection(self):
         q = Query()
-        q.append_collection(self.test_1_col.name)
+        q.append_collection(self.test_2_col.name)
         docs = q.execute()
 
         self.assertEqual(len(docs), 1)
 
         doc1 = docs[0]
-        self.assertDocumentsEqual(doc1, self.col1_doc1)
+        self.assertDocumentsEqual(doc1, self.col2_doc1)
+
+    def test_filter_for_document(self):
+        pass
+
+    def test_sorting_asc_document_list(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.order_by('little_number')
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 3)
+
+        doc1 = docs[0]
+        doc2 = docs[1]
+        doc3 = docs[2]
+
+        self.assertDocumentsEqual(doc1, self.col1_doc2)
+        self.assertDocumentsEqual(doc2, self.col1_doc3)
+        self.assertDocumentsEqual(doc3, self.col1_doc1)
 
 
 class SimpleQueryTestCase(ExtendedTestCase):

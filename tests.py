@@ -6,7 +6,6 @@ from arangodb.tests import DatabaseTestCase, CollectionTestCase, AqlQueryTestCas
     CollectionModelTestCase, CollectionModelForeignKeyFieldTestCase, TraveserTestCase, TransactionTestCase
 
 
-
 # Variables
 
 test_suites = []
