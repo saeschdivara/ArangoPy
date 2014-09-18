@@ -4,6 +4,7 @@ from arangodb.api import Client, Database, Collection, Document
 from arangodb.orm.fields import CharField, ForeignKeyField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query
+from arangodb.query.utils.document import create_document_from_result_dict
 from query.simple import SimpleQuery
 from transaction.controller import Transaction, TransactionController
 
@@ -14,6 +15,8 @@ class ExtendedTestCase(unittest.TestCase):
     def assertDocumentsEqual(self, doc1, doc2):
         """
         """
+
+        self.assertEqual(doc1.id, doc2.id)
 
         for prop in doc1.data:
             doc1_val = doc1.data[prop]
@@ -375,7 +378,7 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
         TestModel.destroy()
 
 
-class TransactionTestCase(unittest.TestCase):
+class TransactionTestCase(ExtendedTestCase):
     def setUp(self):
 
         self.database_name = 'testcase_transaction_123'
@@ -388,7 +391,7 @@ class TransactionTestCase(unittest.TestCase):
         Collection.remove(name=self.operating_collection)
         Database.remove(name=self.database_name)
 
-    def test_create_collection(self):
+    def test_create_document(self):
 
         trans = Transaction(collections={
             'write': [
@@ -404,7 +407,18 @@ class TransactionTestCase(unittest.TestCase):
 
         ctrl = TransactionController()
 
-        ctrl.start(transaction=trans)
+        transaction_result = ctrl.start(transaction=trans)
+
+        transaction_doc = create_document_from_result_dict(transaction_result['result'], self.test_1_col.api)
+
+        created_doc = SimpleQuery.get_by_example(self.test_1_col, example_data={
+            '_id': transaction_doc.id
+        })
+
+        self.assertDocumentsEqual(transaction_doc, created_doc)
+
+    def test_update_document(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
