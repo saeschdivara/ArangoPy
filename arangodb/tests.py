@@ -225,8 +225,16 @@ class TraveserTestCase(ExtendedTestCase):
         Database.remove(name=self.database_name)
 
     def test_traverse_relation(self):
-        pass
-        # Traveser.follow(start_vertex='', edge_collection='', direction='')
+        result_list = Traveser.follow(
+            start_vertex=self.doc1.id,
+            edge_collection=self.test_1_edge_col.name,
+            direction='outbound'
+        )
+
+        self.assertEqual(len(result_list), 1)
+
+        result_doc = result_list[0]
+        self.assertDocumentsEqual(result_doc, self.doc2)
 
 
 class CollectionModelTestCase(unittest.TestCase):
