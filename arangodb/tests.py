@@ -36,17 +36,11 @@ class DatabaseTestCase(unittest.TestCase):
 
         database_name = 'test_foo_123'
 
-        try:
-            db = Database.create(name=database_name)
-        except Exception as err:
-            self.fail('Create threw execption: %s' % err.message)
+        db = Database.create(name=database_name)
 
         self.assertIsNotNone(db)
 
-        try:
-            Database.remove(name=database_name)
-        except Exception as err:
-            self.fail('Remove threw execption: %s' % err.message)
+        Database.remove(name=database_name)
 
     def test_get_all_databases(self):
         databases = Database.get_all()
@@ -69,26 +63,17 @@ class CollectionTestCase(unittest.TestCase):
 
         collection_name = 'test_foo_123'
 
-        try:
-            col = Collection.create(name=collection_name)
-        except Exception as err:
-            self.fail('Create threw exception: %s' % err.message)
+        col = Collection.create(name=collection_name)
 
         self.assertIsNotNone(col)
 
-        try:
-            Collection.remove(name=collection_name)
-        except Exception as err:
-            self.fail('Remove threw exception: %s' % err.message)
+        Collection.remove(name=collection_name)
 
     def test_get_collection(self):
 
         collection_name = 'test_foo_123'
 
-        try:
-            col = Collection.create(name=collection_name)
-        except Exception as err:
-            self.fail('Create threw exception: %s' % err.message)
+        col = Collection.create(name=collection_name)
 
         self.assertIsNotNone(col)
 
@@ -98,10 +83,7 @@ class CollectionTestCase(unittest.TestCase):
         self.assertEqual(col.name, retrieved_col.name)
         self.assertEqual(col.type, retrieved_col.type)
 
-        try:
-            Collection.remove(name=collection_name)
-        except Exception as err:
-            self.fail('Remove threw exception: %s' % err.message)
+        Collection.remove(name=collection_name)
 
 
 class DocumentTestCase(unittest.TestCase):
