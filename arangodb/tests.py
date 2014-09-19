@@ -495,7 +495,30 @@ class TransactionTestCase(ExtendedTestCase):
         self.assertDocumentsEqual(transaction_doc, created_doc)
 
     def test_update_document(self):
-        pass
+
+        doc = self.test_1_col.create_document()
+        doc.foo = 'bar'
+        doc.save()
+
+        trans = Transaction(collections={
+            'write': [
+                self.operating_collection,
+            ]
+        })
+
+        new_foo_value = 'extra_bar'
+
+        collection = trans.collection(self.operating_collection)
+        collection.update_document(doc_id=doc.id, data={
+            'foo': new_foo_value
+        })
+
+        ctrl = TransactionController()
+        ctrl.start(transaction=trans)
+
+        doc.retrieve()
+
+        self.assertEqual(doc.foo, new_foo_value)
 
 if __name__ == '__main__':
     unittest.main()

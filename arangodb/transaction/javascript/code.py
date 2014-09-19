@@ -32,7 +32,7 @@ class Generator(object):
                 )
 
             elif action.action_type == 'update':
-                self.statements += 'db.%s.update(%s, %s);' % (
+                self.statements += 'db.%s.update("%s", %s);' % (
                     action.collection_name,
                     action._id,
                     action.document_data

@@ -22,6 +22,15 @@ class TransactionCollection(object):
         doc = TransactionDocument(data=data, action=action)
         return doc
 
+    def update_document(self, doc_id, data):
+        """
+        """
+
+        action = DocumentAction.update(collection_name=self.name, _id=doc_id, document_data=data)
+        self.transaction.add_action(action=action)
+
+        doc = TransactionDocument(data=data, action=action)
+        return doc
 
 
 class TransactionDocument(object):
