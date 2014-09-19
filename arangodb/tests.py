@@ -5,8 +5,8 @@ from arangodb.orm.fields import CharField, ForeignKeyField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
-from query.simple import SimpleQuery
-from transaction.controller import Transaction, TransactionController
+from arangodb.query.simple import SimpleQuery
+from arangodb.transaction.controller import Transaction, TransactionController
 
 
 client = Client(hostname='localhost')
