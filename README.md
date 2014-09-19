@@ -22,6 +22,18 @@ or
 python setup.py
 
 
+Supported versions
+------------
+
+### ArangoDB
+
+At the moment I am only testing for ArangoDB 2.2
+
+### Python
+
+At the moment I am only testing for Python 2.7
+
+
 Features
 ------------
 
