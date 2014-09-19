@@ -141,6 +141,39 @@ doc2.save()
 doc = SimpleQuery.random(collection=col1)
 ```
 
+## Transactions
+
+### Create document
+
+```python
+
+from arangodb.query.simple import SimpleQuery
+from arangodb.query.utils.document import create_document_from_result_dict
+from arangodb.transaction.controller import Transaction, TransactionController
+
+trans = Transaction(collections={
+    'write': [
+        self.operating_collection,
+    ]
+})
+
+# Uses already chosen database as usual
+collection = trans.collection(name=self.operating_collection)
+collection.create_document(data={
+    'test': 'foo'
+})
+
+ctrl = TransactionController()
+
+transaction_result = ctrl.start(transaction=trans)
+
+transaction_doc = create_document_from_result_dict(transaction_result['result'], self.test_1_col.api)
+
+created_doc = SimpleQuery.get_by_example(self.test_1_col, example_data={
+    '_id': transaction_doc.id
+})
+```
+
 ## ORM
 
 ### Basic Model
