@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from time import time
 
 from arangodb.api import Client, Document
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -173,7 +174,11 @@ class Query(object):
         result = []
 
         try:
+            start_time = time()
             post_result = api.cursor.post(data=post_data)
+            end_time = time()
+
+            logger.debug("Query took %0.3f ms" % (end_time - start_time) * 1000)
 
             result_dict_list = post_result['result']
 
