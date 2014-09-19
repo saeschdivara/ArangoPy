@@ -186,6 +186,37 @@ created_doc = SimpleQuery.get_by_example(self.test_1_col, example_data={
 })
 ```
 
+### Update document
+
+```python
+
+from arangodb.transaction.controller import Transaction, TransactionController
+
+doc = self.test_1_col.create_document()
+doc.foo = 'bar'
+doc.save()
+
+trans = Transaction(collections={
+    'write': [
+        self.operating_collection,
+    ]
+})
+
+new_foo_value = 'extra_bar'
+
+collection = trans.collection(self.operating_collection)
+collection.update_document(doc_id=doc.id, data={
+    'foo': new_foo_value
+})
+
+ctrl = TransactionController()
+ctrl.start(transaction=trans)
+
+doc.retrieve()
+
+self.assertEqual(doc.foo, new_foo_value)
+```
+
 ## ORM
 
 ### Basic Model
