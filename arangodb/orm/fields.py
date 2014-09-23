@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 
 class ModelField(object):
@@ -255,6 +255,67 @@ class DatetimeField(ModelField):
         """
 
         if super(DatetimeField, self).__eq__(other):
+            return self.date == other.date
+        else:
+            return False
+
+
+class DateField(ModelField):
+
+    DATE_FORMAT = '%Y-%m-%d'
+
+    def __init__(self, **kwargs):
+        """
+        """
+
+        super(DateField, self).__init__(**kwargs)
+
+        if self.null:
+            self.date = None
+        else:
+            if self.default:
+                self.date = self.default
+            else:
+                self.date = date.today()
+
+    def dumps(self):
+        """
+        """
+
+        return u'%s' % self.date.strftime(DateField.DATE_FORMAT)
+
+    def loads(self, date_string):
+        """
+        """
+
+        self.date = datetime.strptime(date_string, DateField.DATE_FORMAT)
+
+    def validate(self):
+        """
+        """
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            date = args[0]
+            if isinstance(args, basestring):
+                self.loads(date)
+            else:
+                self.date = date
+
+    def get(self):
+        """
+        """
+
+        return self.date
+
+    def __eq__(self, other):
+        """
+        """
+
+        if super(DateField, self).__eq__(other):
             return self.date == other.date
         else:
             return False
