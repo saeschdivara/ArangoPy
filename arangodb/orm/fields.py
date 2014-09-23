@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class ModelField(object):
 
     class NotNullableFieldException(Exception):
@@ -196,13 +199,15 @@ class NumberField(ModelField):
             return False
 
 
-class DateField(ModelField):
+class DatetimeField(ModelField):
+
+    DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
     def __init__(self, **kwargs):
         """
         """
 
-        super(DateField, self).__init__(**kwargs)
+        super(DatetimeField, self).__init__(**kwargs)
 
         if self.null:
             self.date = None
@@ -210,8 +215,49 @@ class DateField(ModelField):
             if self.default:
                 self.date = self.default
             else:
-                # self.date = Date
-                pass
+                self.date = datetime.now()
+
+    def dumps(self):
+        """
+        """
+
+        return u'%s' % self.date.strftime(DatetimeField.DATE_FORMAT)
+
+    def loads(self, date_string):
+        """
+        """
+
+        self.date = datetime.strptime(date_string, DatetimeField.DATE_FORMAT)
+
+    def validate(self):
+        """
+        """
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            date = args[0]
+            if isinstance(args, basestring):
+                self.loads(date)
+            else:
+                self.date = date
+
+    def get(self):
+        """
+        """
+
+        return self.date
+
+    def __eq__(self, other):
+        """
+        """
+
+        if super(DatetimeField, self).__eq__(other):
+            return self.date == other.date
+        else:
+            return False
 
 
 class ForeignKeyField(ModelField):
