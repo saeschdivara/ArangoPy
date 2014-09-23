@@ -10,6 +10,7 @@ logger = logging.getLogger(name='ArangoPy')
 
 class QueryFilterStatement(object):
     EQUAL_OPERATOR = '=='
+    NOT_EQUAL_OPERATOR = '!='
 
     def __init__(self, collection, attribute, operator, value):
         """
