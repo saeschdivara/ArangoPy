@@ -37,8 +37,8 @@ class Query(object):
     SORTING_DESC = 'DESC'
 
     NO_BIT_OPERATOR = None
-    OR_BIT_OPERATOR = 'OR'
-    AND_BIT_OPERATOR = 'AND'
+    OR_BIT_OPERATOR = '||'
+    AND_BIT_OPERATOR = '&&'
 
     def __init__(self):
         """
@@ -204,7 +204,6 @@ class Query(object):
         query_data += ' RETURN %s' % collection + '_123'
 
         logger.debug(query_data)
-        print(query_data)
 
         post_data = {
             'query': query_data
@@ -230,8 +229,8 @@ class Query(object):
 
 
         except Exception as err:
-            print(err.message)
-            # raise err
+            print(err.content)
+            raise err
 
         return result
 
