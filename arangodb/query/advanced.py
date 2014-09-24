@@ -22,9 +22,22 @@ class QueryFilterStatement(object):
         self.value = value
 
 
+class QueryFilterContainer(object):
+
+    def __init__(self, bit_operator):
+        """
+        """
+
+        self.filters = []
+
+
 class Query(object):
     SORTING_ASC = 'ASC'
     SORTING_DESC = 'DESC'
+
+    NO_BIT_OPERATOR = None
+    OR_BIT_OPERATOR = 'OR'
+    AND_BIT_OPERATOR = 'AND'
 
     def __init__(self):
         """
@@ -46,9 +59,16 @@ class Query(object):
 
         return self
 
-    def filter(self, **kwargs):
+    def filter(self, bit_operator=NO_BIT_OPERATOR, **kwargs):
         """
         """
+
+        if bit_operator == Query.NO_BIT_OPERATOR:
+            filters = self.filters
+        else:
+            filter_container = QueryFilterContainer(bit_operator=bit_operator)
+            filters = filter_container.filters
+            self.filters.append(filters)
 
         for key, value in kwargs.iteritems():
 
@@ -56,7 +76,7 @@ class Query(object):
 
             if len(splitted_filter) is 1:
 
-                self.filters.append(
+                filters.append(
                     QueryFilterStatement(
                         collection=self.collections[-1],
                         attribute=key,
@@ -67,7 +87,7 @@ class Query(object):
 
             else:
 
-                self.filters.append(
+                filters.append(
                     QueryFilterStatement(
                         collection=splitted_filter[0],
                         attribute=splitted_filter[1],

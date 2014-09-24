@@ -140,8 +140,14 @@ class AqlQueryTestCase(ExtendedTestCase):
         self.col1_doc3.save()
 
         self.col2_doc1 = self.test_2_col.create_document()
-        self.col2_doc1.little_number = 2
+        self.col2_doc1.little_number = 33
+        self.col2_doc1.loved = False
         self.col2_doc1.save()
+
+        self.col2_doc2 = self.test_2_col.create_document()
+        self.col2_doc2.little_number = 11
+        self.col2_doc2.loved = True
+        self.col2_doc2.save()
 
     def tearDown(self):
         # They need to be deleted
@@ -155,10 +161,7 @@ class AqlQueryTestCase(ExtendedTestCase):
         q.append_collection(self.test_2_col.name)
         docs = q.execute()
 
-        self.assertEqual(len(docs), 1)
-
-        doc1 = docs[0]
-        self.assertDocumentsEqual(doc1, self.col2_doc1)
+        self.assertEqual(len(docs), 2)
 
     def test_filter_number_field_in_document(self):
         q = Query()
@@ -184,6 +187,37 @@ class AqlQueryTestCase(ExtendedTestCase):
         doc = docs[0]
         self.assertDocumentsEqual(doc, self.col1_doc2)
 
+    def test_filter_from_multiple_collections(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.append_collection(self.test_2_col.name)
+
+        dynamic_filter_dict = {}
+        col_1_filter_name = "%s__%s" % (self.test_1_col.name, "little_number")
+        col_2_filter_name = "%s__%s" % (self.test_2_col.name, "little_number")
+
+        dynamic_filter_dict[col_1_filter_name] = 33
+        dynamic_filter_dict[col_2_filter_name] = 33
+        q.filter(bit_operator=Query.OR_BIT_OPERATOR, **dynamic_filter_dict)
+
+        docs = q.execute()
+
+        for doc in docs:
+            print(doc.get_attributes())
+
+    def test_exclude_document_from_list(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.exclude(loved=False)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc1 = docs[0]
+
+        self.assertDocumentsEqual(doc1, self.col1_doc3)
+
     def test_sorting_asc_document_list(self):
         q = Query()
         q.append_collection(self.test_1_col.name)
@@ -200,19 +234,6 @@ class AqlQueryTestCase(ExtendedTestCase):
         self.assertDocumentsEqual(doc1, self.col1_doc2)
         self.assertDocumentsEqual(doc2, self.col1_doc3)
         self.assertDocumentsEqual(doc3, self.col1_doc1)
-
-    def test_exclude_document_from_list(self):
-        q = Query()
-        q.append_collection(self.test_1_col.name)
-        q.exclude(loved=False)
-
-        docs = q.execute()
-
-        self.assertEqual(len(docs), 1)
-
-        doc1 = docs[0]
-
-        self.assertDocumentsEqual(doc1, self.col1_doc3)
 
 
 class SimpleQueryTestCase(ExtendedTestCase):
