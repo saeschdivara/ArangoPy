@@ -123,16 +123,19 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.little_number = 33
+        self.col1_doc1.loved = False
         self.col1_doc1.small_text = "lll aa"
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
         self.col1_doc2.little_number = 1
+        self.col1_doc2.loved = False
         self.col1_doc2.small_text = "aaa aa"
         self.col1_doc2.save()
 
         self.col1_doc3 = self.test_1_col.create_document()
         self.col1_doc3.little_number = 3
+        self.col1_doc3.loved = True
         self.col1_doc3.small_text = "xxx tt"
         self.col1_doc3.save()
 
@@ -197,6 +200,19 @@ class AqlQueryTestCase(ExtendedTestCase):
         self.assertDocumentsEqual(doc1, self.col1_doc2)
         self.assertDocumentsEqual(doc2, self.col1_doc3)
         self.assertDocumentsEqual(doc3, self.col1_doc1)
+
+    def test_exclude_document_from_list(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.exclude(loved=False)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc1 = docs[0]
+
+        self.assertDocumentsEqual(doc1, self.col1_doc3)
 
 
 class SimpleQueryTestCase(ExtendedTestCase):

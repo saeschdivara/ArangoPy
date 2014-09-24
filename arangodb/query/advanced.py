@@ -78,6 +78,38 @@ class Query(object):
 
         return self
 
+    def exclude(self, **kwargs):
+        """
+        """
+
+        for key, value in kwargs.iteritems():
+
+            splitted_filter = key.split('__')
+
+            if len(splitted_filter) is 1:
+
+                self.filters.append(
+                    QueryFilterStatement(
+                        collection=self.collections[-1],
+                        attribute=key,
+                        operator=QueryFilterStatement.NOT_EQUAL_OPERATOR,
+                        value=value,
+                    )
+                )
+
+            else:
+
+                self.filters.append(
+                    QueryFilterStatement(
+                        collection=splitted_filter[0],
+                        attribute=splitted_filter[1],
+                        operator=QueryFilterStatement.NOT_EQUAL_OPERATOR,
+                        value=value,
+                    )
+                )
+
+        return self
+
     def limit(self, count, start=-1):
         """
         """
