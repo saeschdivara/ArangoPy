@@ -11,6 +11,8 @@ def create_document_from_result_dict(result_dict, api):
         api=api,
     )
 
+    doc.is_loaded = True
+
     del result_dict['_id']
     del result_dict['_key']
     del result_dict['_rev']
