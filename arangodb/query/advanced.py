@@ -201,7 +201,24 @@ class Query(object):
             else:
                 query_data += ' LIMIT %s' % self.count
 
-        query_data += ' RETURN %s' % collection + '_123'
+        if len(self.collections) is 1:
+            collection = self.collections[0]
+            query_data += ' RETURN %s' % self._get_collection_ident(collection_name=collection)
+        else:
+            colletions_string = ''
+            is_first = True
+
+            for collection in self.collections:
+                if is_first:
+                    is_first = False
+
+                    colletions_string += self._get_collection_ident(collection)
+
+                else:
+                    colletions_string += ' , %s ' % self._get_collection_ident(collection)
+
+
+            query_data += ' RETURN [ %s ]' % colletions_string
 
         logger.debug(query_data)
 
@@ -222,14 +239,21 @@ class Query(object):
 
             result_dict_list = post_result['result']
 
-            # Create documents
-            for result_dict in result_dict_list:
-                doc = create_document_from_result_dict(result_dict, api)
-                result.append(doc)
+            if len(self.collections) is 1:
+                # Create documents
+                for result_dict in result_dict_list:
+                    doc = create_document_from_result_dict(result_dict, api)
+                    result.append(doc)
+            else:
+                # Create documents
+                for result_list in result_dict_list:
+                    for result_dict in result_list:
+                        doc = create_document_from_result_dict(result_dict, api)
+                        result.append(doc)
 
 
         except Exception as err:
-            print(err.content)
+            print(err)
             raise err
 
         return result
