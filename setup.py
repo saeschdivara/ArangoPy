@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='ArangoPy',
     version='0.1.1',
-    packages=['arangodb'],
+    packages=find_packages(),
     requires=[
         'slumber',
     ],
