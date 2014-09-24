@@ -29,6 +29,7 @@ class QueryFilterContainer(object):
         """
 
         self.filters = []
+        self.bit_operator = bit_operator
 
 
 class Query(object):
@@ -68,7 +69,7 @@ class Query(object):
         else:
             filter_container = QueryFilterContainer(bit_operator=bit_operator)
             filters = filter_container.filters
-            self.filters.append(filters)
+            self.filters.append(filter_container)
 
         for key, value in kwargs.iteritems():
 
@@ -163,21 +164,7 @@ class Query(object):
             )
 
         for filter_statement in self.filters:
-
-            if isinstance(filter_statement.value, basestring):
-                query_data += ' FILTER %s.%s %s "%s"' % (
-                    self._get_collection_ident(filter_statement.collection),
-                    filter_statement.attribute,
-                    filter_statement.operator,
-                    filter_statement.value,
-                )
-            else:
-                query_data += ' FILTER %s.%s %s %s' % (
-                    self._get_collection_ident(filter_statement.collection),
-                    filter_statement.attribute,
-                    filter_statement.operator,
-                    filter_statement.value,
-                )
+            query_data += self._get_filter_string(filter_statement)
 
         is_first = True
 
@@ -217,6 +204,7 @@ class Query(object):
         query_data += ' RETURN %s' % collection + '_123'
 
         logger.debug(query_data)
+        print(query_data)
 
         post_data = {
             'query': query_data
@@ -243,12 +231,60 @@ class Query(object):
 
         except Exception as err:
             print(err.message)
+            # raise err
 
         return result
 
 
     def _get_collection_ident(self, collection_name):
+        """
+        """
+
         return collection_name + '_123'
+
+    def _get_filter_string(self, filter_statement):
+        """
+        """
+
+        if isinstance(filter_statement, QueryFilterContainer):
+            filter_string = ' FILTER '
+            is_first = True
+
+            for filter in filter_statement.filters:
+                if is_first:
+                    is_first = False
+
+                    filter_string += self._get_filter_condition_string(filter)
+                else:
+                    filter_string += ' %s %s ' % (
+                        filter_statement.bit_operator,
+                        self._get_filter_condition_string(filter)
+                    )
+        else:
+            filter_string = ' FILTER %s' % self._get_filter_condition_string(filter_statement)
+
+        return filter_string
+
+    def _get_filter_condition_string(self, filter_statement):
+        """
+        """
+
+        if isinstance(filter_statement.value, basestring):
+            filter_string = '%s.%s %s "%s"' % (
+                self._get_collection_ident(filter_statement.collection),
+                filter_statement.attribute,
+                filter_statement.operator,
+                filter_statement.value,
+            )
+        else:
+            filter_string = '%s.%s %s %s' % (
+                self._get_collection_ident(filter_statement.collection),
+                filter_statement.attribute,
+                filter_statement.operator,
+                filter_statement.value,
+            )
+
+        return filter_string
 
 
 class Traveser(object):
