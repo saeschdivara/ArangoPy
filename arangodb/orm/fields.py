@@ -235,7 +235,7 @@ class ForeignKeyField(ModelField):
         """
 
         if self.relation_model is None and self.null is False:
-            raise NumberField.NotNullableFieldException()
+            raise ForeignKeyField.NotNullableFieldException()
 
         if self.relation_model:
             pass
