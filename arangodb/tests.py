@@ -547,6 +547,24 @@ class NumberFieldTestCase(unittest.TestCase):
             self.assertTrue(True)
 
 
+class DateFieldTestCase(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+
+class DatetimeFieldTestCase(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+
 class TransactionTestCase(ExtendedTestCase):
     def setUp(self):
 
