@@ -196,24 +196,6 @@ class NumberField(ModelField):
             return False
 
 
-class DateField(ModelField):
-
-    def __init__(self, **kwargs):
-        """
-        """
-
-        super(DateField, self).__init__(**kwargs)
-
-        if self.null:
-            self.date = None
-        else:
-            if self.default:
-                self.date = self.default
-            else:
-                # self.date = Date
-                pass
-
-
 class ForeignKeyField(ModelField):
 
     def __init__(self, to, **kwargs):
