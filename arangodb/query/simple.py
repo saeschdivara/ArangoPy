@@ -51,6 +51,41 @@ class SimpleQuery(object):
 
 
     @classmethod
+    def replace_by_example(cls, collection, example_data, new_value, wait_for_sync=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'newValue': new_value,
+            'options': {
+                'waitForSync': wait_for_sync,
+                'limit': limit,
+            }
+        }
+
+        return cls._construct_query(name='replace-by-example',
+                                    collection=collection, example=example_data, result=False,
+                                    **kwargs)
+
+
+    @classmethod
+    def remove_by_example(cls, collection, example_data, wait_for_sync=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'options': {
+                'waitForSync': wait_for_sync,
+                'limit': limit,
+            }
+        }
+
+        return cls._construct_query(name='remove-by-example',
+                                    collection=collection, example=example_data, result=False,
+                                    **kwargs)
+
+
+    @classmethod
     def random(cls, collection):
         """
         """
