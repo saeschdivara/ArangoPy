@@ -202,10 +202,15 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         docs = q.execute()
 
-        # for doc in docs:
-        #     print(doc.get_attributes())
-        #
-        # self.assertEqual(len(docs), 2)
+        self.assertEqual(len(docs), 2)
+
+        doc1 = docs[0]
+        doc2 = docs[1]
+
+        self.assertNotEqual(doc1.id, doc2.id)
+
+        self.assertEqual(doc1.little_number, 33)
+        self.assertEqual(doc2.little_number, 33)
 
     def test_exclude_document_from_list(self):
         q = Query()

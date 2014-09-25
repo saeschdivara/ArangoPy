@@ -157,42 +157,9 @@ class Query(object):
 
         query_data = ''
 
-        for collection in self.collections:
-            query_data += ' FOR %s in %s' % (
-                self._get_collection_ident(collection),
-                collection
-            )
+        query_data += self._get_collection_iteration_statements()
 
-        for filter_statement in self.filters:
-            query_data += self._get_filter_string(filter_statement)
-
-        is_first = True
-
-        for sorting_entry in self.sorting:
-
-            if is_first:
-                query_data += ' SORT '
-
-            if sorting_entry['field'] is not None:
-
-                if not is_first:
-                    query_data += ', '
-
-                if sorting_entry['collection'] is not None:
-                    query_data += '%s.%s %s' % (
-                        self._get_collection_ident(sorting_entry['collection']),
-                        sorting_entry['field'],
-                        sorting_entry['order'],
-                    )
-                else:
-                    query_data += '%s.%s %s' % (
-                        self._get_collection_ident(self.collections[0]),
-                        sorting_entry['field'],
-                        sorting_entry['order'],
-                    )
-
-                if is_first:
-                    is_first = False
+        query_data += self._get_sorting_statement()
 
         if self.count is not -1:
 
@@ -201,26 +168,12 @@ class Query(object):
             else:
                 query_data += ' LIMIT %s' % self.count
 
-        if len(self.collections) is 1:
-            collection = self.collections[0]
-            query_data += ' RETURN %s' % self._get_collection_ident(collection_name=collection)
-        else:
-            colletions_string = ''
-            is_first = True
 
-            for collection in self.collections:
-                if is_first:
-                    is_first = False
-
-                    colletions_string += self._get_collection_ident(collection)
-
-                else:
-                    colletions_string += ' , %s ' % self._get_collection_ident(collection)
-
-
-            query_data += ' RETURN [ %s ]' % colletions_string
+        # Set return statement
+        query_data += self._get_return_statement()
 
         logger.debug(query_data)
+        print(query_data)
 
         post_data = {
             'query': query_data
@@ -235,7 +188,8 @@ class Query(object):
             post_result = api.cursor.post(data=post_data)
             end_time = time()
 
-            logger.debug("Query took %0.3f ms" % (end_time - start_time) * 1000)
+            time_result = '%0.3f ms' % (end_time - start_time) * 1000
+            logger.debug('Query took' + time_result)
 
             result_dict_list = post_result['result']
 
@@ -264,6 +218,48 @@ class Query(object):
         """
 
         return collection_name + '_123'
+
+    def _get_collection_iteration_statements(self):
+        """
+        """
+
+        query_data = ''
+
+        collection_filters = {}
+
+        for filter_statement in self.filters:
+            # We only care about the containers
+            if isinstance(filter_statement, QueryFilterContainer):
+
+                for filter in filter_statement.filters:
+                    # Check if the collection is already in the filters for collections
+                    if filter.collection in collection_filters:
+                        container = collection_filters[filter.collection]
+                        container.append(filter)
+                    else:
+                        container = QueryFilterContainer(bit_operator=Query.AND_BIT_OPERATOR)
+                        container.filters.append(filter)
+
+                        collection_filters[filter.collection] = container
+
+
+        for collection in self.collections:
+            query_data += ' FOR %s in %s' % (
+                self._get_collection_ident(collection),
+                collection
+            )
+
+            # If there were OR conditions this is the place where they are set
+            if collection in collection_filters:
+                container = collection_filters[collection]
+                query_data += self._get_filter_string(container)
+
+        for filter_statement in self.filters:
+
+            if not isinstance(filter_statement, QueryFilterContainer):
+                query_data += self._get_filter_string(filter_statement)
+
+        return query_data
 
     def _get_filter_string(self, filter_statement):
         """
@@ -308,6 +304,68 @@ class Query(object):
             )
 
         return filter_string
+
+    def _get_return_statement(self):
+        """
+        """
+
+        return_statement = ''
+
+        if len(self.collections) is 1:
+            collection = self.collections[0]
+            return_statement += ' RETURN %s' % self._get_collection_ident(collection_name=collection)
+        else:
+            colletions_string = ''
+            is_first = True
+
+            for collection in self.collections:
+                if is_first:
+                    is_first = False
+
+                    colletions_string += self._get_collection_ident(collection)
+
+                else:
+                    colletions_string += ' , %s ' % self._get_collection_ident(collection)
+
+
+            return_statement += ' RETURN [ %s ]' % colletions_string
+
+        return return_statement
+
+    def _get_sorting_statement(self):
+        """
+        """
+
+        query_data = ''
+        is_first = True
+
+        for sorting_entry in self.sorting:
+
+            if is_first:
+                query_data += ' SORT '
+
+            if sorting_entry['field'] is not None:
+
+                if not is_first:
+                    query_data += ', '
+
+                if sorting_entry['collection'] is not None:
+                    query_data += '%s.%s %s' % (
+                        self._get_collection_ident(sorting_entry['collection']),
+                        sorting_entry['field'],
+                        sorting_entry['order'],
+                    )
+                else:
+                    query_data += '%s.%s %s' % (
+                        self._get_collection_ident(self.collections[0]),
+                        sorting_entry['field'],
+                        sorting_entry['order'],
+                    )
+
+                if is_first:
+                    is_first = False
+
+        return query_data
 
 
 class Traveser(object):
