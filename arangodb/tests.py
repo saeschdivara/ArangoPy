@@ -583,6 +583,13 @@ class DateFieldTestCase(unittest.TestCase):
 
         self.assertEqual(field1, field2)
 
+    def test_not_equals(self):
+
+        field1 = DateField(null=False)
+        field2 = DateField(null=False)
+
+        self.assertTrue(field1 != field2)
+
 
 class DatetimeFieldTestCase(unittest.TestCase):
 
@@ -608,6 +615,13 @@ class DatetimeFieldTestCase(unittest.TestCase):
         field2.set(time)
 
         self.assertEqual(field1, field2)
+
+    def test_not_equals(self):
+
+        field1 = DatetimeField(null=False)
+        field2 = DatetimeField(null=False)
+
+        self.assertTrue(field1 != field2)
 
 
 class ForeignkeyFieldTestCase(unittest.TestCase):
