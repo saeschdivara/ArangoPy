@@ -454,10 +454,7 @@ class Edge(Document):
             'to': to_doc.id,
         }
 
-        try:
-            data = api.edge.post(data=edge_data, **parameters)
-        except Exception as err:
-            raise err
+        data = api.edge.post(data=edge_data, **parameters)
 
         doc = Edge(
             id=data['_id'],
