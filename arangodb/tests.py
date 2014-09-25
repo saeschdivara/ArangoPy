@@ -254,10 +254,12 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.ta='fa'
+        self.col1_doc1.bla='aaa'
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
         self.col1_doc2.ta='fa'
+        self.col1_doc2.bla='xxx'
         self.col1_doc2.save()
 
         self.col2_doc1 = self.test_2_col.create_document()
@@ -289,10 +291,19 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
         self.assertNotEqual(doc1, doc2)
 
+    def test_update_document(self):
+        SimpleQuery.update_by_example(collection=self.test_1_col, example_data={ 'bla': 'xxx' }, new_value={
+            'bla': 'ttt'
+        })
+
+        self.col1_doc2.retrieve()
+
+        self.assertEqual(self.col1_doc2.bla, 'ttt')
+
 
 class TraveserTestCase(ExtendedTestCase):
     def setUp(self):
-        self.database_name = 'testcase_simple_query_123'
+        self.database_name = 'testcase_traverser_query_123'
         self.db = Database.create(name=self.database_name)
 
         # Create collections
