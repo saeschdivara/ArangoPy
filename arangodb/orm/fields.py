@@ -82,7 +82,7 @@ class CharField(ModelField):
         self.max_length = max_length
 
         # If null is allowed, default value is None
-        if self.null:
+        if self.null and not self.default:
             self.text = None
         else:
             # If default value was set
@@ -146,7 +146,7 @@ class NumberField(ModelField):
 
 
         # If null is allowed, default value is None
-        if self.null:
+        if self.null and not self.default:
             self.number = None
         else:
             # If default value was set
@@ -209,25 +209,25 @@ class DatetimeField(ModelField):
 
         super(DatetimeField, self).__init__(**kwargs)
 
-        if self.null:
-            self.date = None
+        if self.null and not self.default:
+            self.time = None
         else:
             if self.default:
-                self.date = self.default
+                self.time = self.default
             else:
-                self.date = datetime.now()
+                self.time = datetime.now()
 
     def dumps(self):
         """
         """
 
-        return u'%s' % self.date.strftime(DatetimeField.DATE_FORMAT)
+        return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
 
     def loads(self, date_string):
         """
         """
 
-        self.date = datetime.strptime(date_string, DatetimeField.DATE_FORMAT)
+        self.time = datetime.strptime(date_string, DatetimeField.DATE_FORMAT)
 
     def validate(self):
         """
@@ -238,24 +238,24 @@ class DatetimeField(ModelField):
         """
 
         if len(args) is 1:
-            date = args[0]
+            time = args[0]
             if isinstance(args, basestring):
-                self.loads(date)
+                self.loads(time)
             else:
-                self.date = date
+                self.time = time
 
     def get(self):
         """
         """
 
-        return self.date
+        return self.time
 
     def __eq__(self, other):
         """
         """
 
         if super(DatetimeField, self).__eq__(other):
-            return self.date == other.date
+            return self.time == other.time
         else:
             return False
 
@@ -270,7 +270,7 @@ class DateField(ModelField):
 
         super(DateField, self).__init__(**kwargs)
 
-        if self.null:
+        if self.null and not self.default:
             self.date = None
         else:
             if self.default:
@@ -331,7 +331,7 @@ class ForeignKeyField(ModelField):
 
 
         # If null is allowed, default value is None
-        if self.null:
+        if self.null and not self.default:
             self.relation_model = None
         else:
             # If default value was set
