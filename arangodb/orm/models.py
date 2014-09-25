@@ -96,7 +96,11 @@ class CollectionModel(object):
         except:
             cls.collection_instance = Collection.get_loaded_collection(name=name)
 
-        cls.objects = cls.objects(cls)
+        try:
+            if not isinstance(cls.objects, CollectionModelManager):
+                cls.objects = cls.objects(cls)
+        except:
+            pass # This is the case if init was called more than once
 
     @classmethod
     def destroy(cls):

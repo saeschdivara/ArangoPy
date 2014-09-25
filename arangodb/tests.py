@@ -468,7 +468,7 @@ class CollectionModelTestCase(unittest.TestCase):
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
-        self.database_name = 'testcase_foreign_key_field_123'
+        self.database_name = 'testcase_collection_model_foreign_key_field_123'
         self.db = Database.create(name=self.database_name)
 
     def tearDown(self):
@@ -606,6 +606,42 @@ class DatetimeFieldTestCase(unittest.TestCase):
 
         field2 = DatetimeField()
         field2.set(time)
+
+        self.assertEqual(field1, field2)
+
+
+class ForeignkeyFieldTestCase(unittest.TestCase):
+
+    class TestModel(CollectionModel):
+        collection_name = 'never_to_be_seen_again'
+
+        test_field = CharField()
+
+    def setUp(self):
+        self.database_name = 'only_foreign_key_field_123'
+        self.db = Database.create(name=self.database_name)
+
+        ForeignkeyFieldTestCase.TestModel.init()
+
+    def tearDown(self):
+        ForeignkeyFieldTestCase.TestModel.destroy()
+
+        Database.remove(name=self.database_name)
+
+    def test_basic_creation_with_default(self):
+        model = ForeignkeyFieldTestCase.TestModel()
+        field = ForeignKeyField(to=CollectionModel, default=model)
+
+        self.assertEqual(model, field.relation_model)
+
+    def test_equals(self):
+        model = ForeignkeyFieldTestCase.TestModel()
+
+        field1 = ForeignKeyField(to=CollectionModel)
+        field1.set(model)
+
+        field2 = ForeignKeyField(to=CollectionModel)
+        field2.set(model)
 
         self.assertEqual(field1, field2)
 
