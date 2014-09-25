@@ -573,6 +573,16 @@ class DateFieldTestCase(unittest.TestCase):
 
         self.assertEqual(date, field.date)
 
+    def test_equals(self):
+        date = datetime.date.today()
+        field1 = DateField()
+        field1.set(date)
+
+        field2 = DateField()
+        field2.set(date)
+
+        self.assertEqual(field1, field2)
+
 
 class DatetimeFieldTestCase(unittest.TestCase):
 
