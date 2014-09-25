@@ -5,7 +5,11 @@ Versions
 
 ### 0.1
 First version which had the following features:
-- Some simple queries
+
+- Some simple queries:
+    - Get by example data
+    - Random document
+    - All documents
 - Started with advanced queries
 - Started with basic ORM
 - Transactions to create and update documents
@@ -18,3 +22,7 @@ First version which had the following features:
 ## Future
 
 ### 0.2
+
+- Advanced queries can now be run for multiple collections
+- Simple queries added:
+    - Remove by example data
