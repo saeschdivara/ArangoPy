@@ -2,7 +2,7 @@ import unittest
 import datetime
 
 from arangodb.api import Client, Database, Collection, Document
-from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField
+from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -566,6 +566,12 @@ class DateFieldTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_basic_creation_with_default(self):
+        date = datetime.date.today()
+        field = DateField(default=date)
+
+        self.assertEqual(date, field.date)
 
 
 class DatetimeFieldTestCase(unittest.TestCase):
