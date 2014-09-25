@@ -184,7 +184,7 @@ class NumberField(ModelField):
             if isinstance(number, int) or isinstance(number, float):
                 self.number = args[0]
             else:
-                raise NumberField.WrongInputTypeException()
+                raise NumberField.WrongInputTypeException
 
     def __eq__(self, other):
         """

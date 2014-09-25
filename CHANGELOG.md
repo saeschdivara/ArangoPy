@@ -23,6 +23,7 @@ First version which had the following features:
 
 ### 0.2
 
+- More test coverage
 - Advanced queries can now be run for multiple collections
 - Simple queries added:
     - Remove by example data

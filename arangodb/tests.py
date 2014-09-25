@@ -536,6 +536,16 @@ class NumberFieldTestCase(unittest.TestCase):
 
         self.assertEqual(number1, number2)
 
+    def test_wrong_input(self):
+
+        number1 = NumberField()
+
+        try:
+            number1.set("ddd")
+            self.assertTrue(False, msg='There should have been a NumberField.NotNullableFieldException')
+        except:
+            self.assertTrue(True)
+
 
 class TransactionTestCase(ExtendedTestCase):
     def setUp(self):
