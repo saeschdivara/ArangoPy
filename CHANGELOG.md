@@ -11,7 +11,10 @@ First version which had the following features:
     - Random document
     - All documents
 - Started with advanced queries
-- Started with basic ORM
+- Started with basic ORM:
+    - Models
+    - Fields for models (char, number, foreign key)
+    - Model query manager
 - Transactions to create and update documents
 - Managing databases, collections and documents
 
@@ -27,3 +30,7 @@ First version which had the following features:
 - Advanced queries can now be run for multiple collections
 - Simple queries added:
     - Remove by example data
+- Adding date and datetime fields to ORM
+    
+### 0.3
+- Batch document insert
