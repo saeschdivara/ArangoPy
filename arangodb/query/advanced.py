@@ -173,7 +173,6 @@ class Query(object):
         query_data += self._get_return_statement()
 
         logger.debug(query_data)
-        print(query_data)
 
         post_data = {
             'query': query_data
@@ -207,7 +206,6 @@ class Query(object):
 
 
         except Exception as err:
-            print(err)
             raise err
 
         return result

@@ -1,7 +1,7 @@
 import unittest
 
 from arangodb.api import Client, Database, Collection, Document
-from arangodb.orm.fields import CharField, ForeignKeyField
+from arangodb.orm.fields import CharField, ForeignKeyField, NumberField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -497,6 +497,25 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
         # Destroy collections
         ForeignTestModel.destroy()
         TestModel.destroy()
+
+
+class NumberFieldTestCase(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_equals(self):
+
+        number1 = NumberField()
+        number1.set(23)
+
+        number2 = NumberField()
+        number2.set(23)
+
+        self.assertEqual(number1, number2)
 
 
 class TransactionTestCase(ExtendedTestCase):

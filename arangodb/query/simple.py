@@ -72,7 +72,4 @@ class SimpleQuery(object):
             return docs
 
         else:
-            try:
-                return create_document_from_result_dict(result_dict['result'][0], api)
-            except:
-                return result_dict
+            return create_document_from_result_dict(result_dict['result'][0], api)
