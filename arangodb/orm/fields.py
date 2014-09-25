@@ -1,3 +1,6 @@
+from datetime import datetime, date
+
+
 class ModelField(object):
 
     class NotNullableFieldException(Exception):
