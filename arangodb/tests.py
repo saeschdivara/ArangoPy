@@ -598,6 +598,17 @@ class DatetimeFieldTestCase(unittest.TestCase):
 
         self.assertEqual(time, field.time)
 
+    def test_equals(self):
+        time = datetime.datetime.now()
+
+        field1 = DatetimeField()
+        field1.set(time)
+
+        field2 = DatetimeField()
+        field2.set(time)
+
+        self.assertEqual(field1, field2)
+
 
 class TransactionTestCase(ExtendedTestCase):
     def setUp(self):
