@@ -33,6 +33,24 @@ class SimpleQuery(object):
 
 
     @classmethod
+    def update_by_example(cls, collection, example_data, new_value, wait_for_sync=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'newValue': new_value,
+            'options': {
+                'waitForSync': wait_for_sync,
+                'limit': limit,
+            }
+        }
+
+        return cls._construct_query(name='update-by-example',
+                                    collection=collection, example=example_data, result=False,
+                                    **kwargs)
+
+
+    @classmethod
     def random(cls, collection):
         """
         """
@@ -41,7 +59,7 @@ class SimpleQuery(object):
 
 
     @classmethod
-    def _construct_query(cls, name, collection, multiple=False, **kwargs):
+    def _construct_query(cls, name, collection, multiple=False, result=True, **kwargs):
         """
         """
 
@@ -52,11 +70,13 @@ class SimpleQuery(object):
         for arg_name in kwargs:
             query[arg_name] = kwargs[arg_name]
 
-
         client = Client.instance()
         client.set_database(collection.database)
         api = client.api
         result_dict = api.simple(name).put(data=query)
+
+        if not result:
+            return result_dict
 
         if result_dict['count'] == 0:
             return None
