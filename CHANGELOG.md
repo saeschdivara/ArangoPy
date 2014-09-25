@@ -30,7 +30,11 @@ First version which had the following features:
 - Advanced queries can now be run for multiple collections
 - Simple queries added:
     - Remove by example data
+    - Update by example data
+    - Replace by example data
 - Adding date and datetime fields to ORM
     
 ### 0.3
+- index support
+- user support
 - Batch document insert
