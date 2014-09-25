@@ -22,6 +22,11 @@ or
 python setup.py
 
 
+Updates
+----------
+Follow on [Twitter](https://twitter.com/arango_py/)
+
+
 Supported versions
 ------------
 
