@@ -507,6 +507,16 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.init()
 
+        model1 = TestModel()
+        model1.save()
+
+        model2 = TestModel()
+        model2.save()
+
+        all_models = TestModel.objects.all()
+
+        self.assertEqual(len(all_models), 2)
+
         TestModel.destroy()
 
 
