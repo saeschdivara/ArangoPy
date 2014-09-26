@@ -32,7 +32,9 @@ First version which had the following features:
     - Remove by example data
     - Update by example data
     - Replace by example data
-- Adding date and datetime fields to ORM
+- ORM:
+    - Adding date and datetime fields
+    - Queryset for model manager
     
 ### 0.3
 - index support
