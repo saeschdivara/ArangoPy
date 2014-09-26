@@ -492,6 +492,24 @@ class CollectionModelTestCase(unittest.TestCase):
         TestModel.destroy()
 
 
+class CollectionModelManagerTestCase(unittest.TestCase):
+    def setUp(self):
+        self.database_name = 'testcase_collection_model_manager_123'
+        self.db = Database.create(name=self.database_name)
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_retrieve_all_models(self):
+
+        class TestModel(CollectionModel):
+            pass
+
+        TestModel.init()
+
+        TestModel.destroy()
+
+
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
         self.database_name = 'testcase_collection_model_foreign_key_field_123'
