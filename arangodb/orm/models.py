@@ -43,6 +43,16 @@ class CollectionQueryset(object):
             model = self._manager._create_model_from_doc(doc=doc)
             self._cache.append(model)
 
+    def __getitem__(self, item):
+        """
+            Is used for the index access
+        """
+
+        if not self._has_cache:
+            self._generate_cache()
+
+        return self._cache[item]
+
     def __len__(self):
         """
         """
@@ -79,19 +89,19 @@ class CollectionModelManager(object):
         """
         """
 
-        # queryset = CollectionQueryset(manager=self)
-        # queryset.all()
+        queryset = CollectionQueryset(manager=self)
+        queryset.all()
+
+        return queryset
+
+        # docs = self._model_class.collection_instance.documents()
+        # models = []
         #
-        # return queryset
-
-        docs = self._model_class.collection_instance.documents()
-        models = []
-
-        for doc in docs:
-            model = self._create_model_from_doc(doc=doc)
-            models.append(model)
-
-        return models
+        # for doc in docs:
+        #     model = self._create_model_from_doc(doc=doc)
+        #     models.append(model)
+        #
+        # return models
 
 
     def _create_model_from_doc(self, doc):
