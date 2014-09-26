@@ -519,6 +519,27 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_iterate_over_queryset(self):
+
+        class TestModel(CollectionModel):
+            pass
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.save()
+
+        model2 = TestModel()
+        model2.save()
+
+        all_models = TestModel.objects.all()
+
+        for model in all_models:
+            self.assertTrue(isinstance(model, TestModel))
+
+        TestModel.destroy()
+
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
