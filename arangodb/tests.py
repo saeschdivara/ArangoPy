@@ -564,12 +564,18 @@ class NumberFieldTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_basic_creation_with_default(self):
+        number = 122
+        field = NumberField(default=number)
+
+        self.assertEqual(number, field.number)
+
     def test_equals(self):
 
-        number1 = NumberField()
+        number1 = NumberField(null=False)
         number1.set(23)
 
-        number2 = NumberField()
+        number2 = NumberField(null=False)
         number2.set(23)
 
         self.assertEqual(number1, number2)
