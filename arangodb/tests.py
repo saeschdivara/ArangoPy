@@ -301,6 +301,25 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
         self.assertEqual(self.col1_doc2.bla, 'ttt')
 
+    def test_replace_document(self):
+        SimpleQuery.replace_by_example(collection=self.test_1_col, example_data={ 'bla': 'xxx' }, new_value={
+            'test': 'foo'
+        })
+
+        self.col1_doc2.retrieve()
+
+        self.assertEqual(self.col1_doc2.test, 'foo')
+
+    def test_remove_document(self):
+        SimpleQuery.remove_by_example(collection=self.test_1_col, example_data={ 'bla': 'xxx' })
+
+        all_docs = self.test_1_col.documents()
+
+        self.assertEqual(len(all_docs), 1)
+
+        doc = all_docs[0]
+        self.assertDocumentsEqual(doc, self.col1_doc1)
+
 
 class TraveserTestCase(ExtendedTestCase):
     def setUp(self):
