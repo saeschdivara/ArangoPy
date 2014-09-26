@@ -281,6 +281,13 @@ class SimpleQueryTestCase(ExtendedTestCase):
 
         self.assertDocumentsEqual(doc, self.col1_doc1)
 
+    def test_get_no_document(self):
+        doc = SimpleQuery.get_by_example(collection=self.test_1_col, example_data={
+            '_key': 'dddd',
+        })
+
+        self.assertEqual(doc, None)
+
     def test_get_all_documents(self):
 
         docs = SimpleQuery.all(collection=self.test_1_col)
