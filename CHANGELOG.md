@@ -40,3 +40,7 @@ First version which had the following features:
 - index support
 - user support
 - Batch document insert
+
+### 0.4
+- Index for model fields
+- Index queries

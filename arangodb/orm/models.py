@@ -79,19 +79,19 @@ class CollectionModelManager(object):
         """
         """
 
-        queryset = CollectionQueryset(manager=self)
-        queryset.all()
-
-        return queryset
-
-        # docs = self._model_class.collection_instance.documents()
-        # models = []
+        # queryset = CollectionQueryset(manager=self)
+        # queryset.all()
         #
-        # for doc in docs:
-        #     model = self._create_model_from_doc(doc=doc)
-        #     models.append(model)
-        #
-        # return models
+        # return queryset
+
+        docs = self._model_class.collection_instance.documents()
+        models = []
+
+        for doc in docs:
+            model = self._create_model_from_doc(doc=doc)
+            models.append(model)
+
+        return models
 
 
     def _create_model_from_doc(self, doc):
