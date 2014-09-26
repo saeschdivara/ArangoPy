@@ -52,6 +52,20 @@ class Query(object):
 
         self.sorting = []
 
+    def set_collection(self, collection_name):
+        """
+        """
+
+        self.collections = [ collection_name ]
+
+    def clear(self):
+        """
+        """
+
+        # TODO: Check how to clear these lists better
+        self.filters = []
+        self.sorting = []
+
     def append_collection(self, collection_name):
         """
         """

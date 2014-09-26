@@ -2,15 +2,67 @@ import copy
 
 from arangodb.api import Collection
 from arangodb.orm.fields import ModelField
+from arangodb.query.advanced import Query
 from arangodb.query.simple import SimpleQuery
 
+
+class CollectionQueryset(object):
+    """
+    """
+
+    def __init__(self, manager):
+        """
+        """
+
+        self._manager = manager
+        self._collection = manager._model_class.collection_instance
+        self._query = Query()
+        # Cache
+        self._has_cache = False
+        self._cache = []
+
+    def all(self):
+        """
+        """
+
+        self._has_cache = False
+
+        self._query.set_collection(self._collection.name)
+        self._query.clear()
+
+    def _generate_cache(self):
+        """
+        """
+
+        self._cache = [] # TODO: Check how to best clear this list
+        self._has_cache = True
+
+        result = self._query.execute()
+
+        for doc in result:
+            model = self._manager._create_model_from_doc(doc=doc)
+            self._cache.append(model)
+
+    def __len__(self):
+        """
+        """
+
+        if not self._has_cache:
+            self._generate_cache()
+
+        return len(self._cache)
 
 class CollectionModelManager(object):
 
     def __init__(self, cls):
+        """
+        """
+
         self._model_class = cls
 
     def get(self, **kwargs):
+        """
+        """
 
         collection = self._model_class.collection_instance
 
@@ -24,18 +76,27 @@ class CollectionModelManager(object):
         return model
 
     def all(self):
+        """
+        """
 
-        docs = self._model_class.collection_instance.documents()
-        models = []
+        queryset = CollectionQueryset(manager=self)
+        queryset.all()
 
-        for doc in docs:
-            model = self._create_model_from_doc(doc=doc)
-            models.append(model)
+        return queryset
 
-        return models
+        # docs = self._model_class.collection_instance.documents()
+        # models = []
+        #
+        # for doc in docs:
+        #     model = self._create_model_from_doc(doc=doc)
+        #     models.append(model)
+        #
+        # return models
 
 
     def _create_model_from_doc(self, doc):
+        """
+        """
 
         doc.retrieve()
 
@@ -47,6 +108,9 @@ class CollectionModelManager(object):
 
 
     def _create_model_from_dict(self, attribute_dict):
+        """
+        """
+
         model = self._model_class()
 
         attributes = attribute_dict
@@ -83,6 +147,8 @@ class CollectionModel(object):
 
     @classmethod
     def init(cls):
+        """
+        """
 
         name = cls.get_collection_name()
 
@@ -104,11 +170,16 @@ class CollectionModel(object):
 
     @classmethod
     def destroy(cls):
+        """
+        """
+
         name = cls.get_collection_name()
         Collection.remove(name=name)
 
     @classmethod
     def get_collection_name(cls):
+        """
+        """
 
         if cls.collection_name is not None and len(cls.collection_name) > 0:
             name = cls.collection_name
@@ -165,9 +236,15 @@ class CollectionModel(object):
         self.document.save()
 
     def get_field(self, name):
+        """
+        """
+
         return self._instance_meta_data._fields[name]
 
     def _get_fields(self):
+        """
+        """
+
         fields = {}
 
         for attribute in dir(self):
@@ -181,6 +258,8 @@ class CollectionModel(object):
         return fields
 
     def __getattribute__(self, item):
+        """
+        """
 
         if item == '_instance_meta_data':
             return object.__getattribute__(self, item)
@@ -191,6 +270,9 @@ class CollectionModel(object):
             return super(CollectionModel, self).__getattribute__(item)
 
     def __setattr__(self, key, value):
+        """
+        """
+
         if self._instance_meta_data is None:
             super(CollectionModel, self).__setattr__(key, value)
             return
