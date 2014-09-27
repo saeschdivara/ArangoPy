@@ -806,5 +806,19 @@ class TransactionTestCase(ExtendedTestCase):
 
         self.assertEqual(doc.foo, new_foo_value)
 
+
+class IndexTestCase(ExtendedTestCase):
+    def setUp(self):
+
+        self.database_name = 'testcase_index_123'
+        self.db = Database.create(name=self.database_name)
+
+        self.operating_collection = 'foo_test'
+        self.test_1_col = Collection.create(name=self.operating_collection)
+
+    def tearDown(self):
+        Collection.remove(name=self.operating_collection)
+        Database.remove(name=self.database_name)
+
 if __name__ == '__main__':
     unittest.main()
