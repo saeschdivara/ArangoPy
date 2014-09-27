@@ -48,11 +48,16 @@ Features
 4. Use the following simple queries:
     - by-example
     - any
-5. Use queries where you can set filters and sorting
+5. Queries
+    - Advanced filtering
+    - Sorting
+    - Multiple collections
 6. ORM
     1. Models which have fields:
         - Char field
         - Number field
+        - Date field
+        - Datetime field
         - Foreign key field
 
 Usage
@@ -98,7 +103,7 @@ doc1.save()
 all_docs = col1.documents()
 ```
 
-## Queries
+## Simple Queries
 
 ### Get all documents
 ```python
@@ -156,6 +161,113 @@ doc2.extra_value = 'aa'
 doc2.save()
 
 doc = SimpleQuery.random(collection=col1)
+```
+
+## Advanced Queries
+
+### All documents from a collection
+```python
+
+from arangodb.api import Collection
+from arangodb.query.advanced import Query
+
+collection_name = 'foo_bar_collection'
+col1 = Collection.create(name=collection_name)
+
+q = Query()
+q.append_collection(collection_name)
+docs = q.execute()
+```
+
+### Filtering documents
+```python
+
+from arangodb.api import Collection
+from arangodb.query.advanced import Query
+
+q = Query()
+q.append_collection(self.test_1_col.name)
+q.filter(little_number=self.col1_doc3.little_number)
+
+docs = q.execute()
+
+self.assertEqual(len(docs), 1)
+
+doc = docs[0]
+self.assertDocumentsEqual(doc, self.col1_doc3)
+```
+
+### Filtering documents on multiple collections
+```python
+
+from arangodb.api import Collection
+from arangodb.query.advanced import Query
+
+q = Query()
+q.append_collection(self.test_1_col.name)
+q.append_collection(self.test_2_col.name)
+
+dynamic_filter_dict = {}
+col_1_filter_name = "%s__%s" % (self.test_1_col.name, "little_number")
+col_2_filter_name = "%s__%s" % (self.test_2_col.name, "little_number")
+
+dynamic_filter_dict[col_1_filter_name] = 33
+dynamic_filter_dict[col_2_filter_name] = 33
+q.filter(bit_operator=Query.OR_BIT_OPERATOR, **dynamic_filter_dict)
+
+docs = q.execute()
+
+self.assertEqual(len(docs), 2)
+
+doc1 = docs[0]
+doc2 = docs[1]
+
+self.assertNotEqual(doc1.id, doc2.id)
+
+self.assertEqual(doc1.little_number, 33)
+self.assertEqual(doc2.little_number, 33)
+```
+
+### Excluding documents from result
+```python
+
+from arangodb.api import Collection
+from arangodb.query.advanced import Query
+
+q = Query()
+q.append_collection(self.test_1_col.name)
+q.exclude(loved=False)
+
+docs = q.execute()
+
+self.assertEqual(len(docs), 1)
+
+doc1 = docs[0]
+
+self.assertDocumentsEqual(doc1, self.col1_doc3)
+```
+
+### Sorting result
+```python
+
+from arangodb.api import Collection
+from arangodb.query.advanced import Query
+
+q = Query()
+q.append_collection(self.test_1_col.name)
+q.order_by('little_number')
+
+docs = q.execute()
+
+self.assertEqual(len(docs), 3)
+
+doc1 = docs[0]
+doc2 = docs[1]
+doc3 = docs[2]
+
+self.assertDocumentsEqual(doc1, self.col1_doc2)
+self.assertDocumentsEqual(doc2, self.col1_doc3)
+self.assertDocumentsEqual(doc3, self.col1_doc1)
 ```
 
 ## Transactions
