@@ -2,11 +2,10 @@
 
 import slumber
 
-
 SYSTEM_DATABASE = '_system'
 
-class Client(object):
 
+class Client(object):
     class_instance = None
 
 
@@ -39,7 +38,10 @@ class Client(object):
     def instance(cls, hostname=None, protocol=None, port=None, database=None):
 
         if cls.class_instance is None:
-            cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port, database=database)
+            if hostname is None and protocol is None and port is None and database is None:
+                cls.class_instance = Client(hostname='localhost')
+            else:
+                cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port, database=database)
         else:
             if hostname is not None:
                 cls.class_instance.hostname = hostname
@@ -68,264 +70,7 @@ class Client(object):
         )
 
 
-class SimpleQuery(object):
-
-    @classmethod
-    def getByExample(cls, collection, example_data):
-        """
-        """
-
-        query = {
-            'collection': collection,
-            'example': example_data,
-        }
-
-        api = Client.instance().api
-        return api.simple('by-example').put(data=query)
-
-
-class QueryFilterStatement(object):
-
-    EQUAL_OPERATOR = '=='
-
-    def __init__(self, collection, attribute, operator, value):
-        """
-        """
-
-        self.collection = collection
-        self.attribute = attribute
-        self.operator = operator
-        self.value = value
-
-
-class Query(object):
-
-    SORTING_ASC = 'ASC'
-    SORTING_DESC = 'DESC'
-
-    def __init__(self):
-        """
-        """
-
-        self.collections = []
-        self.filters = []
-
-        self.start = -1
-        self.count = -1
-
-        self.sorting = []
-
-    def append_collection(self, collection_name):
-        """
-        """
-
-        self.collections.append(collection_name)
-
-        return self
-
-    def filter(self, **kwargs):
-
-        for key, value in kwargs.iteritems():
-
-            splitted_filter = key.split('__')
-
-            if len(splitted_filter) is 1:
-
-                self.filters.append(
-                    QueryFilterStatement(
-                        collection=self.collections[-1],
-                        attribute=key,
-                        operator=QueryFilterStatement.EQUAL_OPERATOR,
-                        value=value,
-                    )
-                )
-
-            else:
-
-                self.filters.append(
-                    QueryFilterStatement(
-                        collection=splitted_filter[0],
-                        attribute=splitted_filter[1],
-                        operator=QueryFilterStatement.EQUAL_OPERATOR,
-                        value=value,
-                    )
-                )
-
-        return self
-
-    def limit(self, count, start=-1):
-        self.start = start
-        self.count = count
-
-    def order_by(self, field, order=None, collection=None):
-
-        if order is None:
-            order = self.SORTING_ASC
-
-        self.sorting.append({
-            'field': field,
-            'order': order,
-            'collection': collection,
-        })
-
-    def execute(self):
-        """
-        """
-
-        query_data = ''
-
-        for collection in self.collections:
-            query_data += ' FOR %s in %s' % (
-                self._get_collection_ident(collection),
-                collection
-            )
-
-        for filter_statement in self.filters:
-
-            if isinstance(filter_statement.value, basestring):
-                query_data += ' FILTER %s.%s %s "%s"' % (
-                    self._get_collection_ident(filter_statement.collection),
-                    filter_statement.attribute,
-                    filter_statement.operator,
-                    filter_statement.value,
-                )
-            else:
-                query_data += ' FILTER %s.%s %s %s' % (
-                    self._get_collection_ident(filter_statement.collection),
-                    filter_statement.attribute,
-                    filter_statement.operator,
-                    filter_statement.value,
-                )
-
-        is_first = True
-
-        for sorting_entry in self.sorting:
-
-            if is_first:
-                query_data += ' SORT '
-
-            if sorting_entry['field'] is not None:
-
-                if not is_first:
-                    query_data += ', '
-
-                if sorting_entry['collection'] is not None:
-                    query_data += '%s.%s %s' % (
-                        self._get_collection_ident(sorting_entry['collection']),
-                        sorting_entry['field'],
-                        sorting_entry['order'],
-                    )
-                else:
-                    query_data += '%s.%s %s' % (
-                        self._get_collection_ident(self.collections[0]),
-                        sorting_entry['field'],
-                        sorting_entry['order'],
-                    )
-
-                if is_first:
-                    is_first = False
-
-        if self.count is not -1:
-
-            if self.start is not -1:
-                query_data += ' LIMIT %s, %s' % (self.start, self.count)
-            else:
-                query_data += ' LIMIT %s' % self.count
-
-        query_data += ' RETURN %s' % collection + '_123'
-
-        print(query_data)
-
-        post_data = {
-            'query': query_data
-        }
-
-        api = Client.instance().api
-
-        result = []
-
-        try:
-            post_result = api.cursor.post(data=post_data)
-
-            result_dict_list = post_result['result']
-
-            # Create documents
-            for result_dict in result_dict_list:
-
-                collection_name = result_dict['_id'].split('/')[0]
-
-                doc = Document(
-                    id=result_dict['_id'],
-                    key=result_dict['_key'],
-                    collection=collection_name,
-                    api=api,
-                )
-
-                del result_dict['_id']
-                del result_dict['_key']
-                del result_dict['_rev']
-
-                for result_key in result_dict:
-                    result_value = result_dict[result_key]
-
-                    doc.set(key=result_key, value=result_value)
-
-                result.append(doc)
-
-
-        except Exception as err:
-            print(err.message)
-
-        return  result
-
-    def _get_collection_ident(self, collection_name):
-        return collection_name + '_123'
-
-
-class Traveser(object):
-
-    @classmethod
-    def follow(cls, start_vertex, edge_collection, direction):
-
-        related_docs = []
-
-        request_data = {
-            'startVertex': start_vertex,
-            'edgeCollection': edge_collection,
-            'direction': direction,
-        }
-
-        api = Client.instance().api
-        result_dict = api.traversal.post(data=request_data)
-        results = result_dict['result']['visited']
-
-        vertices = results['vertices']
-        vertices.remove(vertices[0])
-
-        for vertice in vertices:
-
-            collection_name = vertice['_id'].split('/')[0]
-
-            doc = Document(
-                id=vertice['_id'],
-                key=vertice['_key'],
-                collection=collection_name,
-                api=api,
-            )
-
-            del vertice['_id']
-            del vertice['_key']
-            del vertice['_rev']
-
-            doc.data = vertice
-
-            related_docs.append(doc)
-
-        return related_docs
-
-
 class Database(object):
-
     @classmethod
     def create(cls, name):
         """
@@ -345,6 +90,8 @@ class Database(object):
             api=api,
             kwargs=data
         )
+
+        Client.instance().set_database(name=name)
 
         return db
 
@@ -400,17 +147,20 @@ class Database(object):
         """
         """
 
-        return Collection.create(name=name, type=type)
+        return Collection.create(name=name, database=self.name, type=type)
 
 
 class Collection(object):
-
     @classmethod
-    def create(cls, name, type=2):
+    def create(cls, name, database=SYSTEM_DATABASE, type=2):
         """
         """
 
-        api = Client.instance().api
+        client = Client.instance()
+        api = client.api
+
+        if client.database != database:
+            database = client.database
 
         collection_data = {
             'name': name,
@@ -421,6 +171,7 @@ class Collection(object):
 
         collection = Collection(
             name=name,
+            database=database,
             api_resource=api.collection,
             api=api,
             kwargs=data
@@ -456,10 +207,11 @@ class Collection(object):
         api.collection(name).delete()
 
 
-    def __init__(self, name, api, **kwargs):
+    def __init__(self, name, api, database=SYSTEM_DATABASE, **kwargs):
         """
         """
         self.name = name
+        self.database = database
 
         self.set_data(**kwargs)
 
@@ -554,30 +306,6 @@ class Collection(object):
             edge_data=edge_data
         )
 
-    def get_document_by_example(self, example_data):
-        """
-        """
-
-        all_docs = []
-
-        result_dict = SimpleQuery.getByExample(
-            collection=self.name,
-            example_data=example_data
-        )
-
-        if result_dict['count'] > 0:
-            for result in result_dict['result']:
-                doc = Document(
-                    id=result['_id'],
-                    key=result['_key'],
-                    collection=self.name,
-                    api=self.api,
-                )
-
-                all_docs.append(doc)
-
-        return all_docs
-
     def documents(self):
         """
         """
@@ -601,7 +329,6 @@ class Collection(object):
 
 
 class Document(object):
-
     @classmethod
     def create(cls, collection):
         """
@@ -609,16 +336,12 @@ class Document(object):
 
         api = Client.instance().api
 
-        data = api.document.post(data={}, collection=collection.name)
-
         doc = Document(
-            id=data['_id'],
-            key=data['_key'],
+            id='',
+            key='',
             collection=collection.name,
             api=api,
         )
-
-        doc.is_loaded = True
 
         return doc
 
@@ -626,15 +349,15 @@ class Document(object):
         """
         """
 
+        self.data = {}
+        self.is_loaded = False
+
         self.id = id
         self.key = key
         self.collection = collection
         self.api = api
         self.resource = api.document
 
-        self.data = {}
-
-        self.is_loaded = False
 
     def retrieve(self):
         """
@@ -649,7 +372,12 @@ class Document(object):
         """
         """
 
-        self.resource(self.id).patch(data=self.data)
+        if not self.is_loaded:
+            data = self.api.document.post(data=self.data, collection=self.collection)
+            self.id = data['_id']
+            self.key = data['_key']
+        else:
+            self.resource(self.id).patch(data=self.data)
 
     def get(self, key):
         """
@@ -660,13 +388,45 @@ class Document(object):
 
             self.is_loaded = True
 
-        return self.data[key]
+        if self.has(key=key):
+            return self.data[key]
+        else:
+            return None
 
     def set(self, key, value):
         """
         """
 
         self.data[key] = value
+
+    def has(self, key):
+        """
+        """
+
+        return key in self.data
+
+    def get_attributes(self):
+        """
+        """
+
+        return self.data
+
+    def __getattr__(self, item):
+        """
+        """
+
+        val = self.get(key=item)
+        return val
+
+    def __setattr__(self, key, value):
+        """
+        """
+
+        # Set internal variables normally
+        if key in ['data', 'is_loaded', 'id', 'key', 'collection', 'api', 'resource']:
+            super(Document, self).__setattr__(key, value)
+        else:
+            self.set(key=key, value=value)
 
     def __repr__(self):
         """
@@ -681,7 +441,6 @@ class Document(object):
 
 
 class Edge(Document):
-
     @classmethod
     def create(cls, collection, from_doc, to_doc, edge_data={}):
         """
@@ -695,11 +454,7 @@ class Edge(Document):
             'to': to_doc.id,
         }
 
-        try:
-            data = api.edge.post(data=edge_data, **parameters)
-        except Exception as err:
-            print(err.content)
-            raise err
+        data = api.edge.post(data=edge_data, **parameters)
 
         doc = Edge(
             id=data['_id'],
