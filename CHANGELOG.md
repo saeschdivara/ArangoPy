@@ -42,3 +42,4 @@ First version which had the following features:
 ### 0.4
 - Index for model fields
 - Index queries
+- HTTP exception handling
