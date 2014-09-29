@@ -838,5 +838,17 @@ class UserTestCase(ExtendedTestCase):
 
         self.assertEqual(root.name, 'root')
 
+    def test_create_and_delete_user_foo(self):
+
+        user_name = 'foo'
+
+        User.create(name=user_name, password='extra_key')
+
+        foo_user = User.get(name=user_name)
+
+        self.assertEqual(foo_user.name, user_name)
+
+        User.remove(name=user_name)
+
 if __name__ == '__main__':
     unittest.main()

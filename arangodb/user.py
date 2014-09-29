@@ -14,11 +14,12 @@ class User(object):
 
         user = api.user(name).get()
 
+        user_name = user['user']
         change_password = user['changePassword']
         active = user['active']
         extra = user['extra']
 
-        user_obj = cls(name=name, change_password=change_password, active=active, extra=extra, api=api)
+        user_obj = cls(name=user_name, change_password=change_password, active=active, extra=extra, api=api)
 
         return user_obj
 
@@ -60,6 +61,6 @@ class User(object):
         self.active = active
         self.extra = extra
 
-        self.name = api
+        self.api = api
 
 
