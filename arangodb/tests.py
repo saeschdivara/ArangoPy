@@ -8,6 +8,7 @@ from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
 from arangodb.query.simple import SimpleQuery
 from arangodb.transaction.controller import Transaction, TransactionController
+from arangodb.user import User
 
 
 client = Client(hostname='localhost')
@@ -819,6 +820,23 @@ class IndexTestCase(ExtendedTestCase):
     def tearDown(self):
         Collection.remove(name=self.operating_collection)
         Database.remove(name=self.database_name)
+
+
+class UserTestCase(ExtendedTestCase):
+    def setUp(self):
+
+        self.database_name = 'testcase_user_123'
+        self.db = Database.create(name=self.database_name)
+
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_get_root(self):
+
+        root = User.get(name='root')
+
+        self.assertEqual(root.name, 'root')
 
 if __name__ == '__main__':
     unittest.main()
