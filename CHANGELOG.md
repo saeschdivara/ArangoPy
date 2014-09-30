@@ -41,6 +41,9 @@ First version which had the following features:
 - Batch document insert
 - Execute raw ArangoDB queries
 - ORM Queryset Filtering
+- ORM additional fields:
+    - Boolean
+    - URL
 
 ### 0.4
 - Index for model fields
