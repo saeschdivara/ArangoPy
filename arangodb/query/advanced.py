@@ -40,6 +40,50 @@ class Query(object):
     OR_BIT_OPERATOR = '||'
     AND_BIT_OPERATOR = '&&'
 
+    @classmethod
+    def execute_raw(cls, query_string):
+        """
+        """
+
+        logger.debug(query_string)
+
+        post_data = {
+            'query': query_string
+        }
+
+        api = Client.instance().api
+
+        result = []
+
+        try:
+            start_time = time()
+            post_result = api.cursor.post(data=post_data)
+            end_time = time()
+
+            time_result = '%0.3f ms' % (end_time - start_time) * 1000
+            logger.debug('Query took' + time_result)
+
+            result_dict_list = post_result['result']
+
+            # Create documents
+            for result_list in result_dict_list:
+
+                # Look if it is a list which needs to be iterated
+                if isinstance(result_list, list):
+                    for result_dict in result_list:
+                        doc = create_document_from_result_dict(result_dict, api)
+                        result.append(doc)
+                # Otherwise just create a result document
+                else:
+                    result_dict = result_list
+                    doc = create_document_from_result_dict(result_dict, api)
+                    result.append(doc)
+
+        except Exception as err:
+            raise err
+
+        return result
+
     def __init__(self):
         """
         """
@@ -186,41 +230,8 @@ class Query(object):
         # Set return statement
         query_data += self._get_return_statement()
 
-        logger.debug(query_data)
-
-        post_data = {
-            'query': query_data
-        }
-
-        api = Client.instance().api
-
-        result = []
-
-        try:
-            start_time = time()
-            post_result = api.cursor.post(data=post_data)
-            end_time = time()
-
-            time_result = '%0.3f ms' % (end_time - start_time) * 1000
-            logger.debug('Query took' + time_result)
-
-            result_dict_list = post_result['result']
-
-            if len(self.collections) is 1:
-                # Create documents
-                for result_dict in result_dict_list:
-                    doc = create_document_from_result_dict(result_dict, api)
-                    result.append(doc)
-            else:
-                # Create documents
-                for result_list in result_dict_list:
-                    for result_dict in result_list:
-                        doc = create_document_from_result_dict(result_dict, api)
-                        result.append(doc)
-
-
-        except Exception as err:
-            raise err
+        # Execute query
+        result = Query.execute_raw(query_string=query_data)
 
         return result
 

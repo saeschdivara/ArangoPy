@@ -30,6 +30,22 @@ class CollectionQueryset(object):
         self._query.set_collection(self._collection.name)
         self._query.clear()
 
+    def filter(self, bit_operator=Query.NO_BIT_OPERATOR, **kwargs):
+        """
+        """
+
+        self._has_cache = False
+
+        self._query.filter(bit_operator=bit_operator, **kwargs)
+
+    def exclude(self, **kwargs):
+        """
+        """
+
+        self._has_cache = False
+
+        self._query.exclude(**kwargs)
+
     def _generate_cache(self):
         """
         """

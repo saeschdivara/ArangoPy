@@ -39,8 +39,15 @@ First version which had the following features:
 - Raw AQL support
 - User support
 - Batch document insert
+- Execute raw ArangoDB queries
+- ORM Queryset Filtering
 
 ### 0.4
 - Index for model fields
 - Index queries
 - HTTP exception handling
+
+### 0.5
+- System
+- Replication
+- Endpoint
