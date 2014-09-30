@@ -36,6 +36,7 @@ First version which had the following features:
     
 ### 0.3
 - Index support
+- Raw AQL support
 - User support
 - Batch document insert
 - Execute raw ArangoDB queries
