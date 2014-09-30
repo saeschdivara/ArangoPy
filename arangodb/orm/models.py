@@ -34,11 +34,15 @@ class CollectionQueryset(object):
         """
         """
 
+        self._has_cache = False
+
         self._query.filter(bit_operator=bit_operator, **kwargs)
 
     def exclude(self, **kwargs):
         """
         """
+
+        self._has_cache = False
 
         self._query.exclude(**kwargs)
 
