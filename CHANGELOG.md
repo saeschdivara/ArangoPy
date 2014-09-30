@@ -38,6 +38,7 @@ First version which had the following features:
 - Index support
 - User support
 - Batch document insert
+- Execute raw ArangoDB queries
 - ORM Queryset Filtering
 
 ### 0.4
