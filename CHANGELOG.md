@@ -38,7 +38,13 @@ First version which had the following features:
 - Index support
 - User support
 - Batch document insert
+- ORM Queryset Filtering
 
 ### 0.4
 - Index for model fields
 - Index queries
+
+### 0.5
+- System
+- Replication
+- Endpoint
