@@ -66,6 +66,70 @@ class ModelField(object):
 
         return self.dumps()
 
+class BooleanField(ModelField):
+
+    def __init__(self, **kwargs):
+        """
+        """
+
+        super(BooleanField, self).__init__(**kwargs)
+
+        # If null is allowed, default value is None
+        if self.null and not self.default:
+            self.boolean = None
+        else:
+            # If default value was set
+            if self.default:
+                self.boolean = self.default
+            else:
+                self.boolean = u''
+
+    def dumps(self):
+        """
+        """
+
+        return self.boolean
+
+    def loads(self, boolean_val):
+        """
+        """
+
+        self.boolean = boolean_val
+
+    def validate(self):
+        """
+        """
+
+        if self.boolean is None and self.null is False:
+            raise BooleanField.NotNullableFieldException()
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            boolean = args[0]
+
+            if isinstance(boolean, bool):
+                self.boolean = args[0]
+            else:
+                raise BooleanField.WrongInputTypeException()
+
+    def get(self):
+        """
+        """
+
+        return self.boolean
+
+    def __eq__(self, other):
+        """
+        """
+
+        if super(BooleanField, self).__eq__(other):
+            return self.boolean == other.boolean
+        else:
+            return False
+
 class CharField(ModelField):
 
     class TooLongStringException(Exception):
