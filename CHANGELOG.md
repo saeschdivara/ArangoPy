@@ -49,6 +49,7 @@ First version which had the following features:
 - Index for model fields
 - Index queries
 - HTTP exception handling
+- Document revision
 
 ### 0.5
 - System
