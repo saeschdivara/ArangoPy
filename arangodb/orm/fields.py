@@ -75,14 +75,14 @@ class BooleanField(ModelField):
         super(BooleanField, self).__init__(**kwargs)
 
         # If null is allowed, default value is None
-        if self.null and not self.default:
+        if self.null and self.default is None:
             self.boolean = None
         else:
             # If default value was set
-            if self.default:
+            if not self.default is None:
                 self.boolean = self.default
             else:
-                self.boolean = u''
+                self.boolean = False
 
     def dumps(self):
         """
