@@ -126,6 +126,12 @@ class CharField(ModelField):
             else:
                 raise CharField.WrongInputTypeException()
 
+    def get(self):
+        """
+        """
+
+        return self.text
+
     def __eq__(self, other):
         """
         """
@@ -188,6 +194,12 @@ class NumberField(ModelField):
                 self.number = args[0]
             else:
                 raise NumberField.WrongInputTypeException
+
+    def get(self):
+        """
+        """
+
+        return self.number
 
     def __eq__(self, other):
         """
