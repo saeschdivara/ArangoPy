@@ -2,7 +2,7 @@ import unittest
 import datetime
 
 from arangodb.api import Client, Database, Collection, Document
-from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField
+from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -646,15 +646,29 @@ class BooleanFieldTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_basic_creation_with_default(self):
+        boolean = False
+        field = BooleanField(default=boolean)
+
+        self.assertEqual(boolean, field.boolean)
+
     def test_equals(self):
 
-        str1 = CharField()
-        str1.set("jjj")
+        boolean1 = BooleanField()
+        boolean1.set(True)
 
-        str2 = CharField()
-        str2.set("jjj")
+        boolean2 = BooleanField()
+        boolean2.set(True)
 
-        self.assertEqual(str1, str2)
+        self.assertEqual(boolean1, boolean2)
+
+        boolean1 = BooleanField()
+        boolean1.set(False)
+
+        boolean2 = BooleanField()
+        boolean2.set(False)
+
+        self.assertEqual(boolean1, boolean2)
 
 
 class CharFieldTestCase(unittest.TestCase):
