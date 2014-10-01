@@ -563,6 +563,35 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_retrieve_all_models_and_update_one(self):
+
+        class TestModel(CollectionModel):
+            text = CharField(null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.text = 'aa'
+        model1.save()
+
+        model2 = TestModel()
+        model2.text = 'aa'
+        model2.save()
+
+        all_models = TestModel.objects.all()
+
+        self.assertEqual(len(all_models), 2)
+
+        model = all_models[0]
+        model.text = 'xx'
+        model.save()
+
+        all_models = TestModel.objects.all()
+
+        self.assertEqual(len(all_models), 2)
+
+        TestModel.destroy()
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
