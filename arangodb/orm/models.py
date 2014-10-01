@@ -129,6 +129,7 @@ class CollectionModelManager(object):
         attributes = doc.get_attributes()
 
         model = self._create_model_from_dict(attribute_dict=attributes)
+        model.document.is_loaded = True
 
         return model
 
