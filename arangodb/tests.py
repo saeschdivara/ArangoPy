@@ -540,6 +540,28 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_get_value_from_queryset_model(self):
+
+        class TestModel(CollectionModel):
+
+            text = CharField(null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.text = 'dd'
+        model1.save()
+
+        self.assertEqual(model1.text, 'dd')
+
+        all_models = TestModel.objects.all()
+
+        self.assertEqual(len(all_models), 1)
+
+        model = all_models[0]
+        self.assertEqual(model.text, 'dd')
+
+        TestModel.destroy()
 
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
