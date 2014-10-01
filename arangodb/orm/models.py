@@ -110,16 +110,6 @@ class CollectionModelManager(object):
 
         return queryset
 
-        # docs = self._model_class.collection_instance.documents()
-        # models = []
-        #
-        # for doc in docs:
-        #     model = self._create_model_from_doc(doc=doc)
-        #     models.append(model)
-        #
-        # return models
-
-
     def _create_model_from_doc(self, doc):
         """
         """
@@ -129,10 +119,9 @@ class CollectionModelManager(object):
         attributes = doc.get_attributes()
 
         model = self._create_model_from_dict(attribute_dict=attributes)
-        model.document.is_loaded = True
+        model.document = doc
 
         return model
-
 
     def _create_model_from_dict(self, attribute_dict):
         """
