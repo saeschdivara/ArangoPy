@@ -3,7 +3,7 @@ from arangodb import get_version
 
 setup(
     name='ArangoPy',
-    version= '0.2.1',
+    version= '0.2.2',
     packages=find_packages(),
     requires=[
         'slumber',
