@@ -40,10 +40,12 @@ First version which had the following features:
 - User support
 - Batch document insert
 - Execute raw ArangoDB queries
-- ORM Queryset Filtering
+- ORM Queryset Filtering (with boolean)
 - ORM additional fields:
+    - UUID
     - Boolean
     - URL
+    - Password
 
 ### 0.4
 - Index for model fields
