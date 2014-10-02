@@ -33,4 +33,6 @@ class Index(object):
         }
 
         result = api.index.post(data=index_details, **query_parameters)
-        print(result)
+
+        self.index_type_obj.is_new = result['isNewlyCreated']
+        self.index_type_obj.id = result['id']
