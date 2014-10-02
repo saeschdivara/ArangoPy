@@ -502,7 +502,7 @@ class CollectionModelManagerTestCase(unittest.TestCase):
     def tearDown(self):
         Database.remove(name=self.database_name)
 
-    def test_retrieve_one_specifc_model(self):
+    def test_retrieve_one_specific_model_by_char(self):
 
         class TestModel(CollectionModel):
             uuid = CharField(null=False)
@@ -520,6 +520,29 @@ class CollectionModelManagerTestCase(unittest.TestCase):
         specific_model = TestModel.objects.get(uuid=model2.uuid)
 
         self.assertEqual(specific_model.uuid, model2.uuid)
+
+        TestModel.destroy()
+
+    def test_retrieve_one_specific_model_by_bool(self):
+
+        class TestModel(CollectionModel):
+            active = BooleanField(null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.active = False
+        model1.save()
+
+        model2 = TestModel()
+        model2.active = True
+        model2.save()
+
+        specific_model1 = TestModel.objects.get(active=model1.active)
+        specific_model2 = TestModel.objects.get(active=model2.active)
+
+        self.assertEqual(specific_model1.document.id, model1.document.id)
+        self.assertEqual(specific_model2.document.id, model2.document.id)
 
         TestModel.destroy()
 
