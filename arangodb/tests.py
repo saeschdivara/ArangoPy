@@ -1,5 +1,6 @@
 import unittest
 import datetime
+from uuid import uuid4
 
 from arangodb.api import Client, Database, Collection, Document
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
@@ -500,6 +501,27 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
     def tearDown(self):
         Database.remove(name=self.database_name)
+
+    def test_retrieve_one_specifc_model(self):
+
+        class TestModel(CollectionModel):
+            uuid = CharField(null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.uuid = str(uuid4())
+        model1.save()
+
+        model2 = TestModel()
+        model2.uuid = str(uuid4())
+        model2.save()
+
+        specific_model = TestModel.objects.get(uuid=model2.uuid)
+
+        self.assertEqual(specific_model.uuid, model2.uuid)
+
+        TestModel.destroy()
 
     def test_retrieve_all_models(self):
 
