@@ -3,6 +3,8 @@ import datetime
 from uuid import uuid4
 
 from arangodb.api import Client, Database, Collection, Document
+from arangodb.index.api import Index
+from arangodb.index.general import HashIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
@@ -940,15 +942,23 @@ class TransactionTestCase(ExtendedTestCase):
 class IndexTestCase(ExtendedTestCase):
     def setUp(self):
 
-        self.database_name = 'testcase_index_123'
+        self.database_name = 'testcase_index_222_123'
         self.db = Database.create(name=self.database_name)
 
-        self.operating_collection = 'foo_test'
+        self.operating_collection = 'bar_extra'
         self.test_1_col = Collection.create(name=self.operating_collection)
 
     def tearDown(self):
         Collection.remove(name=self.operating_collection)
         Database.remove(name=self.database_name)
+
+    def test_unique_hash_index(self):
+
+        index = Index(self.test_1_col, HashIndex(fields=[
+            'username'
+        ]))
+
+        index.save()
 
 
 class UserTestCase(ExtendedTestCase):
