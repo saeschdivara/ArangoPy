@@ -16,8 +16,6 @@ class BaseIndex(object):
         """
         """
 
-        return {}
-
 class HashIndex(BaseIndex):
     """
     """
@@ -27,6 +25,8 @@ class HashIndex(BaseIndex):
     def __init__(self, fields, unique=True):
         """
         """
+
+        super(HashIndex, self).__init__()
 
         self.fields = fields
         self.unique = unique
