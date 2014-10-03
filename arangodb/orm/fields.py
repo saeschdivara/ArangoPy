@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from uuid import uuid4
 
 
 class ModelField(object):
@@ -31,6 +32,12 @@ class ModelField(object):
         return None
 
     def loads(self, string_val):
+        """
+        """
+
+        pass
+
+    def on_create(self):
         """
         """
 
@@ -208,23 +215,13 @@ class CharField(ModelField):
 
 class UuidField(CharField):
 
-    def __init__(self, max_length=255, **kwargs):
+    def __init__(self, auto_create=True, **kwargs):
         """
         """
 
         super(UuidField, self).__init__(**kwargs)
 
-        self.max_length = max_length
-
-        # If null is allowed, default value is None
-        if self.null and not self.default:
-            self.text = None
-        else:
-            # If default value was set
-            if self.default:
-                self.text = self.default
-            else:
-                self.text = u''
+        self.auto_create = auto_create
 
     def dumps(self):
         """
@@ -238,16 +235,12 @@ class UuidField(CharField):
 
         self.text = string_val
 
-    def validate(self):
+    def on_create(self):
         """
         """
 
-        if self.text is None and self.null is False:
-            raise UuidField.NotNullableFieldException()
-
-        if self.text:
-            if len(self.text) > self.max_length:
-                raise UuidField.TooLongStringException()
+        if self.auto_create and self.text != None and self.text != '':
+            self.text = str(uuid4())
 
     def set(self, *args, **kwargs):
         """

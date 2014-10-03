@@ -217,8 +217,13 @@ class CollectionModel(object):
             attr_val = getattr(self, attribute)
             attr_cls = attr_val.__class__
 
+            # Only attributes which are fields are being copied
             if issubclass(attr_cls, ModelField):
+                # Copy field with default config
                 field = copy.deepcopy(attr_val)
+                # Trigger on create so the field knows it
+                field.on_create()
+                # Save the new field in the meta data
                 self._instance_meta_data._fields[attribute] = field
 
 
