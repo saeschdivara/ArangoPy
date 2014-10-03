@@ -239,7 +239,7 @@ class UuidField(CharField):
         """
         """
 
-        if self.auto_create and self.text != None and self.text != '':
+        if self.auto_create and self.text is None or self.text == '':
             self.text = str(uuid4())
 
     def set(self, *args, **kwargs):

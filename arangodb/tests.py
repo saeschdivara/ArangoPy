@@ -6,7 +6,8 @@ from arangodb.api import Client, Database, Collection, Document
 from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
-from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
+from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField, \
+    UuidField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -746,15 +747,15 @@ class UuidFieldTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_equals(self):
+    def test_state(self):
 
-        str1 = CharField()
-        str1.set("jjj")
+        uuid = UuidField()
 
-        str2 = CharField()
-        str2.set("jjj")
+        self.assertEqual(uuid.text, None)
 
-        self.assertEqual(str1, str2)
+        uuid.on_create()
+
+        self.assertTrue(isinstance(uuid.text, basestring))
 
 
 class NumberFieldTestCase(unittest.TestCase):
