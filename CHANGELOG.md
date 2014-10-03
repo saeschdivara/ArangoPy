@@ -45,8 +45,6 @@ First version which had the following features:
 - ORM additional fields:
     - UUID
     - Boolean
-    - URL
-    - Password
 
 ### 0.4
 - Better code documentation
@@ -59,3 +57,6 @@ First version which had the following features:
 - System
 - Replication
 - Endpoint
+- ORM additional fields:
+    - URL
+    - Password
