@@ -5,6 +5,14 @@ class Index(object):
     """
     """
 
+    @classmethod
+    def remove(cls, id):
+        """
+        """
+
+        api = Client.instance().api
+        api.index.delete(id)
+
     def __init__(self, collection, index_type_obj):
         """
         """
@@ -36,3 +44,9 @@ class Index(object):
 
         self.index_type_obj.is_new = result['isNewlyCreated']
         self.index_type_obj.id = result['id']
+
+    def delete(self):
+        """
+        """
+
+        Index.remove(self.index_type_obj.id)
