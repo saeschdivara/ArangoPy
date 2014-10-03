@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from arangodb.api import Client, Database, Collection, Document
 from arangodb.index.api import Index
+from arangodb.index.general import FulltextIndex
 from arangodb.index.unique import HashIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
 from arangodb.orm.models import CollectionModel
@@ -957,6 +958,14 @@ class IndexTestCase(ExtendedTestCase):
         index = Index(self.test_1_col, HashIndex(fields=[
             'username'
         ]))
+
+        index.save()
+
+    def test_fulltext_index(self):
+
+        index = Index(self.test_1_col, FulltextIndex(fields=[
+            'description'
+        ], minimum_length=5))
 
         index.save()
 
