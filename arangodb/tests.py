@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from arangodb.api import Client, Database, Collection, Document
 from arangodb.index.api import Index
-from arangodb.index.general import FulltextIndex
+from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
 from arangodb.orm.models import CollectionModel
@@ -989,6 +989,14 @@ class IndexTestCase(ExtendedTestCase):
         index = Index(self.test_1_col, FulltextIndex(fields=[
             'description'
         ], minimum_length=5))
+
+        index.save()
+
+        index.delete()
+
+    def test_cap_constraint_index(self):
+
+        index = Index(self.test_1_col, CapConstraintIndex(size=5))
 
         index.save()
 
