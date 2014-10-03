@@ -48,6 +48,7 @@ First version which had the following features:
     - Password
 
 ### 0.4
+- Better code documentation
 - Index for model fields
 - Index queries
 - HTTP exception handling
