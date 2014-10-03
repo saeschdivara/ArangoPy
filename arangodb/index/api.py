@@ -11,7 +11,7 @@ class Index(object):
         """
 
         api = Client.instance().api
-        api.index.delete(id)
+        api.index(id).delete()
 
     def __init__(self, collection, index_type_obj):
         """

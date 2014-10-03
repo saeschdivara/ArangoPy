@@ -961,6 +961,8 @@ class IndexTestCase(ExtendedTestCase):
 
         index.save()
 
+        index.delete()
+
     def test_fulltext_index(self):
 
         index = Index(self.test_1_col, FulltextIndex(fields=[
@@ -968,6 +970,8 @@ class IndexTestCase(ExtendedTestCase):
         ], minimum_length=5))
 
         index.save()
+
+        index.delete()
 
 
 class UserTestCase(ExtendedTestCase):
