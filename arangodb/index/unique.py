@@ -24,3 +24,10 @@ class HashIndex(BaseIndex):
             'fields': self.fields,
             'unique': self.unique,
         }
+
+
+class SkiplistIndex(HashIndex):
+    """
+    """
+
+    type_name = 'skiplist'

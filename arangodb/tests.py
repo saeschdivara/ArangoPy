@@ -5,7 +5,7 @@ from uuid import uuid4
 from arangodb.api import Client, Database, Collection, Document
 from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex
-from arangodb.index.unique import HashIndex
+from arangodb.index.unique import HashIndex, SkiplistIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
@@ -956,6 +956,16 @@ class IndexTestCase(ExtendedTestCase):
     def test_unique_hash_index(self):
 
         index = Index(self.test_1_col, HashIndex(fields=[
+            'username'
+        ]))
+
+        index.save()
+
+        index.delete()
+
+    def test_unique_skiptlist_index(self):
+
+        index = Index(self.test_1_col, SkiplistIndex(fields=[
             'username'
         ]))
 
