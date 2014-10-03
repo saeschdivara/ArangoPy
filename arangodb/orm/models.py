@@ -46,6 +46,14 @@ class CollectionQueryset(object):
 
         self._query.exclude(**kwargs)
 
+    def limit(self, count, start=-1):
+        """
+        """
+
+        self._has_cache = False
+
+        self._query.limit(count, start)
+
     def _generate_cache(self):
         """
         """
