@@ -31,3 +31,30 @@ class SkiplistIndex(HashIndex):
     """
 
     type_name = 'skiplist'
+
+
+class GeoIndex(HashIndex):
+    """
+    """
+
+    type_name = 'geo'
+
+    def __init__(self, fields, geo_json, ignore_null=True, unique=True):
+        """
+        """
+
+        super(GeoIndex, self).__init__(fields, unique)
+
+        self.geo_json = geo_json
+        self.ignore_null = ignore_null
+
+    def get_extra_attributes(self):
+        """
+        """
+
+        return {
+            'fields': self.fields,
+            'unique': self.unique,
+            'geo_json': self.geo_json,
+            'ignore_null': self.ignore_null,
+        }
