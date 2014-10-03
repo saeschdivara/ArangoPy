@@ -206,6 +206,68 @@ class CharField(ModelField):
             return False
 
 
+class UuidField(CharField):
+
+    def __init__(self, max_length=255, **kwargs):
+        """
+        """
+
+        super(UuidField, self).__init__(**kwargs)
+
+        self.max_length = max_length
+
+        # If null is allowed, default value is None
+        if self.null and not self.default:
+            self.text = None
+        else:
+            # If default value was set
+            if self.default:
+                self.text = self.default
+            else:
+                self.text = u''
+
+    def dumps(self):
+        """
+        """
+
+        return self.text
+
+    def loads(self, string_val):
+        """
+        """
+
+        self.text = string_val
+
+    def validate(self):
+        """
+        """
+
+        if self.text is None and self.null is False:
+            raise UuidField.NotNullableFieldException()
+
+        if self.text:
+            if len(self.text) > self.max_length:
+                raise UuidField.TooLongStringException()
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            text = args[0]
+
+            if isinstance(text, basestring):
+                self.text = u'%s' % args[0]
+            else:
+                raise UuidField.WrongInputTypeException()
+
+    def get(self):
+        """
+        """
+
+        return self.text
+
+
 class NumberField(ModelField):
 
     def __init__(self, **kwargs):
