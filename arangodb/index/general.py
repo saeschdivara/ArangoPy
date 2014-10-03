@@ -38,5 +38,28 @@ class FulltextIndex(BaseIndex):
 
         return {
             'fields': self.fields,
-            'minimum_length': self.minimum_length,
+            'minLength': self.minimum_length,
+        }
+
+
+class CapConstraintIndex(BaseIndex):
+
+    type_name = 'cap'
+
+    def __init__(self, size, document_byte_size=16384):
+        """
+        """
+
+        super(CapConstraintIndex, self).__init__()
+
+        self.size = size
+        self.document_byte_size = document_byte_size
+
+    def get_extra_attributes(self):
+        """
+        """
+
+        return {
+            'size': self.size,
+            'byteSize': self.document_byte_size,
         }

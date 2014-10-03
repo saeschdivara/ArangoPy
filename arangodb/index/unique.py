@@ -55,6 +55,6 @@ class GeoIndex(HashIndex):
         return {
             'fields': self.fields,
             'unique': self.unique,
-            'geo_json': self.geo_json,
-            'ignore_null': self.ignore_null,
+            'geoJson': self.geo_json,
+            'ignoreNull': self.ignore_null,
         }
