@@ -5,7 +5,6 @@ Versions
     
 ### 0.3
 - Index support
-- Raw AQL support
 - User support
 - Execute raw ArangoDB queries
 - ORM Queryset Filtering (with boolean)
