@@ -52,6 +52,10 @@ First version which had the following features:
 - Index queries
 - HTTP exception handling
 - Document revision
+- ORM additional fields:
+    - Choice
+    - NumberRange
+    - ManyToMany
 
 ### 0.5
 - System
@@ -59,4 +63,5 @@ First version which had the following features:
 - Endpoint
 - ORM additional fields:
     - URL
+    - MailAddress
     - Password
