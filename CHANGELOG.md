@@ -38,7 +38,6 @@ First version which had the following features:
 - Index support
 - Raw AQL support
 - User support
-- Batch document insert
 - Execute raw ArangoDB queries
 - ORM Queryset Filtering (with boolean)
 - ORM Queryset limit
@@ -58,6 +57,7 @@ First version which had the following features:
     - ManyToMany
 
 ### 0.5
+- Batch execution
 - System
 - Replication
 - Endpoint
