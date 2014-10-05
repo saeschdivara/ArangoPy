@@ -47,6 +47,10 @@ Features
 3. Create, update and delete documents in collections
 4. Use the following simple queries:
     - by-example
+        - get
+        - update
+        - replace
+        - remove
     - any
 5. Queries
     - Advanced filtering
@@ -54,11 +58,16 @@ Features
     - Multiple collections
 6. ORM
     1. Models which have fields:
+        - Boolean field
         - Char field
+        - UUID field
         - Number field
         - Date field
         - Datetime field
         - Foreign key field
+7. Transactions to create and update documents
+8. Index support
+9. User support
 
 Usage
 ------------
