@@ -73,6 +73,7 @@ class ModelField(object):
 
         return self.dumps()
 
+
 class BooleanField(ModelField):
 
     def __init__(self, **kwargs):
@@ -136,6 +137,7 @@ class BooleanField(ModelField):
             return self.boolean == other.boolean
         else:
             return False
+
 
 class CharField(ModelField):
 
@@ -223,42 +225,12 @@ class UuidField(CharField):
 
         self.auto_create = auto_create
 
-    def dumps(self):
-        """
-        """
-
-        return self.text
-
-    def loads(self, string_val):
-        """
-        """
-
-        self.text = string_val
-
     def on_create(self):
         """
         """
 
         if self.auto_create and self.text is None or self.text == '':
             self.text = str(uuid4())
-
-    def set(self, *args, **kwargs):
-        """
-        """
-
-        if len(args) is 1:
-            text = args[0]
-
-            if isinstance(text, basestring):
-                self.text = u'%s' % args[0]
-            else:
-                raise UuidField.WrongInputTypeException()
-
-    def get(self):
-        """
-        """
-
-        return self.text
 
 
 class NumberField(ModelField):
