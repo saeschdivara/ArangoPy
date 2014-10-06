@@ -143,7 +143,7 @@ class CollectionModelManager(object):
             if not attribute_name.startswith('_'):
                 field = model.get_field(name=attribute_name)
                 attribute_value = attributes[attribute_name]
-                field._model_instance = self._model_class
+                field._model_instance = model
                 field.loads(attribute_value)
 
         return model
@@ -241,6 +241,8 @@ class CollectionModel(object):
             if issubclass(attr_cls, ModelField):
                 # Copy field with default config
                 field = copy.deepcopy(attr_val)
+                # Set model instance on the field
+                field._model_instance = self
                 # Trigger on create so the field knows it
                 field.on_create()
                 # Save the new field in the meta data

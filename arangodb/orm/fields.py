@@ -508,15 +508,15 @@ class ManyToManyField(ModelField):
 
 
         # If null is allowed, default value is None
-        if self.null and not self.default:
-            self.relation_model = None
-        else:
-            # If default value was set
-            if self.default:
-                self.relation_model = self.default
-            else:
-                self.relation_model = ''
-
+        # if self.null and not self.default:
+        #     self.relation_model = None
+        # else:
+        #     # If default value was set
+        #     if self.default:
+        #         self.relation_model = self.default
+        #     else:
+        #         self.relation_model = ''
+        #
         self.relation_class = to
 
     def on_init(self, model_class):
@@ -525,48 +525,48 @@ class ManyToManyField(ModelField):
 
         pass
 
-    def dumps(self):
-        """
-        """
-
-        return u'%s' % self.relation_model.document
-
-    def loads(self, model_id):
-        """
-        """
-
-        model = self.relation_class.objects.get(_id=model_id)
-        self.relation_model = model
-
-    def validate(self):
-        """
-        """
-
-        if self.relation_model is None and self.null is False:
-            raise ManyToManyField.NotNullableFieldException()
-
-        if self.relation_model:
-            pass
-
-    def set(self, *args, **kwargs):
-        """
-        """
-
-        if len(args) is 1:
-            relation_model = args[0]
-            self.relation_model = relation_model
-
-    def get(self):
-        """
-        """
-
-        return self.relation_model
-
-    def __eq__(self, other):
-        """
-        """
-
-        if super(ManyToManyField, self).__eq__(other):
-            return self.relation_model == other.relation_model
-        else:
-            return False
+    # def dumps(self):
+    #     """
+    #     """
+    #
+    #     return u'%s' % self.relation_model.document
+    #
+    # def loads(self, model_id):
+    #     """
+    #     """
+    #
+    #     model = self.relation_class.objects.get(_id=model_id)
+    #     self.relation_model = model
+    #
+    # def validate(self):
+    #     """
+    #     """
+    #
+    #     if self.relation_model is None and self.null is False:
+    #         raise ManyToManyField.NotNullableFieldException()
+    #
+    #     if self.relation_model:
+    #         pass
+    #
+    # def set(self, *args, **kwargs):
+    #     """
+    #     """
+    #
+    #     if len(args) is 1:
+    #         relation_model = args[0]
+    #         self.relation_model = relation_model
+    #
+    # def get(self):
+    #     """
+    #     """
+    #
+    #     return self.relation_model
+    #
+    # def __eq__(self, other):
+    #     """
+    #     """
+    #
+    #     if super(ManyToManyField, self).__eq__(other):
+    #         return self.relation_model == other.relation_model
+    #     else:
+    #         return False

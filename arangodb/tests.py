@@ -896,42 +896,43 @@ class ForeignkeyFieldTestCase(unittest.TestCase):
 
 class ManyToManyFieldTestCase(unittest.TestCase):
 
-    class EndModel(CollectionModel):
-
-        test_field = CharField()
-
-
-    class StartModel(CollectionModel):
-        collection_name = 'never_to_be_seen_again'
-
-        others = ManyToManyField(to=ManyToManyFieldTestCase.EndModel, related_name='starters')
-
-
     def setUp(self):
         self.database_name = 'only_many_to_many_field_123'
         self.db = Database.create(name=self.database_name)
 
-        ManyToManyFieldTestCase.StartModel.init()
-        ManyToManyFieldTestCase.EndModel.init()
-
     def tearDown(self):
-        ManyToManyFieldTestCase.StartModel.destroy()
-        ManyToManyFieldTestCase.EndModel.destroy()
-
         Database.remove(name=self.database_name)
 
     def test_basic_creation_with_default(self):
 
-        end_model1 = ManyToManyFieldTestCase.EndModel()
+
+        class EndModel(CollectionModel):
+
+            test_field = CharField()
+
+
+        class StartModel(CollectionModel):
+            collection_name = 'never_to_be_seen_again'
+
+            others = ManyToManyField(to=EndModel, related_name='starters')
+
+        StartModel.init()
+        EndModel.init()
+
+        end_model1 = EndModel()
         end_model1.test_field = 'foo'
         end_model1.save()
 
-        end_model2 = ManyToManyFieldTestCase.EndModel()
+        end_model2 = EndModel()
         end_model2.test_field = 'bar'
         end_model2.save()
 
-        start_model = ManyToManyFieldTestCase.StartModel()
+        start_model = StartModel()
         start_model.save()
+
+
+        StartModel.destroy()
+        EndModel.destroy()
 
     #
     # def test_equals(self):
