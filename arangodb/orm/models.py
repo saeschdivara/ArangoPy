@@ -176,11 +176,13 @@ class CollectionModel(object):
 
         name = cls.get_collection_name()
 
+        # Set type
         try:
             collection_type = getattr(cls, 'collection_type')
         except:
             collection_type = 2
 
+        # Create collection
         try:
             cls.collection_instance = Collection.create(name=name, type=collection_type)
         except:
@@ -191,6 +193,16 @@ class CollectionModel(object):
                 cls.objects = cls.objects(cls)
         except:
             pass # This is the case if init was called more than once
+
+        # Go through all fields
+        for attribute in dir(cls):
+
+            attr_val = getattr(cls, attribute)
+            attr_cls = attr_val.__class__
+
+            # If it is a model field, call on init
+            if issubclass(attr_cls, ModelField):
+                attr_val.on_init()
 
     @classmethod
     def destroy(cls):

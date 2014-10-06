@@ -7,7 +7,7 @@ from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField, \
-    UuidField
+    UuidField, ManyToManyField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -892,6 +892,58 @@ class ForeignkeyFieldTestCase(unittest.TestCase):
         field2.set(model)
 
         self.assertEqual(field1, field2)
+
+
+class ManyToManyFieldTestCase(unittest.TestCase):
+
+    class EndModel(CollectionModel):
+
+        test_field = CharField()
+
+
+    class StartModel(CollectionModel):
+        collection_name = 'never_to_be_seen_again'
+
+        others = ManyToManyField(to=ManyToManyFieldTestCase.EndModel, related_name='starters')
+
+
+    def setUp(self):
+        self.database_name = 'only_many_to_many_field_123'
+        self.db = Database.create(name=self.database_name)
+
+        ManyToManyFieldTestCase.StartModel.init()
+        ManyToManyFieldTestCase.EndModel.init()
+
+    def tearDown(self):
+        ManyToManyFieldTestCase.StartModel.destroy()
+        ManyToManyFieldTestCase.EndModel.destroy()
+
+        Database.remove(name=self.database_name)
+
+    def test_basic_creation_with_default(self):
+
+        end_model1 = ManyToManyFieldTestCase.EndModel()
+        end_model1.test_field = 'foo'
+        end_model1.save()
+
+        end_model2 = ManyToManyFieldTestCase.EndModel()
+        end_model2.test_field = 'bar'
+        end_model2.save()
+
+        start_model = ManyToManyFieldTestCase.StartModel()
+        start_model.save()
+
+    #
+    # def test_equals(self):
+    #     model = ForeignkeyFieldTestCase.TestModel()
+    #
+    #     field1 = ForeignKeyField(to=CollectionModel)
+    #     field1.set(model)
+    #
+    #     field2 = ForeignKeyField(to=CollectionModel)
+    #     field2.set(model)
+    #
+    #     self.assertEqual(field1, field2)
 
 
 class TransactionTestCase(ExtendedTestCase):
