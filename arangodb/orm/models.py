@@ -257,22 +257,20 @@ class CollectionModel(object):
         self._instance_meta_data = CollectionModel.MetaDataObj()
         self.document = self.collection_instance.create_document()
 
-        for attribute in self._get_fields():
+        fields = self._get_fields()
+        for attribute in fields:
 
-            attr_val = getattr(self, attribute)
-            attr_cls = attr_val.__class__
+            attr_val = fields[attribute]
 
             # Only attributes which are fields are being copied
-            if issubclass(attr_cls, ModelField):
-                # Copy field with default config
-                field = copy.deepcopy(attr_val)
-                # Set model instance on the field
-                field._model_instance = self
-                # Trigger on create so the field knows it
-                field.on_create()
-                # Save the new field in the meta data
-                self._instance_meta_data._fields[attribute] = field
-
+            # Copy field with default config
+            field = copy.deepcopy(attr_val)
+            # Set model instance on the field
+            field._model_instance = self
+            # Trigger on create so the field knows it
+            field.on_create()
+            # Save the new field in the meta data
+            self._instance_meta_data._fields[attribute] = field
 
     def save(self):
         """
@@ -322,6 +320,11 @@ class CollectionModel(object):
 
             if issubclass(attr_cls, ModelField):
                 fields[attribute] = attr_val
+
+        model_fields = self.__class__._model_meta_data._fields
+        for field_key in  model_fields:
+            field = model_fields[field_key]
+            fields[field_key] = field
 
         return fields
 

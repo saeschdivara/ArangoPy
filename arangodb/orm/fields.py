@@ -533,17 +533,20 @@ class ManyToManyField(ModelField):
         """
         """
 
-        relation_name = self._get_relation_collection_name(model_class)
-        self.relation_collection = Collection.create(name=relation_name, database=Client.instance().database, type=3)
+        if not self.related_name is None:
+            relation_name = self._get_relation_collection_name(model_class)
+            self.relation_collection = Collection.create(name=relation_name, database=Client.instance().database, type=3)
 
-        self.relation_class._model_meta_data._fields[self.related_name] = model_class
+            fields = self.relation_class._model_meta_data._fields
+            fields[self.related_name] = ManyToManyField(to=model_class, related_name=None)
 
     def on_destroy(self, model_class):
         """
         """
 
-        relation_name = self._get_relation_collection_name(model_class)
-        Collection.remove(name=relation_name)
+        if not self.related_name is None:
+            relation_name = self._get_relation_collection_name(model_class)
+            Collection.remove(name=relation_name)
 
     def _get_relation_collection_name(self, model_class):
         """
