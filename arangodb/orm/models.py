@@ -209,6 +209,16 @@ class CollectionModel(object):
         """
         """
 
+        # Go through all fields
+        for attribute in dir(cls):
+
+            attr_val = getattr(cls, attribute)
+            attr_cls = attr_val.__class__
+
+            # If it is a model field, call on init
+            if issubclass(attr_cls, ModelField):
+                attr_val.on_destroy(cls)
+
         name = cls.get_collection_name()
         Collection.remove(name=name)
 

@@ -43,6 +43,13 @@ class ModelField(object):
 
         pass
 
+    def on_destroy(self, model_class):
+        """
+        """
+
+        pass
+
+
     def on_create(self):
         """
         """
@@ -518,12 +525,15 @@ class ManyToManyField(ModelField):
         #         self.relation_model = ''
         #
         self.relation_class = to
+        self.related_name = related_name
 
     def on_init(self, model_class):
         """
         """
 
-        pass
+        # temp_obj = self.relation_class()
+
+        # temp_obj.__class__.__dict__[self.related_name] =  model_class
 
     # def dumps(self):
     #     """
