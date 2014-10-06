@@ -5,6 +5,8 @@ from arangodb.api import Collection, Client
 
 class ModelField(object):
 
+    is_saved_in_model = True
+
     class NotNullableFieldException(Exception):
         """
             Field cannot be null
@@ -50,8 +52,13 @@ class ModelField(object):
 
         pass
 
-
     def on_create(self):
+        """
+        """
+
+        pass
+
+    def on_save(self):
         """
         """
 
@@ -508,23 +515,14 @@ class ForeignKeyField(ModelField):
 
 class ManyToManyField(ModelField):
 
+    is_saved_in_model = False
+
     def __init__(self, to, related_name, **kwargs):
         """
         """
 
         super(ManyToManyField, self).__init__(**kwargs)
 
-
-        # If null is allowed, default value is None
-        # if self.null and not self.default:
-        #     self.relation_model = None
-        # else:
-        #     # If default value was set
-        #     if self.default:
-        #         self.relation_model = self.default
-        #     else:
-        #         self.relation_model = ''
-        #
         self.relation_class = to
         self.related_name = related_name
         self.relation_collection = None
@@ -535,7 +533,11 @@ class ManyToManyField(ModelField):
 
         if not self.related_name is None:
             relation_name = self._get_relation_collection_name(model_class)
-            self.relation_collection = Collection.create(name=relation_name, database=Client.instance().database, type=3)
+
+            try:
+                self.relation_collection = Collection.create(name=relation_name, database=Client.instance().database, type=3)
+            except:
+                self.relation_collection = Collection.get_loaded_collection(name=relation_name)
 
             fields = self.relation_class._model_meta_data._fields
             fields[self.related_name] = ManyToManyField(to=model_class, related_name=None)
@@ -548,54 +550,37 @@ class ManyToManyField(ModelField):
             relation_name = self._get_relation_collection_name(model_class)
             Collection.remove(name=relation_name)
 
+    def on_save(self):
+        """
+        """
+
+        pass
+
     def _get_relation_collection_name(self, model_class):
         """
         """
 
         return 'relation_%s_%s' % ( model_class.get_collection_name(), self.relation_class.get_collection_name() )
 
-    # def dumps(self):
-    #     """
-    #     """
-    #
-    #     return u'%s' % self.relation_model.document
-    #
-    # def loads(self, model_id):
-    #     """
-    #     """
-    #
-    #     model = self.relation_class.objects.get(_id=model_id)
-    #     self.relation_model = model
-    #
-    # def validate(self):
-    #     """
-    #     """
-    #
-    #     if self.relation_model is None and self.null is False:
-    #         raise ManyToManyField.NotNullableFieldException()
-    #
-    #     if self.relation_model:
-    #         pass
-    #
-    # def set(self, *args, **kwargs):
-    #     """
-    #     """
-    #
-    #     if len(args) is 1:
-    #         relation_model = args[0]
-    #         self.relation_model = relation_model
-    #
-    # def get(self):
-    #     """
-    #     """
-    #
-    #     return self.relation_model
-    #
-    # def __eq__(self, other):
-    #     """
-    #     """
-    #
-    #     if super(ManyToManyField, self).__eq__(other):
-    #         return self.relation_model == other.relation_model
-    #     else:
-    #         return False
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            relation_model = args[0]
+            self.relation_model = relation_model
+
+    def get(self):
+        """
+        """
+
+        return self.relation_model
+
+    def __eq__(self, other):
+        """
+        """
+
+        if super(ManyToManyField, self).__eq__(other):
+            return self.relation_model == other.relation_model
+        else:
+            return False

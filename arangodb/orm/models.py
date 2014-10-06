@@ -281,23 +281,30 @@ class CollectionModel(object):
         for field_name in all_fields:
 
             local_field = all_fields[field_name]
-            is_field_required = local_field.required
 
-            if field_name in self._instance_meta_data._fields:
-                # Get field
-                field = self._instance_meta_data._fields[field_name]
-                # Validate content by field
-                field.validate()
-                # Get content
-                field_value = field.dumps()
-            else:
-                if not is_field_required:
-                    field_value = None
+            # Check if the field is saved in this collection
+            if local_field.__class__.is_saved_in_model:
+
+                is_field_required = local_field.required
+
+                if field_name in self._instance_meta_data._fields:
+                    # Get field
+                    field = self._instance_meta_data._fields[field_name]
+                    # Validate content by field
+                    field.validate()
+                    # Get content
+                    field_value = field.dumps()
                 else:
-                    raise CollectionModel.RequiredFieldNoValue()
+                    if not is_field_required:
+                        field_value = None
+                    else:
+                        raise CollectionModel.RequiredFieldNoValue()
 
+                self.document.set(key=field_name, value=field_value)
 
-            self.document.set(key=field_name, value=field_value)
+            # This field is saved somewhere else
+            else:
+                local_field.on_save()
 
         self.document.save()
 
