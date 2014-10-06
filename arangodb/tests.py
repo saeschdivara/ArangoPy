@@ -928,6 +928,7 @@ class ManyToManyFieldTestCase(unittest.TestCase):
         end_model2.save()
 
         start_model = StartModel()
+        start_model.others = [end_model1, end_model2]
         start_model.save()
 
 
