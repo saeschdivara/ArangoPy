@@ -916,8 +916,8 @@ class ManyToManyFieldTestCase(unittest.TestCase):
 
             others = ManyToManyField(to=EndModel, related_name='starters')
 
-        StartModel.init()
         EndModel.init()
+        StartModel.init()
 
         end_model1 = EndModel()
         end_model1.test_field = 'foo'

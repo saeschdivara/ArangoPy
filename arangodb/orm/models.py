@@ -156,6 +156,7 @@ class CollectionModel(object):
 
     objects = CollectionModelManager
 
+    _model_meta_data = None
     _instance_meta_data = None
 
     class RequiredFieldNoValue(Exception):
@@ -168,6 +169,29 @@ class CollectionModel(object):
 
         def __init__(self):
             self._fields = {}
+
+    @classmethod
+    def get_collection_fields(cls):
+        """
+        """
+
+        fields = []
+
+        for attribute in dir(cls):
+
+            attr_val = getattr(cls, attribute)
+            attr_cls = attr_val.__class__
+
+            # If it is a model field, call on init
+            if issubclass(attr_cls, ModelField):
+                fields.append(attr_val)
+
+        model_fields = cls._model_meta_data._fields
+        for field_key in  model_fields:
+            field = model_fields[field_key]
+            fields.append(field)
+
+        return fields
 
     @classmethod
     def init(cls):
@@ -194,15 +218,12 @@ class CollectionModel(object):
         except:
             pass # This is the case if init was called more than once
 
+        # Create meta data for collection
+        cls._model_meta_data = cls.MetaDataObj()
+
         # Go through all fields
-        for attribute in dir(cls):
-
-            attr_val = getattr(cls, attribute)
-            attr_cls = attr_val.__class__
-
-            # If it is a model field, call on init
-            if issubclass(attr_cls, ModelField):
-                attr_val.on_init(cls)
+        for attribute in cls.get_collection_fields():
+            attribute.on_init(cls)
 
     @classmethod
     def destroy(cls):
@@ -210,14 +231,8 @@ class CollectionModel(object):
         """
 
         # Go through all fields
-        for attribute in dir(cls):
-
-            attr_val = getattr(cls, attribute)
-            attr_cls = attr_val.__class__
-
-            # If it is a model field, call on init
-            if issubclass(attr_cls, ModelField):
-                attr_val.on_destroy(cls)
+        for attribute in cls.get_collection_fields():
+            attribute.on_destroy(cls)
 
         name = cls.get_collection_name()
         Collection.remove(name=name)

@@ -1,5 +1,6 @@
 from datetime import datetime, date
 from uuid import uuid4
+from arangodb.api import Collection, Client
 
 
 class ModelField(object):
@@ -526,14 +527,29 @@ class ManyToManyField(ModelField):
         #
         self.relation_class = to
         self.related_name = related_name
+        self.relation_collection = None
 
     def on_init(self, model_class):
         """
         """
 
-        # temp_obj = self.relation_class()
+        relation_name = self._get_relation_collection_name(model_class)
+        self.relation_collection = Collection.create(name=relation_name, database=Client.instance().database, type=3)
 
-        # temp_obj.__class__.__dict__[self.related_name] =  model_class
+        self.relation_class._model_meta_data._fields[self.related_name] = model_class
+
+    def on_destroy(self, model_class):
+        """
+        """
+
+        relation_name = self._get_relation_collection_name(model_class)
+        Collection.remove(name=relation_name)
+
+    def _get_relation_collection_name(self, model_class):
+        """
+        """
+
+        return 'relation_%s_%s' % ( model_class.get_collection_name(), self.relation_class.get_collection_name() )
 
     # def dumps(self):
     #     """
