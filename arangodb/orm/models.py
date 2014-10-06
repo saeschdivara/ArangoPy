@@ -202,7 +202,7 @@ class CollectionModel(object):
 
             # If it is a model field, call on init
             if issubclass(attr_cls, ModelField):
-                attr_val.on_init()
+                attr_val.on_init(cls)
 
     @classmethod
     def destroy(cls):
