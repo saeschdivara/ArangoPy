@@ -931,6 +931,26 @@ class ManyToManyFieldTestCase(unittest.TestCase):
         start_model.others = [end_model1, end_model2]
         start_model.save()
 
+        relation_collection_name = start_model.get_field(name='others')._get_relation_collection_name(StartModel)
+        col = Collection.get_loaded_collection(name=relation_collection_name)
+        relation_documents = col.documents()
+
+        self.assertEqual(len(relation_documents), 2)
+
+        rel1 = relation_documents[0]
+        rel2 = relation_documents[1]
+
+        # From is always the same
+        self.assertEqual(rel1._from, start_model.document.id)
+        self.assertEqual(rel2._from, start_model.document.id)
+
+        is_first_the_first_end_model = rel1._to == end_model1.document.id
+        is_first_the_second_end_model = rel1._to == end_model2.document.id
+        self.assertTrue(is_first_the_first_end_model or is_first_the_second_end_model)
+
+        is_second_the_first_end_model = rel2._to == end_model1.document.id
+        is_second_the_second_end_model = rel2._to == end_model2.document.id
+        self.assertTrue(is_second_the_first_end_model or is_second_the_second_end_model)
 
         StartModel.destroy()
         EndModel.destroy()
