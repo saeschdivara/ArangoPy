@@ -278,6 +278,8 @@ class CollectionModel(object):
 
         all_fields = self._instance_meta_data._fields
 
+        later_saved_fields = []
+
         for field_name in all_fields:
 
             local_field = all_fields[field_name]
@@ -304,9 +306,12 @@ class CollectionModel(object):
 
             # This field is saved somewhere else
             else:
-                local_field.on_save()
+                later_saved_fields.append(local_field)
 
         self.document.save()
+
+        for later_field in later_saved_fields:
+            later_field.on_save(self)
 
     def get_field(self, name):
         """

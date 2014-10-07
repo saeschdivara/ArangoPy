@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from findertools import select
 from uuid import uuid4
 from arangodb.api import Collection, Client
 
@@ -58,7 +59,7 @@ class ModelField(object):
 
         pass
 
-    def on_save(self):
+    def on_save(self, model_instance):
         """
         """
 
@@ -527,6 +528,10 @@ class ManyToManyField(ModelField):
         self.related_name = related_name
         self.relation_collection = None
 
+        # Data
+        self.unsaved_data = False
+        self.related_queryset = None
+
     def on_init(self, model_class):
         """
         """
@@ -542,6 +547,8 @@ class ManyToManyField(ModelField):
             fields = self.relation_class._model_meta_data._fields
             fields[self.related_name] = ManyToManyField(to=model_class, related_name=None)
 
+            self.related_queryset = self.relation_class.objects.all()
+
     def on_destroy(self, model_class):
         """
         """
@@ -550,11 +557,19 @@ class ManyToManyField(ModelField):
             relation_name = self._get_relation_collection_name(model_class)
             Collection.remove(name=relation_name)
 
-    def on_save(self):
+    def on_save(self, model_instance):
         """
         """
 
-        pass
+        if self.unsaved_data:
+            new_models = self.related_queryset._cache
+
+            for model in new_models:
+                related_model_document = model.document
+                model_document = model_instance.document
+
+                # Create relation
+                self.relation_collection.create_edge(from_doc=model_document, to_doc=related_model_document)
 
     def _get_relation_collection_name(self, model_class):
         """
@@ -567,20 +582,21 @@ class ManyToManyField(ModelField):
         """
 
         if len(args) is 1:
-            relation_model = args[0]
-            self.relation_model = relation_model
+            related_models = args[0]
+            self.related_queryset._cache = related_models
+            self.unsaved_data = True
 
     def get(self):
         """
         """
 
-        return self.relation_model
+        return self.related_queryset
 
     def __eq__(self, other):
         """
         """
 
         if super(ManyToManyField, self).__eq__(other):
-            return self.relation_model == other.relation_model
+            return self.related_queryset == other.related_queryset
         else:
             return False
