@@ -20,12 +20,13 @@ class CollectionQueryset(object):
         # Relations
         self._is_working_on_relations = False
         self._relations_start_model = None
+        self._relations_end_model = None
         self._relations_relation_collection = None
         # Cache
         self._has_cache = False
         self._cache = []
 
-    def get_field_relations(self, start_model, relation_collection):
+    def get_field_relations(self, relation_collection, start_model=None, end_model=None):
         """
         """
 
@@ -33,6 +34,7 @@ class CollectionQueryset(object):
         self._has_cache = False
 
         self._relations_start_model = start_model
+        self._relations_end_model = end_model
         self._relations_relation_collection = relation_collection
 
         return self
@@ -80,13 +82,21 @@ class CollectionQueryset(object):
         if self._is_working_on_relations:
 
             start_model = self._relations_start_model
+            end_model = self._relations_end_model
             relation_collection = self._relations_relation_collection
 
-            found_relations = Traveser.follow(
-                start_vertex=start_model.document.id,
-                edge_collection=relation_collection,
-                direction='outbound'
-            )
+            if start_model:
+                found_relations = Traveser.follow(
+                    start_vertex=start_model.document.id,
+                    edge_collection=relation_collection,
+                    direction='outbound'
+                )
+            else:
+                found_relations = Traveser.follow(
+                    start_vertex=end_model.document.id,
+                    edge_collection=relation_collection,
+                    direction='inbound'
+                )
 
             result = found_relations
 

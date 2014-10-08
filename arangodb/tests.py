@@ -1004,6 +1004,8 @@ class ManyToManyFieldTestCase(unittest.TestCase):
         is_second_the_second_end_model = rel2.document.id == end_model2.document.id
         self.assertTrue(is_second_the_first_end_model or is_second_the_second_end_model)
 
+        print(len(end_model1.starters))
+
         StartModel.destroy()
         EndModel.destroy()
 

@@ -545,7 +545,10 @@ class ManyToManyField(ModelField):
                 self.relation_collection = Collection.get_loaded_collection(name=relation_name)
 
             fields = self.relation_class._model_meta_data._fields
-            fields[self.related_name] = ManyToManyField(to=model_class, related_name=None)
+            otherside_field = ManyToManyField(to=model_class, related_name=None)
+            fields[self.related_name] = otherside_field
+
+            otherside_field.related_queryset = self.relation_class.objects.all()
 
             self.related_queryset = self.relation_class.objects.all()
 
@@ -596,10 +599,16 @@ class ManyToManyField(ModelField):
 
             model_class = self.model_instance.__class__
 
-            return self.related_queryset.get_field_relations(
-                start_model=self.model_instance,
-                relation_collection=self._get_relation_collection_name(model_class)
-            )
+            if self.related_name is None:
+                return self.related_queryset.get_field_relations(
+                    end_model=self.model_instance,
+                    relation_collection=self._get_relation_collection_name(model_class)
+                )
+            else:
+                return self.related_queryset.get_field_relations(
+                    start_model=self.model_instance,
+                    relation_collection=self._get_relation_collection_name(model_class)
+                )
 
     def __eq__(self, other):
         """
