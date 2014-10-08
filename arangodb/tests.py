@@ -753,7 +753,7 @@ class UuidFieldTestCase(unittest.TestCase):
 
         self.assertEqual(uuid.text, None)
 
-        uuid.on_create()
+        uuid.on_create(model_instance=None)
 
         self.assertTrue(isinstance(uuid.text, basestring))
 
@@ -951,6 +951,44 @@ class ManyToManyFieldTestCase(unittest.TestCase):
         is_second_the_first_end_model = rel2._to == end_model1.document.id
         is_second_the_second_end_model = rel2._to == end_model2.document.id
         self.assertTrue(is_second_the_first_end_model or is_second_the_second_end_model)
+
+        StartModel.destroy()
+        EndModel.destroy()
+
+    def test_getting_related_objects(self):
+
+
+        class EndModel(CollectionModel):
+
+            test_field = CharField()
+
+
+        class StartModel(CollectionModel):
+            collection_name = 'never_to_be_seen_again'
+
+            others = ManyToManyField(to=EndModel, related_name='starters')
+
+        EndModel.init()
+        StartModel.init()
+
+        end_model1 = EndModel()
+        end_model1.test_field = 'foo'
+        end_model1.save()
+
+        end_model2 = EndModel()
+        end_model2.test_field = 'bar'
+        end_model2.save()
+
+        end_model3 = EndModel()
+        end_model3.test_field = 'extra'
+        end_model3.save()
+
+        start_model = StartModel()
+        start_model.others = [end_model1, end_model2]
+        start_model.save()
+
+        start_model = StartModel.objects.get(_id=start_model.document.id)
+        print(start_model.others)
 
         StartModel.destroy()
         EndModel.destroy()
