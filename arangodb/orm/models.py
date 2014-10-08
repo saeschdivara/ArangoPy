@@ -2,7 +2,7 @@ import copy
 
 from arangodb.api import Collection
 from arangodb.orm.fields import ModelField
-from arangodb.query.advanced import Query
+from arangodb.query.advanced import Query, Traveser
 from arangodb.query.simple import SimpleQuery
 
 
@@ -20,6 +20,18 @@ class CollectionQueryset(object):
         # Cache
         self._has_cache = False
         self._cache = []
+
+    def get_field_relations(self, start_model, relation_collection):
+        """
+        """
+
+        found_relations = Traveser.follow(
+            start_vertex=start_model.document.id,
+            edge_collection=relation_collection,
+            direction='outbound'
+        )
+
+        return found_relations
 
     def all(self):
         """
@@ -268,7 +280,7 @@ class CollectionModel(object):
             # Set model instance on the field
             field._model_instance = self
             # Trigger on create so the field knows it
-            field.on_create()
+            field.on_create(model_instance=self)
             # Save the new field in the meta data
             self._instance_meta_data._fields[attribute] = field
 

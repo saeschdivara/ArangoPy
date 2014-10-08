@@ -53,11 +53,11 @@ class ModelField(object):
 
         pass
 
-    def on_create(self):
+    def on_create(self, model_instance):
         """
         """
 
-        pass
+        self.model_instance = model_instance
 
     def on_save(self, model_instance):
         """
@@ -247,7 +247,7 @@ class UuidField(CharField):
 
         self.auto_create = auto_create
 
-    def on_create(self):
+    def on_create(self, model_instance):
         """
         """
 
@@ -590,7 +590,16 @@ class ManyToManyField(ModelField):
         """
         """
 
-        return self.related_queryset
+        if self.unsaved_data is True:
+            return self.related_queryset
+        else:
+
+            model_class = self.model_instance.__class__
+
+            return self.related_queryset.get_field_relations(
+                start_model=self.model_instance,
+                relation_collection=self._get_relation_collection_name(model_class)
+            )
 
     def __eq__(self, other):
         """
