@@ -17,6 +17,10 @@ class CollectionQueryset(object):
         self._manager = manager
         self._collection = manager._model_class.collection_instance
         self._query = Query()
+        # Relations
+        self._is_working_on_relations = False
+        self._relations_start_model = None
+        self._relations_relation_collection = None
         # Cache
         self._has_cache = False
         self._cache = []
@@ -25,13 +29,13 @@ class CollectionQueryset(object):
         """
         """
 
-        found_relations = Traveser.follow(
-            start_vertex=start_model.document.id,
-            edge_collection=relation_collection,
-            direction='outbound'
-        )
+        self._is_working_on_relations = True
+        self._has_cache = False
 
-        return found_relations
+        self._relations_start_model = start_model
+        self._relations_relation_collection = relation_collection
+
+        return self
 
     def all(self):
         """
@@ -73,7 +77,21 @@ class CollectionQueryset(object):
         self._cache = [] # TODO: Check how to best clear this list
         self._has_cache = True
 
-        result = self._query.execute()
+        if self._is_working_on_relations:
+
+            start_model = self._relations_start_model
+            relation_collection = self._relations_relation_collection
+
+            found_relations = Traveser.follow(
+                start_vertex=start_model.document.id,
+                edge_collection=relation_collection,
+                direction='outbound'
+            )
+
+            result = found_relations
+
+        else:
+            result = self._query.execute()
 
         for doc in result:
             model = self._manager._create_model_from_doc(doc=doc)

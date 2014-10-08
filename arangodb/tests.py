@@ -988,22 +988,24 @@ class ManyToManyFieldTestCase(unittest.TestCase):
         start_model.save()
 
         start_model = StartModel.objects.get(_id=start_model.document.id)
-        print(start_model.others)
+
+        related_models = start_model.others
+
+        self.assertEqual(len(related_models), 2)
+
+        rel1 = related_models[0]
+        rel2 = related_models[1]
+
+        is_first_the_first_end_model = rel1.document.id == end_model1.document.id
+        is_first_the_second_end_model = rel1.document.id == end_model2.document.id
+        self.assertTrue(is_first_the_first_end_model or is_first_the_second_end_model)
+
+        is_second_the_first_end_model = rel2.document.id == end_model1.document.id
+        is_second_the_second_end_model = rel2.document.id == end_model2.document.id
+        self.assertTrue(is_second_the_first_end_model or is_second_the_second_end_model)
 
         StartModel.destroy()
         EndModel.destroy()
-
-    #
-    # def test_equals(self):
-    #     model = ForeignkeyFieldTestCase.TestModel()
-    #
-    #     field1 = ForeignKeyField(to=CollectionModel)
-    #     field1.set(model)
-    #
-    #     field2 = ForeignKeyField(to=CollectionModel)
-    #     field2.set(model)
-    #
-    #     self.assertEqual(field1, field2)
 
 
 class TransactionTestCase(ExtendedTestCase):
