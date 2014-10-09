@@ -334,6 +334,36 @@ class SimpleQueryTestCase(ExtendedTestCase):
         self.assertDocumentsEqual(doc, self.col1_doc1)
 
 
+class SimpleIndexQueryTestCase(ExtendedTestCase):
+    def setUp(self):
+        self.database_name = 'testcase_simple_index_query_123'
+        self.db = Database.create(name=self.database_name)
+
+        # Create test data
+        self.test_1_col = self.db.create_collection('foo_1')
+        self.test_2_col = self.db.create_collection('foo_2')
+
+        self.col1_doc1 = self.test_1_col.create_document()
+        self.col1_doc1.ta='fa'
+        self.col1_doc1.bla='aaa'
+        self.col1_doc1.save()
+
+        self.col1_doc2 = self.test_1_col.create_document()
+        self.col1_doc2.ta='fa'
+        self.col1_doc2.bla='xxx'
+        self.col1_doc2.save()
+
+        self.col2_doc1 = self.test_2_col.create_document()
+        self.col2_doc1.save()
+
+    def tearDown(self):
+        # They need to be deleted
+        Collection.remove(name=self.test_1_col.name)
+        Collection.remove(name=self.test_2_col.name)
+
+        Database.remove(name=self.database_name)
+
+
 class TraveserTestCase(ExtendedTestCase):
     def setUp(self):
         self.database_name = 'testcase_traverser_query_123'
