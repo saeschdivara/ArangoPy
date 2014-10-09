@@ -60,6 +60,7 @@ First version which had the following features:
 - System
 - Replication
 - Endpoint
+- Better traversal query
 - ORM additional fields:
     - URL
     - MailAddress
