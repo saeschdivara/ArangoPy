@@ -258,7 +258,7 @@ class ChoiceField(ModelField):
     """
     """
 
-    def __init__(self, choices, **kwargs):
+    def __init__(self, choices, multiple=False, **kwargs):
         """
         """
 
