@@ -11,7 +11,7 @@ from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, Datetim
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
-from arangodb.query.simple import SimpleQuery
+from arangodb.query.simple import SimpleQuery, SimpleIndexQuery
 from arangodb.transaction.controller import Transaction, TransactionController
 from arangodb.user import User
 
@@ -341,27 +341,41 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         # Create test data
         self.test_1_col = self.db.create_collection('foo_1')
-        self.test_2_col = self.db.create_collection('foo_2')
+
+        self.hash_index = Index(self.test_1_col, HashIndex(fields=[
+            'username'
+        ]))
+
+        self.hash_index.save()
 
         self.col1_doc1 = self.test_1_col.create_document()
-        self.col1_doc1.ta='fa'
+        self.col1_doc1.username='surgent'
         self.col1_doc1.bla='aaa'
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
-        self.col1_doc2.ta='fa'
+        self.col1_doc2.username='name killer'
         self.col1_doc2.bla='xxx'
         self.col1_doc2.save()
 
-        self.col2_doc1 = self.test_2_col.create_document()
-        self.col2_doc1.save()
-
     def tearDown(self):
+        # Delete index
+        self.hash_index.delete()
+
         # They need to be deleted
         Collection.remove(name=self.test_1_col.name)
-        Collection.remove(name=self.test_2_col.name)
 
         Database.remove(name=self.database_name)
+
+    def test_get_only_by_hash_index(self):
+        """
+        """
+
+        doc1 = SimpleIndexQuery.get_by_example(collection=self.test_1_col, example_data={
+            'username': self.col1_doc1.username
+        })
+
+        self.assertDocumentsEqual(doc1, self.col1_doc1)
 
 
 class TraveserTestCase(ExtendedTestCase):
