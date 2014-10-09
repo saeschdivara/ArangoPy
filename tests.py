@@ -6,7 +6,7 @@ from arangodb.tests import DatabaseTestCase, CollectionTestCase, AqlQueryTestCas
     CollectionModelTestCase, CollectionModelForeignKeyFieldTestCase, TraveserTestCase, TransactionTestCase, \
     CharFieldTestCase, NumberFieldTestCase, DateFieldTestCase, DatetimeFieldTestCase, ForeignkeyFieldTestCase, \
     CollectionModelManagerTestCase, IndexTestCase, UserTestCase, BooleanFieldTestCase, UuidFieldTestCase, \
-    ManyToManyFieldTestCase, SimpleIndexQueryTestCase
+    ManyToManyFieldTestCase, SimpleIndexQueryTestCase, ChoiceFieldTestCase
 
 
 # Variables
@@ -29,6 +29,7 @@ test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelF
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(BooleanFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CharFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(UuidFieldTestCase) )
+test_suites.append( unittest.TestLoader().loadTestsFromTestCase(ChoiceFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(NumberFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(DateFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(DatetimeFieldTestCase) )

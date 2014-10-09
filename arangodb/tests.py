@@ -802,6 +802,20 @@ class UuidFieldTestCase(unittest.TestCase):
         self.assertTrue(isinstance(uuid.text, basestring))
 
 
+class ChoiceFieldTestCase(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_equals(self):
+
+        pass
+
+
+
 class NumberFieldTestCase(unittest.TestCase):
 
     def setUp(self):
