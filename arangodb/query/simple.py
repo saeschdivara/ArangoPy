@@ -128,3 +128,24 @@ class SimpleQuery(object):
 
         else:
             return create_document_from_result_dict(result_dict['result'][0], api)
+
+
+class SimpleIndexQuery(SimpleQuery):
+    """
+    """
+
+    @classmethod
+    def get_by_example_hash(cls, collection, index_id, example_data, allow_multiple=False, skip=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'index': index_id,
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='by-example-hash',
+                                    collection=collection, example=example_data, multiple=allow_multiple,
+                                    **kwargs)
+
