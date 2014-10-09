@@ -1,5 +1,4 @@
 from datetime import datetime, date
-from findertools import select
 from uuid import uuid4
 from arangodb.api import Collection, Client
 
