@@ -254,6 +254,71 @@ class UuidField(CharField):
             self.text = str(uuid4())
 
 
+class ChoiceField(ModelField):
+    """
+    """
+
+    def __init__(self, choices, **kwargs):
+        """
+        """
+
+        super(ChoiceField, self).__init__(**kwargs)
+
+        self.choices = choices
+
+        # If null is allowed, default value is None
+        if self.null and not self.default:
+            self.choice_value = None
+        else:
+            # If default value was set
+            if self.default:
+                self.choice_value = self.default
+            else:
+                self.choice_value = u''
+
+    def dumps(self):
+        """
+        """
+
+        return self.choice_value
+
+    def loads(self, string_val):
+        """
+        """
+
+        self.choice_value = string_val
+
+    def validate(self):
+        """
+        """
+
+        if self.choice_value is None and self.null is False:
+            raise ChoiceField.NotNullableFieldException()
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            choice_value = args[0]
+            self.choice_value = choice_value
+
+    def get(self):
+        """
+        """
+
+        return self.choice_value
+
+    def __eq__(self, other):
+        """
+        """
+
+        if super(ChoiceField, self).__eq__(other):
+            return self.choice_value == other.choice_value
+        else:
+            return False
+
+
 class NumberField(ModelField):
 
     def __init__(self, **kwargs):
