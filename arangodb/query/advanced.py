@@ -408,8 +408,6 @@ class Traveser(object):
             'direction': direction,
         }
 
-        print(request_data)
-
         api = Client.instance().api
         result_dict = api.traversal.post(data=request_data)
         results = result_dict['result']['visited']

@@ -548,7 +548,9 @@ class ManyToManyField(ModelField):
             otherside_field = ManyToManyField(to=model_class, related_name=None)
             fields[self.related_name] = otherside_field
 
+            # Configure other side field
             otherside_field.related_queryset = self.relation_class.objects.all()
+            otherside_field.relation_collection = self.relation_collection
 
             self.related_queryset = self.relation_class.objects.all()
 
@@ -597,17 +599,17 @@ class ManyToManyField(ModelField):
             return self.related_queryset
         else:
 
-            model_class = self.model_instance.__class__
-
             if self.related_name is None:
                 return self.related_queryset.get_field_relations(
                     end_model=self.model_instance,
-                    relation_collection=self._get_relation_collection_name(model_class)
+                    relation_collection=self.relation_collection.name,
+                    related_model_class=self.relation_class
                 )
             else:
                 return self.related_queryset.get_field_relations(
                     start_model=self.model_instance,
-                    relation_collection=self._get_relation_collection_name(model_class)
+                    relation_collection=self.relation_collection.name,
+                    related_model_class=self.relation_class
                 )
 
     def __eq__(self, other):

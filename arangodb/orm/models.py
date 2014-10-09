@@ -22,11 +22,12 @@ class CollectionQueryset(object):
         self._relations_start_model = None
         self._relations_end_model = None
         self._relations_relation_collection = None
+        self._related_model_class = None
         # Cache
         self._has_cache = False
         self._cache = []
 
-    def get_field_relations(self, relation_collection, start_model=None, end_model=None):
+    def get_field_relations(self, relation_collection, related_model_class, start_model=None, end_model=None):
         """
         """
 
@@ -36,6 +37,7 @@ class CollectionQueryset(object):
         self._relations_start_model = start_model
         self._relations_end_model = end_model
         self._relations_relation_collection = relation_collection
+        self._related_model_class = related_model_class
 
         return self
 
@@ -99,12 +101,14 @@ class CollectionQueryset(object):
                 )
 
             result = found_relations
+            result_class = self._related_model_class
 
         else:
             result = self._query.execute()
+            result_class = self._manager._model_class
 
         for doc in result:
-            model = self._manager._create_model_from_doc(doc=doc)
+            model = self._manager._create_model_from_doc(doc=doc, model_class=result_class)
             self._cache.append(model)
 
     def __getitem__(self, item):
@@ -158,7 +162,7 @@ class CollectionModelManager(object):
 
         return queryset
 
-    def _create_model_from_doc(self, doc):
+    def _create_model_from_doc(self, doc, model_class=None):
         """
         """
 
@@ -166,16 +170,19 @@ class CollectionModelManager(object):
 
         attributes = doc.get_attributes()
 
-        model = self._create_model_from_dict(attribute_dict=attributes)
+        model = self._create_model_from_dict(attribute_dict=attributes, model_class=model_class)
         model.document = doc
 
         return model
 
-    def _create_model_from_dict(self, attribute_dict):
+    def _create_model_from_dict(self, attribute_dict, model_class=None):
         """
         """
 
-        model = self._model_class()
+        if model_class:
+            model = model_class()
+        else:
+            model = self._model_class()
 
         attributes = attribute_dict
         for attribute_name in attributes:
