@@ -48,11 +48,8 @@ First version which had the following features:
 - Better code documentation
 - Index for model fields
 - Index queries
-- HTTP exception handling
-- Document revision
 - ORM additional fields:
     - Choice
-    - NumberRange
     - ManyToMany
 
 ### 0.5
@@ -62,6 +59,11 @@ First version which had the following features:
 - Endpoint
 - Better traversal query
 - ORM additional fields:
+    - NumberRange
     - URL
     - MailAddress
     - Password
+
+### 0.6
+- HTTP exception handling
+- Document revision
