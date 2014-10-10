@@ -368,9 +368,6 @@ class NumberField(ModelField):
         if self.number is None and self.null is False:
             raise NumberField.NotNullableFieldException()
 
-        if self.number:
-            pass
-
     def set(self, *args, **kwargs):
         """
         """
