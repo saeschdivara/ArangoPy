@@ -301,7 +301,17 @@ class ChoiceField(ModelField):
 
         if len(args) is 1:
             choice_value = args[0]
-            self.choice_value = choice_value
+
+            has_match = False
+
+            for choice_pair in self.choices:
+                if choice_pair[1] == choice_value:
+                    has_match = True
+
+            if has_match:
+                self.choice_value = choice_value
+            else:
+                raise ChoiceField.WrongInputTypeException()
 
     def get(self):
         """

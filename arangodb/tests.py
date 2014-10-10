@@ -7,7 +7,7 @@ from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField, \
-    UuidField, ManyToManyField
+    UuidField, ManyToManyField, ChoiceField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -809,6 +809,26 @@ class ChoiceFieldTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_field_validation(self):
+
+        choice = ChoiceField(choices=[
+            ('DESCRIPTION', 'value'),
+            ('DESCRIPTION 2', 'value2'),
+        ])
+
+        had_exception = False
+
+        try:
+            choice.set('not_valid_value')
+        except Exception as err:
+            had_exception = True
+
+
+        self.assertTrue(had_exception, 'The value is not valid')
+
+        choice.set('value2')
+        self.assertTrue(True, 'The value is valid')
 
     def test_equals(self):
 
