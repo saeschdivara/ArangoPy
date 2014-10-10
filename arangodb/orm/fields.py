@@ -292,6 +292,15 @@ class ChoiceField(ModelField):
         """
         """
 
+        has_match = False
+
+        for choice_pair in self.choices:
+            if choice_pair[1] == self.choice_value:
+                has_match = True
+
+        if not has_match:
+            raise ChoiceField.WrongInputTypeException()
+
         if self.choice_value is None and self.null is False:
             raise ChoiceField.NotNullableFieldException()
 
@@ -301,17 +310,9 @@ class ChoiceField(ModelField):
 
         if len(args) is 1:
             choice_value = args[0]
+            self.choice_value = choice_value
 
-            has_match = False
-
-            for choice_pair in self.choices:
-                if choice_pair[1] == choice_value:
-                    has_match = True
-
-            if has_match:
-                self.choice_value = choice_value
-            else:
-                raise ChoiceField.WrongInputTypeException()
+            self.validate()
 
     def get(self):
         """

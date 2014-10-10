@@ -832,8 +832,37 @@ class ChoiceFieldTestCase(unittest.TestCase):
 
     def test_equals(self):
 
-        pass
+        choice1 = ChoiceField(choices=[
+            ('DESCRIPTION', 'value'),
+            ('DESCRIPTION 2', 'value2'),
+        ])
 
+        choice1.set('value')
+
+        choice2 = ChoiceField(choices=[
+            ('DESCRIPTION', 'value'),
+            ('DESCRIPTION 2', 'value2'),
+        ])
+
+        choice2.set('value')
+
+        self.assertEqual(choice1, choice2)
+
+    def test_none_validation(self):
+
+        choice = ChoiceField(choices=[
+            ('DESCRIPTION', 'value'),
+            ('DESCRIPTION 2', 'value2'),
+        ], null=False)
+
+        had_exception = False
+
+        try:
+            choice.validate()
+        except:
+            had_exception = True
+
+        self.assertTrue(had_exception, 'The value cannot be None')
 
 
 class NumberFieldTestCase(unittest.TestCase):
