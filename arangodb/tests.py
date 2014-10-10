@@ -371,7 +371,9 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         """
         """
 
-        doc1 = SimpleIndexQuery.get_by_example(collection=self.test_1_col, example_data={
+        doc1 = SimpleIndexQuery.get_by_example_hash(collection=self.test_1_col,
+                                                    index_id=self.hash_index.index_type_obj.id,
+                                                    example_data={
             'username': self.col1_doc1.username
         })
 
