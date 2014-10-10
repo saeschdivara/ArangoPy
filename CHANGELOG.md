@@ -53,8 +53,8 @@ First version which had the following features:
     - ManyToMany
 
 ### 0.5
+- Bitarray index
 - Batch execution
-- System
 - Replication
 - Endpoint
 - Better traversal query
@@ -65,5 +65,6 @@ First version which had the following features:
     - Password
 
 ### 0.6
+- System
 - HTTP exception handling
 - Document revision
