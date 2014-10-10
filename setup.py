@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from arangodb import get_version
 
 setup(
     name='ArangoPy',
