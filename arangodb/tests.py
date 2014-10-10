@@ -781,6 +781,13 @@ class BooleanFieldTestCase(unittest.TestCase):
 
         self.assertEqual(boolean1, boolean2)
 
+    def test_equal_with_wrong_class(self):
+
+        boolean1 = BooleanField()
+        boolean1.set(False)
+
+        self.assertTrue( not(boolean1 == False) )
+
 
 class CharFieldTestCase(unittest.TestCase):
 
