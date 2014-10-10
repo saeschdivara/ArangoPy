@@ -272,11 +272,22 @@ class Collection(object):
         else:
             self.id = '0'
 
+    def save(self):
+        """
+        """
+
+        data = {
+            'waitForSync': self.waitForSync,
+            'journalSize': self.journalSize,
+        }
+
+        self.resource(self.name).properties.put(data)
+
     def get(self):
         """
         """
 
-        data = self.resource.get()
+        data = self.resource(self.name).properties.get()
 
         self.set_data(**data)
 

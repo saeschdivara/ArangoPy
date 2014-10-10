@@ -92,6 +92,22 @@ class CollectionTestCase(unittest.TestCase):
 
         Collection.remove(name=collection_name)
 
+    def test_getting_new_info_for_collection(self):
+
+        collection_name = 'test_foo_123'
+
+        col = Collection.create(name=collection_name)
+
+        retrieved_col = Collection.get_loaded_collection(name=collection_name)
+        retrieved_col.set_data(waitForSync=True)
+        retrieved_col.save()
+
+        col.get()
+
+        self.assertEqual(col.waitForSync, True)
+
+        Collection.remove(name=collection_name)
+
 
 class DocumentTestCase(unittest.TestCase):
     def setUp(self):
