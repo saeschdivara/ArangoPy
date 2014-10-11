@@ -362,20 +362,34 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
             'username'
         ]))
 
+        self.geo_index = Index(self.test_1_col, GeoIndex(fields=['position'], geo_json=True))
+
+        self.geo_index.save()
         self.hash_index.save()
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.username='surgent'
-        self.col1_doc1.bla='aaa'
+        self.col1_doc1.position='41.40338, 2.17403'
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
         self.col1_doc2.username='name killer'
-        self.col1_doc2.bla='xxx'
+        self.col1_doc2.position='45.40338, 2.17403'
         self.col1_doc2.save()
+
+        self.col1_doc3 = self.test_1_col.create_document()
+        self.col1_doc3.username='fa boor'
+        self.col1_doc3.position='45.40338, 6.17403'
+        self.col1_doc3.save()
+
+        self.col1_doc3 = self.test_1_col.create_document()
+        self.col1_doc3.username='fa bar'
+        self.col1_doc3.position='80.40338, 22.17403'
+        self.col1_doc3.save()
 
     def tearDown(self):
         # Delete index
+        self.geo_index.delete()
         self.hash_index.delete()
 
         # They need to be deleted
@@ -394,6 +408,10 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         })
 
         self.assertDocumentsEqual(doc1, self.col1_doc1)
+
+    def test_near_position(self):
+        """
+        """
 
 
 class TraveserTestCase(ExtendedTestCase):
