@@ -2,11 +2,7 @@
 import unittest
 
 # Test suites
-from arangodb.tests import DatabaseTestCase, CollectionTestCase, AqlQueryTestCase, DocumentTestCase, SimpleQueryTestCase, \
-    CollectionModelTestCase, CollectionModelForeignKeyFieldTestCase, TraveserTestCase, TransactionTestCase, \
-    CharFieldTestCase, NumberFieldTestCase, DateFieldTestCase, DatetimeFieldTestCase, ForeignkeyFieldTestCase, \
-    CollectionModelManagerTestCase, IndexTestCase, UserTestCase, BooleanFieldTestCase, UuidFieldTestCase, \
-    ManyToManyFieldTestCase, SimpleIndexQueryTestCase, ChoiceFieldTestCase
+from arangodb.tests import *
 
 
 # Variables
