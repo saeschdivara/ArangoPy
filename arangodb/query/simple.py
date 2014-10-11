@@ -149,3 +149,40 @@ class SimpleIndexQuery(SimpleQuery):
                                     collection=collection, example=example_data, multiple=allow_multiple,
                                     **kwargs)
 
+    @classmethod
+    def near(cls, collection, latitude, longitude, index_id, distance=None, skip=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'geo': index_id,
+            'latitude': latitude,
+            'longitude': longitude,
+            'distance': distance,
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='within',
+                                    collection=collection, multiple=True,
+                                    **kwargs)
+
+    @classmethod
+    def within(cls, collection, latitude, longitude, radius, index_id, distance=None, skip=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'geo': index_id,
+            'latitude': latitude,
+            'longitude': longitude,
+            'radius': radius,
+            'distance': distance,
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='within',
+                                    collection=collection, multiple=True,
+                                    **kwargs)
+
