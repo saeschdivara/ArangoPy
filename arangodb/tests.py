@@ -362,30 +362,38 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
             'username'
         ]))
 
-        self.geo_index = Index(self.test_1_col, GeoIndex(fields=['position'], geo_json=True))
+        self.geo_index = Index(self.test_1_col, GeoIndex(fields=['latitude', 'longitude'], geo_json=False))
 
         self.geo_index.save()
         self.hash_index.save()
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.username='surgent'
-        self.col1_doc1.position='41.40338, 2.17403'
+        self.col1_doc1.city= 'Paris'
+        self.col1_doc1.latitude= 48.853333
+        self.col1_doc1.longitude= 2.348611
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
         self.col1_doc2.username='name killer'
-        self.col1_doc2.position='45.40338, 2.17403'
+        self.col1_doc2.city='Koeln'
+        self.col1_doc2.latitude= 50.933333
+        self.col1_doc2.longitude=6.95
         self.col1_doc2.save()
 
         self.col1_doc3 = self.test_1_col.create_document()
         self.col1_doc3.username='fa boor'
-        self.col1_doc3.position='45.40338, 6.17403'
+        self.col1_doc3.city='Berlin'
+        self.col1_doc3.latitude=52.524167
+        self.col1_doc3.longitude=13.410278
         self.col1_doc3.save()
 
-        self.col1_doc3 = self.test_1_col.create_document()
-        self.col1_doc3.username='fa bar'
-        self.col1_doc3.position='80.40338, 22.17403'
-        self.col1_doc3.save()
+        self.col1_doc4 = self.test_1_col.create_document()
+        self.col1_doc4.username='haba'
+        self.col1_doc4.city='Rome'
+        self.col1_doc4.latitude=41.891667
+        self.col1_doc4.longitude=12.511111
+        self.col1_doc4.save()
 
     def tearDown(self):
         # Delete index
@@ -409,9 +417,28 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.assertDocumentsEqual(doc1, self.col1_doc1)
 
-    def test_near_position(self):
+    def test_within_position(self):
         """
         """
+
+        # 52.370278, 9.733056 => Hannover (Germany)
+
+        radius_kilometers = 400
+        radius_meters = radius_kilometers * 1000
+
+        in_radius_docs = SimpleIndexQuery.within(
+            collection=self.test_1_col,
+            latitude= 52.370278,
+            longitude=9.733056,
+            radius=radius_meters,
+            index_id=self.geo_index.index_type_obj.id
+        )
+
+        koeln_doc = in_radius_docs[0]
+        berlin_doc = in_radius_docs[1]
+
+        self.assertDocumentsEqual(koeln_doc, self.col1_doc2)
+        self.assertDocumentsEqual(berlin_doc, self.col1_doc3)
 
 
 class TraveserTestCase(ExtendedTestCase):
