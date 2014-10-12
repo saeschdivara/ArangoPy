@@ -434,11 +434,36 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
             index_id=self.geo_index.index_type_obj.id
         )
 
+        self.assertEqual(len(in_radius_docs), 2)
+
         koeln_doc = in_radius_docs[0]
         berlin_doc = in_radius_docs[1]
 
         self.assertDocumentsEqual(koeln_doc, self.col1_doc2)
         self.assertDocumentsEqual(berlin_doc, self.col1_doc3)
+
+
+    def test_near_position(self):
+        """
+        """
+
+        # 50.850278, 4.348611 => Brussels
+
+        near_docs = SimpleIndexQuery.near(
+            collection=self.test_1_col,
+            latitude=50.850278,
+            longitude=4.348611,
+            index_id=self.geo_index.index_type_obj.id,
+            limit=2
+        )
+
+        self.assertEqual(len(near_docs), 2)
+
+        koeln_doc = near_docs[0]
+        paris_doc = near_docs[1]
+
+        self.assertDocumentsEqual(koeln_doc, self.col1_doc2)
+        self.assertDocumentsEqual(paris_doc, self.col1_doc1)
 
 
 class TraveserTestCase(ExtendedTestCase):

@@ -163,7 +163,7 @@ class SimpleIndexQuery(SimpleQuery):
             'limit': limit,
         }
 
-        return cls._construct_query(name='within',
+        return cls._construct_query(name='near',
                                     collection=collection, multiple=True,
                                     **kwargs)
 
