@@ -8,6 +8,9 @@ class Index(object):
     @classmethod
     def remove(cls, id):
         """
+            Deletes an index with id
+
+            :param id string/document-handle
         """
 
         api = Client.instance().api
@@ -15,6 +18,10 @@ class Index(object):
 
     def __init__(self, collection, index_type_obj):
         """
+            Constructs wrapper for general index creation and deletion
+
+            :param collection Collection
+            :param index_type_obj BaseIndex Object of a index sub-class
         """
 
         self.collection = collection
@@ -22,6 +29,7 @@ class Index(object):
 
     def save(self):
         """
+            Creates this index in the collection if it hasn't been already created
         """
 
         api = Client.instance().api
@@ -47,12 +55,14 @@ class Index(object):
 
     def delete(self):
         """
+            Deletes this index
         """
 
         Index.remove(self.index_type_obj.id)
 
     def overwrite(self):
         """
+            Deletes and creates again this index so it will have the current configuration
         """
 
         self.delete()
