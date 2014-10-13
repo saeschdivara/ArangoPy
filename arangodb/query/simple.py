@@ -150,6 +150,21 @@ class SimpleIndexQuery(SimpleQuery):
                                     **kwargs)
 
     @classmethod
+    def get_by_example_skiplist(cls, collection, index_id, example_data, allow_multiple=True, skip=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'index': index_id,
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='by-example-skiplist',
+                                    collection=collection, example=example_data, multiple=allow_multiple,
+                                    **kwargs)
+
+    @classmethod
     def fulltext(cls, collection, attribute, example_text, index_id, skip=None, limit=None):
         """
         """
