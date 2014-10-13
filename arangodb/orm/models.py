@@ -304,6 +304,9 @@ class CollectionModel(object):
             # Save index
             created_index.save()
 
+            if not created_index.index_type_obj.is_new:
+                created_index.overwrite()
+
     @classmethod
     def destroy(cls):
         """

@@ -50,3 +50,10 @@ class Index(object):
         """
 
         Index.remove(self.index_type_obj.id)
+
+    def overwrite(self):
+        """
+        """
+
+        self.delete()
+        self.save()

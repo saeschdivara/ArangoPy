@@ -1480,8 +1480,7 @@ class IndexTestCase(ExtendedTestCase):
 
         index.index_type_obj.unique = False
 
-        index.delete()
-        index.save()
+        index.overwrite()
 
         has_exception = False
 
