@@ -165,6 +165,25 @@ class SimpleIndexQuery(SimpleQuery):
                                     **kwargs)
 
     @classmethod
+    def range(cls, collection, attribute, left, right, closed, index_id, skip=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'index': index_id,
+            'attribute': attribute,
+            'left': left,
+            'right': right,
+            'closed': closed,
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='range',
+                                    collection=collection, multiple=True,
+                                    **kwargs)
+
+    @classmethod
     def fulltext(cls, collection, attribute, example_text, index_id, skip=None, limit=None):
         """
         """
