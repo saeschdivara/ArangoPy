@@ -160,20 +160,13 @@ class BooleanField(ModelField):
             return False
 
 
-class CharField(ModelField):
+class TextField(ModelField):
 
-    class TooLongStringException(Exception):
-        """
-        String is too long
-        """
-
-    def __init__(self, max_length=255, **kwargs):
+    def __init__(self, **kwargs):
         """
         """
 
-        super(CharField, self).__init__(**kwargs)
-
-        self.max_length = max_length
+        super(TextField, self).__init__(**kwargs)
 
         # If null is allowed, default value is None
         if self.null and not self.default:
@@ -202,11 +195,7 @@ class CharField(ModelField):
         """
 
         if self.text is None and self.null is False:
-            raise CharField.NotNullableFieldException()
-
-        if self.text:
-            if len(self.text) > self.max_length:
-                raise CharField.TooLongStringException()
+            raise TextField.NotNullableFieldException()
 
     def set(self, *args, **kwargs):
         """
@@ -218,7 +207,7 @@ class CharField(ModelField):
             if isinstance(text, basestring):
                 self.text = u'%s' % args[0]
             else:
-                raise CharField.WrongInputTypeException()
+                raise TextField.WrongInputTypeException()
 
     def get(self):
         """
@@ -230,10 +219,36 @@ class CharField(ModelField):
         """
         """
 
-        if super(CharField, self).__eq__(other):
+        if super(TextField, self).__eq__(other):
             return self.text == other.text
         else:
             return False
+
+
+class CharField(TextField):
+
+    class TooLongStringException(Exception):
+        """
+        String is too long
+        """
+
+    def __init__(self, max_length=255, **kwargs):
+        """
+        """
+
+        super(CharField, self).__init__(**kwargs)
+
+        self.max_length = max_length
+
+    def validate(self):
+        """
+        """
+
+        super(CharField, self).validate()
+
+        if self.text:
+            if len(self.text) > self.max_length:
+                raise CharField.TooLongStringException()
 
 
 class UuidField(CharField):
