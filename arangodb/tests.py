@@ -366,9 +366,12 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.fulltext_index = Index(self.test_1_col, FulltextIndex(fields=['description'], minimum_length=4))
 
+        self.skiplist_index = Index(self.test_1_col, SkiplistIndex(fields=['rated'], unique=False))
+
         self.hash_index.save()
         self.geo_index.save()
         self.fulltext_index.save()
+        self.skiplist_index.save()
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.username='surgent'
@@ -376,6 +379,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         self.col1_doc1.city= 'Paris'
         self.col1_doc1.latitude= 48.853333
         self.col1_doc1.longitude= 2.348611
+        self.col1_doc1.rated= 4
         self.col1_doc1.save()
 
         self.col1_doc2 = self.test_1_col.create_document()
@@ -384,6 +388,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         self.col1_doc2.city='Koeln'
         self.col1_doc2.latitude= 50.933333
         self.col1_doc2.longitude=6.95
+        self.col1_doc2.rated= 4
         self.col1_doc2.save()
 
         self.col1_doc3 = self.test_1_col.create_document()
@@ -392,6 +397,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         self.col1_doc3.city='Berlin'
         self.col1_doc3.latitude=52.524167
         self.col1_doc3.longitude=13.410278
+        self.col1_doc3.rated= 8
         self.col1_doc3.save()
 
         self.col1_doc4 = self.test_1_col.create_document()
@@ -400,6 +406,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         self.col1_doc4.city='Rome'
         self.col1_doc4.latitude=41.891667
         self.col1_doc4.longitude=12.511111
+        self.col1_doc4.rated= 10
         self.col1_doc4.save()
 
     def tearDown(self):
@@ -407,6 +414,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         self.geo_index.delete()
         self.hash_index.delete()
         self.fulltext_index.delete()
+        self.skiplist_index.delete()
 
         # They need to be deleted
         Collection.remove(name=self.test_1_col.name)
@@ -493,6 +501,26 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.assertDocumentsEqual(paris_doc, self.col1_doc1)
         self.assertDocumentsEqual(berlin_doc, self.col1_doc3)
+
+    def test_skiplist_by_example(self):
+        """
+        """
+
+        docs_with_rating = SimpleIndexQuery.get_by_example_skiplist(
+            collection=self.test_1_col,
+            index_id=self.skiplist_index.index_type_obj.id,
+            example_data={ 'rated': 4 }
+        )
+
+        self.assertNotEqual(docs_with_rating, None)
+        self.assertEqual(len(docs_with_rating), 2)
+
+
+        paris_doc = docs_with_rating[0]
+        koeln_doc = docs_with_rating[1]
+
+        self.assertDocumentsEqual(paris_doc, self.col1_doc1)
+        self.assertDocumentsEqual(koeln_doc, self.col1_doc2)
 
 
 class TraveserTestCase(ExtendedTestCase):
