@@ -150,6 +150,23 @@ class SimpleIndexQuery(SimpleQuery):
                                     **kwargs)
 
     @classmethod
+    def fulltext(cls, collection, attribute, example_text, index_id, skip=None, limit=None):
+        """
+        """
+
+        kwargs = {
+            'index': index_id,
+            'attribute': attribute,
+            'query': example_text,
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='fulltext',
+                                    collection=collection, multiple=True,
+                                    **kwargs)
+
+    @classmethod
     def near(cls, collection, latitude, longitude, index_id, distance=None, skip=None, limit=None):
         """
         """

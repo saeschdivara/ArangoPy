@@ -364,11 +364,15 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.geo_index = Index(self.test_1_col, GeoIndex(fields=['latitude', 'longitude'], geo_json=False))
 
-        self.geo_index.save()
+        self.fulltext_index = Index(self.test_1_col, FulltextIndex(fields=['description'], minimum_length=4))
+
         self.hash_index.save()
+        self.geo_index.save()
+        self.fulltext_index.save()
 
         self.col1_doc1 = self.test_1_col.create_document()
         self.col1_doc1.username='surgent'
+        self.col1_doc1.description='Paris is such a beautiful city'
         self.col1_doc1.city= 'Paris'
         self.col1_doc1.latitude= 48.853333
         self.col1_doc1.longitude= 2.348611
@@ -376,6 +380,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.col1_doc2 = self.test_1_col.create_document()
         self.col1_doc2.username='name killer'
+        self.col1_doc2.description='The next time I will get myself some tickets for this event'
         self.col1_doc2.city='Koeln'
         self.col1_doc2.latitude= 50.933333
         self.col1_doc2.longitude=6.95
@@ -383,6 +388,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.col1_doc3 = self.test_1_col.create_document()
         self.col1_doc3.username='fa boor'
+        self.col1_doc3.description='I have never seen such a big door in a city'
         self.col1_doc3.city='Berlin'
         self.col1_doc3.latitude=52.524167
         self.col1_doc3.longitude=13.410278
@@ -390,6 +396,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.col1_doc4 = self.test_1_col.create_document()
         self.col1_doc4.username='haba'
+        self.col1_doc4.description='It one of the best cities in the world'
         self.col1_doc4.city='Rome'
         self.col1_doc4.latitude=41.891667
         self.col1_doc4.longitude=12.511111
@@ -399,6 +406,7 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         # Delete index
         self.geo_index.delete()
         self.hash_index.delete()
+        self.fulltext_index.delete()
 
         # They need to be deleted
         Collection.remove(name=self.test_1_col.name)
@@ -464,6 +472,27 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
 
         self.assertDocumentsEqual(koeln_doc, self.col1_doc2)
         self.assertDocumentsEqual(paris_doc, self.col1_doc1)
+
+    def test_fulltext_search(self):
+        """
+        """
+
+        docs_with_description = SimpleIndexQuery.fulltext(
+            collection=self.test_1_col,
+            attribute='description',
+            example_text='city',
+            index_id=self.fulltext_index.index_type_obj.id
+        )
+
+        self.assertNotEqual(docs_with_description, None)
+        self.assertEqual(len(docs_with_description), 2)
+
+
+        paris_doc = docs_with_description[0]
+        berlin_doc = docs_with_description[1]
+
+        self.assertDocumentsEqual(paris_doc, self.col1_doc1)
+        self.assertDocumentsEqual(berlin_doc, self.col1_doc3)
 
 
 class TraveserTestCase(ExtendedTestCase):
