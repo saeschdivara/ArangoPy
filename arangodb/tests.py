@@ -708,6 +708,37 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_hash_index_on_model_field(self):
+
+        class TestModel(CollectionModel):
+
+            username_hash_index = HashIndex(fields=['username'])
+
+            username = CharField(required=True, null=False)
+
+        TestModel.init()
+
+        has_exception = False
+
+        try:
+            model1 = TestModel()
+            model1.username = 'aoo'
+            model1.save()
+
+            model2 = TestModel()
+            model2.username = 'aoo'
+            model2.save()
+        except:
+            has_exception = True
+
+        self.assertTrue(has_exception)
+
+        all_created_models = TestModel.objects.all()
+
+        self.assertEqual(len(all_created_models), 1)
+
+        TestModel.destroy()
+
 
 class CollectionModelManagerTestCase(unittest.TestCase):
     def setUp(self):

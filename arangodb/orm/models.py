@@ -299,7 +299,10 @@ class CollectionModel(object):
             # Save created index
             index_obj = model_index_list[index_attribute_name]
             created_index = Index(collection=cls.collection_instance, index_type_obj=index_obj)
+            # Reset class attribute
             setattr(cls, index_attribute_name, created_index)
+            # Save index
+            created_index.save()
 
     @classmethod
     def destroy(cls):
