@@ -1454,6 +1454,46 @@ class IndexTestCase(ExtendedTestCase):
 
         index.delete()
 
+    def test_overwrite_index_definition(self):
+
+        index = Index(self.test_1_col, HashIndex(fields=[
+            'username'
+        ]))
+
+        index.save()
+
+        doc1 = self.test_1_col.create_document()
+        doc1.username = 'test'
+        doc1.save()
+
+        has_exception = False
+
+        doc2 = self.test_1_col.create_document()
+        doc2.username = 'test'
+
+        try:
+            doc2.save()
+        except:
+            has_exception = True
+
+        self.assertTrue(has_exception)
+
+        index.index_type_obj.unique = False
+
+        index.delete()
+        index.save()
+
+        has_exception = False
+
+        try:
+            doc2.save()
+        except:
+            has_exception = True
+
+        self.assertFalse(has_exception)
+
+        index.delete()
+
 
 class UserTestCase(ExtendedTestCase):
     def setUp(self):
