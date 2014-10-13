@@ -50,6 +50,7 @@ First version which had the following features:
 - Index queries
 - ORM additional fields:
     - Choice
+    - Text
     - ManyToMany
 
 ### 0.5
