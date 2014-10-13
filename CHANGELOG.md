@@ -59,6 +59,7 @@ First version which had the following features:
 - Replication
 - Endpoint
 - Better traversal query
+- ORM index queries
 - ORM additional fields:
     - NumberRange
     - URL
