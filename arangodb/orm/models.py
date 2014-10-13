@@ -1,6 +1,8 @@
 import copy
 
 from arangodb.api import Collection
+from arangodb.index.api import Index
+from arangodb.index.general import BaseIndex
 from arangodb.orm.fields import ModelField
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.simple import SimpleQuery
@@ -241,6 +243,24 @@ class CollectionModel(object):
         return fields
 
     @classmethod
+    def get_model_fields_index(cls):
+        """
+        """
+
+        index_list = {}
+
+        for attribute in dir(cls):
+
+            attr_val = getattr(cls, attribute)
+            attr_cls = attr_val.__class__
+
+            # If it is a model field, call on init
+            if issubclass(attr_cls, BaseIndex):
+                index_list[attribute] = attr_val
+
+        return index_list
+
+    @classmethod
     def init(cls):
         """
         """
@@ -270,7 +290,16 @@ class CollectionModel(object):
 
         # Go through all fields
         for attribute in cls.get_collection_fields():
+            # Trigger init event
             attribute.on_init(cls)
+
+        # Go through all index
+        model_index_list = cls.get_model_fields_index()
+        for index_attribute_name in model_index_list:
+            # Save created index
+            index_obj = model_index_list[index_attribute_name]
+            created_index = Index(collection=cls.collection_instance, index_type_obj=index_obj)
+            setattr(cls, index_attribute_name, created_index)
 
     @classmethod
     def destroy(cls):
