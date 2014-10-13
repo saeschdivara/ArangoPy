@@ -522,6 +522,28 @@ class SimpleIndexQueryTestCase(ExtendedTestCase):
         self.assertDocumentsEqual(paris_doc, self.col1_doc1)
         self.assertDocumentsEqual(koeln_doc, self.col1_doc2)
 
+    def test_skiplist_range(self):
+        """
+        """
+
+        docs_with_rating = SimpleIndexQuery.range(
+            collection=self.test_1_col,
+            attribute='rated',
+            left=8,
+            right=10,
+            closed=True,
+            index_id=self.skiplist_index.index_type_obj.id,
+        )
+
+        self.assertNotEqual(docs_with_rating, None)
+        self.assertEqual(len(docs_with_rating), 2)
+
+        berlin_doc = docs_with_rating[0]
+        rome_doc = docs_with_rating[1]
+
+        self.assertDocumentsEqual(berlin_doc, self.col1_doc3)
+        self.assertDocumentsEqual(rome_doc, self.col1_doc4)
+
 
 class TraveserTestCase(ExtendedTestCase):
     def setUp(self):
