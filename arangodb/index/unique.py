@@ -9,6 +9,10 @@ class HashIndex(BaseIndex):
 
     def __init__(self, fields, unique=True):
         """
+            *Note*: unique indexes on non-shard keys are not supported in a cluster.
+
+            :param fields A list of attribute paths.
+            :param unique  If true, then create a unique index.
         """
 
         super(HashIndex, self).__init__()
@@ -28,6 +32,7 @@ class HashIndex(BaseIndex):
 
 class SkiplistIndex(HashIndex):
     """
+        Skiplists are almost the same except that it can contain ranges.
     """
 
     type_name = 'skiplist'
@@ -41,6 +46,24 @@ class GeoIndex(HashIndex):
 
     def __init__(self, fields, geo_json, ignore_null=True, unique=True):
         """
+            *Note*: Unique indexes on non-shard keys are not supported in a cluster.
+
+            :param fields A list with one or two attribute paths. If it is a list with one attribute path location,
+            then a geo-spatial index on all documents is created using location as path to the coordinates.
+            The value of the attribute must be a list with at least two double values.
+            The list must contain the latitude (first value) and the longitude (second value).
+            All documents, which do not have the attribute path or with value that are not suitable, are ignored.
+            If it is a list with two attribute paths latitude and longitude, then a geo-spatial index on all
+            documents is created using latitude and longitude as paths the latitude and the longitude.
+            The value of the attribute latitude and of the attribute longitude must a double. All documents,
+            which do not have the attribute paths or which values are not suitable, are ignored.
+
+            :param geo_json If a geo-spatial index on a location is constructed and geoJson is true, then the order
+            within the list is longitude followed by latitude. This corresponds to the
+            format described in http://geojson.org/geojson-spec.html#positions
+
+            :param ignore_null If a geo-spatial constraint is created and ignoreNull is true,
+            then documents with a null in location or at least one null in latitude or longitude are ignored.
         """
 
         super(GeoIndex, self).__init__(fields, unique)
