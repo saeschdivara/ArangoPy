@@ -792,6 +792,31 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_queryset_clone(self):
+
+        class TestModel(CollectionModel):
+            active = BooleanField(null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.active = False
+        model1.save()
+
+        model2 = TestModel()
+        model2.active = True
+        model2.save()
+
+        qs1 = TestModel.objects.all()
+
+        self.assertEqual(len(qs1), 2)
+        self.assertEqual(len(qs1._cache), 2)
+
+        cloned_qs = qs1._clone()
+        self.assertEqual(len(cloned_qs._cache), 0)
+
+        TestModel.destroy()
+
     def test_retrieve_all_models(self):
 
         class TestModel(CollectionModel):

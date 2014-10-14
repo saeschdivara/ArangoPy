@@ -76,6 +76,22 @@ class CollectionQueryset(object):
 
         self._query.limit(count, start)
 
+    def _clone(self):
+        """
+        """
+
+        cloned_queryset = CollectionQueryset(manager=self._manager)
+        # Query
+        cloned_queryset._query = copy.deepcopy(self._query)
+        # Relation
+        cloned_queryset._is_working_on_relations = self._is_working_on_relations
+        cloned_queryset._relations_start_model = self._relations_start_model
+        cloned_queryset._relations_end_model = self._relations_end_model
+        cloned_queryset._relations_relation_collection = self._is_working_on_relations
+        cloned_queryset._related_model_class = self._related_model_class
+
+        return cloned_queryset
+
     def _generate_cache(self):
         """
         """
