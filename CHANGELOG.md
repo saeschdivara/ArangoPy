@@ -2,16 +2,15 @@ Versions
 ---------
 
 ## Current
-    
-### 0.3
-- Index support
-- User support
-- Execute raw ArangoDB queries
-- ORM Queryset Filtering (with boolean)
-- ORM Queryset limit
+
+### 0.4
+- Better code documentation
+- Index for model fields
+- Index queries
 - ORM additional fields:
-    - UUID
-    - Boolean
+    - Choice
+    - Text
+    - ManyToMany
 
 ## Old
 
@@ -41,17 +40,18 @@ First version which had the following features:
 - ORM:
     - Adding date and datetime fields
     - Queryset for model manager
+    
+### 0.3
+- Index support
+- User support
+- Execute raw ArangoDB queries
+- ORM Queryset Filtering (with boolean)
+- ORM Queryset limit
+- ORM additional fields:
+    - UUID
+    - Boolean
 
 ## Future
-
-### 0.4
-- Better code documentation
-- Index for model fields
-- Index queries
-- ORM additional fields:
-    - Choice
-    - Text
-    - ManyToMany
 
 ### 0.5
 - Bitarray index
@@ -67,6 +67,9 @@ First version which had the following features:
     - Password
 
 ### 0.6
+- Authentication
 - System
 - HTTP exception handling
 - Document revision
+
+### 0.7
