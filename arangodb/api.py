@@ -11,6 +11,7 @@ class Client(object):
 
     def __init__(self, hostname, protocol='http', port=8529, database=SYSTEM_DATABASE):
         """
+            This should be done only once and sets the instance
         """
 
         Client.class_instance = self
@@ -36,6 +37,11 @@ class Client(object):
 
     @classmethod
     def instance(cls, hostname=None, protocol=None, port=None, database=None):
+        """
+            This method is called from everywhere in the code which accesses the database.
+
+            If one of the parameters is set, these variables are overwritten for all others.
+        """
 
         if cls.class_instance is None:
             if hostname is None and protocol is None and port is None and database is None:
@@ -61,6 +67,11 @@ class Client(object):
 
     def collection(self, name):
         """
+            Returns a collection with the given name
+
+            :param name Collection name
+
+            :returns Collection
         """
 
         return Collection(
@@ -74,6 +85,11 @@ class Database(object):
     @classmethod
     def create(cls, name):
         """
+            Creates database and sets itself as the active database.
+
+            :param name Database name
+
+            :returns Database
         """
 
         api = Client.instance().api
@@ -98,6 +114,9 @@ class Database(object):
     @classmethod
     def get_all(cls):
         """
+            Returns an array with all databases
+
+            :returns Database list
         """
 
         api = Client.instance().api
@@ -117,6 +136,7 @@ class Database(object):
     @classmethod
     def remove(cls, name):
         """
+            Destroys the database.
         """
 
         client = Client.instance()
@@ -145,6 +165,12 @@ class Database(object):
 
     def create_collection(self, name, type=2):
         """
+            Shortcut to create a collection
+
+            :param name Collection name
+            :param type Collection type (2 = document / 3 = edge)
+
+            :returns Collection
         """
 
         return Collection.create(name=name, database=self.name, type=type)
@@ -154,6 +180,13 @@ class Collection(object):
     @classmethod
     def create(cls, name, database=SYSTEM_DATABASE, type=2):
         """
+            Creates collection
+
+            :param name Collection name
+            :param database Database name in which it is created
+            :param type Collection type (2 = document / 3 = edge)
+
+            :returns Collection
         """
 
         client = Client.instance()
@@ -200,6 +233,9 @@ class Collection(object):
     @classmethod
     def remove(cls, name):
         """
+            Destroys collection.
+
+            :param name Collection name
         """
 
         api = Client.instance().api
@@ -274,6 +310,7 @@ class Collection(object):
 
     def save(self):
         """
+            Updates only waitForSync and journalSize
         """
 
         data = {
@@ -285,6 +322,8 @@ class Collection(object):
 
     def get(self):
         """
+            Retrieves all properties again for the collection and
+            sets the attributes.
         """
 
         data = self.resource(self.name).properties.get()
@@ -295,6 +334,7 @@ class Collection(object):
 
     def get_figures(self):
         """
+            Returns figures about the collection.
         """
 
         data = self.resource(self.name).figures.get()
@@ -302,12 +342,22 @@ class Collection(object):
 
     def create_document(self):
         """
+            Creates a document in the collection.
+
+            :returns Document
         """
 
         return Document.create(collection=self)
 
     def create_edge(self, from_doc, to_doc, edge_data={}):
         """
+            Creates edge document.
+
+            :param from_doc Document from which the edge comes
+            :param to_doc Document to which the edge goes
+            :param edge_data Extra data for the edge
+
+            :returns Document
         """
 
         return Edge.create(
@@ -319,6 +369,9 @@ class Collection(object):
 
     def documents(self):
         """
+            Returns all documents of this collection.
+
+            :returns Document list
         """
 
         document_list = []
@@ -343,6 +396,11 @@ class Document(object):
     @classmethod
     def create(cls, collection):
         """
+            Creates document object without really creating it in the collection.
+
+            :param collection Collection instance
+
+            :returns Document
         """
 
         api = Client.instance().api
@@ -358,6 +416,10 @@ class Document(object):
 
     def __init__(self, id, key, collection, api):
         """
+            :param id Document id (collection_name/number)
+            :param key Document key (number)
+            :param collection Collection name
+            :param api Slumber API object
         """
 
         self.data = {}
@@ -372,6 +434,7 @@ class Document(object):
 
     def retrieve(self):
         """
+            Retrieves all data for this document and saves it.
         """
 
         data = self.resource(self.id).get()
@@ -381,6 +444,8 @@ class Document(object):
 
     def save(self):
         """
+            If its internal state is loaded than it will only updated the
+            set properties but otherwise it will create a new document.
         """
 
         if not self.is_loaded:
@@ -392,6 +457,11 @@ class Document(object):
 
     def get(self, key):
         """
+            Returns attribute value.
+
+            :param key
+
+            :returns value
         """
 
         if not self.is_loaded:
@@ -406,18 +476,24 @@ class Document(object):
 
     def set(self, key, value):
         """
+            Sets document value
+
+            :param key
+            :param value
         """
 
         self.data[key] = value
 
     def has(self, key):
         """
+            Returns if the document has a attribute with the name key
         """
 
         return key in self.data
 
     def get_attributes(self):
         """
+            Return dict with all attributes
         """
 
         return self.data
