@@ -142,6 +142,23 @@ class SimpleQuery(object):
     @classmethod
     def remove_by_example(cls, collection, example_data, wait_for_sync=None, limit=None):
         """
+            This will find all documents in the collection that match the specified example object.
+
+            Note: the limit attribute is not supported on sharded collections. Using it will result in an error.
+            The options attributes waitForSync and limit can given yet without an ecapsulation into a json object.
+            But this may be deprecated in future versions of arango
+
+            Returns result dict of the request.
+
+            :param collection Collection instance
+            :param example_data An example document that all collection documents are compared against.
+
+            :param wait_for_sync  if set to true, then all removal operations will instantly be synchronised to disk.
+            If this is not specified, then the collection's default sync behavior will be applied.
+
+            :param limit an optional value that determines how many documents to replace at most. If limit is
+            specified but is less than the number of documents in the collection, it is undefined which of the
+            documents will be replaced.
         """
 
         kwargs = {
@@ -159,6 +176,11 @@ class SimpleQuery(object):
     @classmethod
     def random(cls, collection):
         """
+            Returns a random document from a collection.
+
+            :param collection Collection instance
+
+            :returns document
         """
 
         return cls._construct_query(name='any', collection=collection)
@@ -208,6 +230,16 @@ class SimpleIndexQuery(SimpleQuery):
     @classmethod
     def get_by_example_hash(cls, collection, index_id, example_data, allow_multiple=False, skip=None, limit=None):
         """
+            This will find all documents matching a given example, using the specified hash index.
+
+            :param collection Collection instance
+            :param index_id ID of the index which should be used for the query
+            :param example_data The example document
+            :param allow_multiple If the query can return multiple documents
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Single document / Document list
         """
 
         kwargs = {
@@ -223,6 +255,16 @@ class SimpleIndexQuery(SimpleQuery):
     @classmethod
     def get_by_example_skiplist(cls, collection, index_id, example_data, allow_multiple=True, skip=None, limit=None):
         """
+            This will find all documents matching a given example, using the specified skiplist index.
+
+            :param collection Collection instance
+            :param index_id ID of the index which should be used for the query
+            :param example_data The example document
+            :param allow_multiple If the query can return multiple documents
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Single document / Document list
         """
 
         kwargs = {
@@ -238,6 +280,19 @@ class SimpleIndexQuery(SimpleQuery):
     @classmethod
     def range(cls, collection, attribute, left, right, closed, index_id, skip=None, limit=None):
         """
+            This will find all documents within a given range. In order to execute a range query, a
+            skip-list index on the queried attribute must be present.
+
+            :param collection Collection instance
+            :param attribute The attribute path to check
+            :param left The lower bound
+            :param right The upper bound
+            :param closed  If true, use interval including left and right, otherwise exclude right, but include left
+            :param index_id ID of the index which should be used for the query
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Document list
         """
 
         kwargs = {
@@ -257,6 +312,19 @@ class SimpleIndexQuery(SimpleQuery):
     @classmethod
     def fulltext(cls, collection, attribute, example_text, index_id, skip=None, limit=None):
         """
+            This will find all documents from the collection that match the fulltext query specified in query.
+
+            In order to use the fulltext operator, a fulltext index must be defined for the collection
+            and the specified attribute.
+
+            :param collection Collection instance
+            :param attribute The attribute path to check
+            :param example_text Text which should be used to search
+            :param index_id ID of the index which should be used for the query
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Document list
         """
 
         kwargs = {
@@ -274,6 +342,27 @@ class SimpleIndexQuery(SimpleQuery):
     @classmethod
     def near(cls, collection, latitude, longitude, index_id, distance=None, skip=None, limit=None):
         """
+            The default will find at most 100 documents near the given coordinate.
+            The returned list is sorted according to the distance, with the nearest document being first in the list.
+            If there are near documents of equal distance, documents are chosen randomly from this set until
+            the limit is reached.
+
+            In order to use the near operator, a geo index must be defined for the collection.
+            This index also defines which attribute holds the coordinates for the document.
+            If you have more then one geo-spatial index, you can use the geo field to select a particular index.
+
+            :param collection Collection instance
+            :param latitude The latitude of the coordinate
+            :param longitude The longitude of the coordinate
+            :param index_id ID of the index which should be used for the query
+
+            :param distance If given, the attribute key used to return the distance to the given coordinate.
+            If specified, distances are returned in meters.
+
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Document list
         """
 
         kwargs = {
@@ -292,6 +381,26 @@ class SimpleIndexQuery(SimpleQuery):
     @classmethod
     def within(cls, collection, latitude, longitude, radius, index_id, distance=None, skip=None, limit=None):
         """
+            This will find all documents within a given radius around the coordinate (latitude, longitude).
+            The returned list is sorted by distance.
+
+            In order to use the within operator, a geo index must be defined for the collection.
+            This index also defines which attribute holds the coordinates for the document.
+            If you have more then one geo-spatial index, you can use the geo field to select a particular index.
+
+            :param collection Collection instance
+            :param latitude The latitude of the coordinate
+            :param longitude The longitude of the coordinate
+            :param radius The maximal radius (in meters)
+            :param index_id ID of the index which should be used for the query
+
+            :param distance If given, the attribute key used to return the distance to the given coordinate.
+            If specified, distances are returned in meters.
+
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Document list
         """
 
         kwargs = {
