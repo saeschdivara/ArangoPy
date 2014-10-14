@@ -6,20 +6,43 @@ from arangodb.query.utils.document import create_document_from_result_dict
 
 class SimpleQuery(object):
     """
+        Simple queries collection
     """
 
 
     @classmethod
-    def all(cls, collection):
+    def all(cls, collection, skip=None, limit=None):
         """
+            Returns all documents of the collection
+
+            :param collection Collection instance
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Document list
         """
 
-        return cls._construct_query(name='all', collection=collection, multiple=True)
+        kwargs = {
+            'skip': skip,
+            'limit': limit,
+        }
+
+        return cls._construct_query(name='all', collection=collection, multiple=True,
+                                    **kwargs)
 
 
     @classmethod
     def get_by_example(cls, collection, example_data, allow_multiple=False, skip=None, limit=None):
         """
+            This will find all documents matching a given example.
+
+            :param collection Collection instance
+            :param example_data The example document
+            :param allow_multiple If the query can return multiple documents
+            :param skip  The number of documents to skip in the query
+            :param limit The maximal amount of documents to return. The skip is applied before the limit restriction.
+
+            :returns Single document / Document list
         """
 
         kwargs = {
@@ -33,13 +56,39 @@ class SimpleQuery(object):
 
 
     @classmethod
-    def update_by_example(cls, collection, example_data, new_value, wait_for_sync=None, limit=None):
+    def update_by_example(cls, collection, example_data, new_value, keep_null=False, wait_for_sync=None, limit=None):
         """
+            This will find all documents in the collection that match the specified example object,
+            and partially update the document body with the new value specified. Note that document meta-attributes
+            such as _id, _key, _from, _to etc. cannot be replaced.
+
+            Note: the limit attribute is not supported on sharded collections. Using it will result in an error.
+
+            Returns result dict of the request.
+
+            :param collection Collection instance
+            :param example_data An example document that all collection documents are compared against.
+            :param new_value A document containing all the attributes to update in the found documents.
+
+            :param keep_null This parameter can be used to modify the behavior when handling null values.
+            Normally, null values are stored in the database. By setting the keepNull parameter to false,
+            this behavior can be changed so that all attributes in data with null values will be removed
+            from the updated document.
+
+            :param wait_for_sync  if set to true, then all removal operations will instantly be synchronised to disk.
+            If this is not specified, then the collection's default sync behavior will be applied.
+
+            :param limit an optional value that determines how many documents to update at most. If limit is
+            specified but is less than the number of documents in the collection, it is undefined
+            which of the documents will be updated.
+
+            :returns dict
         """
 
         kwargs = {
             'newValue': new_value,
             'options': {
+                'keepNull': keep_null,
                 'waitForSync': wait_for_sync,
                 'limit': limit,
             }
@@ -53,6 +102,28 @@ class SimpleQuery(object):
     @classmethod
     def replace_by_example(cls, collection, example_data, new_value, wait_for_sync=None, limit=None):
         """
+            This will find all documents in the collection that match the specified example object,
+            and replace the entire document body with the new value specified. Note that document
+            meta-attributes such as _id, _key, _from, _to etc. cannot be replaced.
+
+            Note: the limit attribute is not supported on sharded collections. Using it will result in an error.
+            The options attributes waitForSync and limit can given yet without an ecapsulation into a json object.
+            But this may be deprecated in future versions of arango
+
+            Returns result dict of the request.
+
+            :param collection Collection instance
+            :param example_data An example document that all collection documents are compared against.
+            :param new_value The replacement document that will get inserted in place of the "old" documents.
+
+            :param wait_for_sync  if set to true, then all removal operations will instantly be synchronised to disk.
+            If this is not specified, then the collection's default sync behavior will be applied.
+
+            :param limit an optional value that determines how many documents to replace at most. If limit is
+            specified but is less than the number of documents in the collection, it is undefined which of the
+            documents will be replaced.
+
+            :returns dict
         """
 
         kwargs = {
