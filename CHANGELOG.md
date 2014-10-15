@@ -61,6 +61,7 @@ First version which had the following features:
 - Better traversal query
 - ORM index queries
 - ORM additional fields:
+    - File
     - NumberRange
     - URL
     - MailAddress
