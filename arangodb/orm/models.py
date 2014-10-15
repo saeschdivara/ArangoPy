@@ -289,6 +289,8 @@ class CollectionModel(object):
         except:
             collection_type = 2
 
+        # TODO: Database is not set for the collection
+
         # Create collection
         try:
             cls.collection_instance = Collection.create(name=name, type=collection_type)
