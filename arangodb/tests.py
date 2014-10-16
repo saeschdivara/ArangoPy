@@ -12,6 +12,7 @@ from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
 from arangodb.query.simple import SimpleQuery, SimpleIndexQuery
+from arangodb.server.endpoint import Endpoint
 from arangodb.transaction.controller import Transaction, TransactionController
 from arangodb.user import User
 
@@ -1546,6 +1547,21 @@ class UserTestCase(ExtendedTestCase):
         self.assertEqual(foo_user.name, user_name)
 
         User.remove(name=user_name)
+
+
+class EndpointTestCase(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_get_all_endpoints(self):
+
+        endpoints = Endpoint.all()
+
+        self.assertTrue('endpoint' in endpoints)
+        self.assertTrue('databases' in endpoints)
 
 if __name__ == '__main__':
     unittest.main()

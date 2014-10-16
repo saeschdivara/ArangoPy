@@ -34,6 +34,7 @@ test_suites.append( unittest.TestLoader().loadTestsFromTestCase(ManyToManyFieldT
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(TransactionTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(IndexTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(UserTestCase) )
+test_suites.append( unittest.TestLoader().loadTestsFromTestCase(EndpointTestCase) )
 
 for test_suite in test_suites:
 
