@@ -74,3 +74,4 @@ First version which had the following features:
 - Document revision
 
 ### 0.7
+- Graph
