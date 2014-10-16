@@ -217,12 +217,14 @@ class Collection(object):
         """
         """
 
-        api = Client.instance().api
+        client = Client.instance()
+        api = client.api
 
         data = api.collection(name).properties.get()
 
         collection = Collection(
             name=name,
+            database=client.database,
             api_resource=api.collection,
             api=api,
             kwargs=data
