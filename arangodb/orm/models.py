@@ -236,6 +236,29 @@ class CollectionModel(object):
             self._fields = {}
 
     @classmethod
+    def get_collection_fields_dict(cls):
+        """
+        """
+
+        fields = {}
+
+        for attribute in dir(cls):
+
+            attr_val = getattr(cls, attribute)
+            attr_cls = attr_val.__class__
+
+            # If it is a model field, call on init
+            if issubclass(attr_cls, ModelField):
+                fields[attribute] = attr_val
+
+        model_fields = cls._model_meta_data._fields
+        for field_key in  model_fields:
+            field = model_fields[field_key]
+            fields[field_key] = field
+
+        return fields
+
+    @classmethod
     def get_collection_fields(cls):
         """
         """
