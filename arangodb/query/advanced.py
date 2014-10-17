@@ -473,6 +473,7 @@ class Traveser(object):
         if graph_name:
             request_data['graphName'] = graph_name
 
+        # Set search data
         option_name = 'filter'
         if option_name in kwargs:
             request_data['filter'] = kwargs[option_name]
@@ -525,7 +526,12 @@ class Traveser(object):
         if option_name in kwargs:
             request_data['maxIterations'] = kwargs[option_name]
 
-        print(request_data)
+        # Make tests
+        if not 'direction' in kwargs and not 'expander' in kwargs:
+            raise Exception('Either direction or expander have to be set')
+
+        if 'direction' in kwargs and 'expander' in kwargs:
+            raise Exception('Either direction or expander have to be set')
 
         return Traveser._send_follow(request_data=request_data)
 

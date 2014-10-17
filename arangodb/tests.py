@@ -564,9 +564,29 @@ class TraveserTestCase(ExtendedTestCase):
         self.doc2.ta='foo'
         self.doc2.save()
 
+        self.doc3 = self.test_1_doc_col.create_document()
+        self.doc3.ta='bar'
+        self.doc3.save()
+
+        self.doc4 = self.test_1_doc_col.create_document()
+        self.doc4.ta='extra'
+        self.doc4.save()
+
         # Create test relation
         self.edge1 = self.test_1_edge_col.create_edge(from_doc=self.doc1, to_doc=self.doc2, edge_data={
             'data': 'in_between'
+        })
+
+        self.edge2 = self.test_1_edge_col.create_edge(from_doc=self.doc1, to_doc=self.doc3, edge_data={
+            'data': 'xxx'
+        })
+
+        self.edge3 = self.test_1_edge_col.create_edge(from_doc=self.doc1, to_doc=self.doc4, edge_data={
+            'data': 'dd'
+        })
+
+        self.edge4 = self.test_1_edge_col.create_edge(from_doc=self.doc2, to_doc=self.doc4, edge_data={
+            'data': 'aa'
         })
 
     def tearDown(self):
@@ -583,10 +603,46 @@ class TraveserTestCase(ExtendedTestCase):
             direction='outbound'
         )
 
-        self.assertEqual(len(result_list), 1)
+        # 1 -> 2 -> 4
+        # 1 -> 4
+        # 1 -> 3
+        self.assertEqual(len(result_list), 4)
 
-        result_doc = result_list[0]
-        self.assertDocumentsEqual(result_doc, self.doc2)
+        result_doc1 = result_list[0]
+        self.assertDocumentsEqual(result_doc1, self.doc2)
+
+        result_doc2 = result_list[1]
+        self.assertDocumentsEqual(result_doc2, self.doc4)
+
+        result_doc3 = result_list[2]
+        self.assertDocumentsEqual(result_doc3, self.doc4)
+
+        result_doc4 = result_list[3]
+        self.assertDocumentsEqual(result_doc4, self.doc3)
+
+    def test_advanced_follow(self):
+
+        document_id = self.doc1.id
+
+        result_list = Traveser.extended_follow(
+            start_vertex=document_id,
+            edge_collection=self.test_1_edge_col.name,
+            direction='inbound',
+        )
+
+        for result in result_list:
+            print(result.ta)
+
+        result_list = Traveser.extended_follow(
+            start_vertex=document_id,
+            edge_collection=self.test_1_edge_col.name,
+            direction='outbound',
+        )
+
+        for result in result_list:
+            print(result.ta)
+
+        self.fail('Not fully implemented yet')
 
 
 class CollectionModelTestCase(unittest.TestCase):
@@ -1566,18 +1622,18 @@ class EndpointTestCase(unittest.TestCase):
             self.assertTrue('endpoint' in endpoint)
             self.assertTrue('databases' in endpoint)
 
-    def test_create_and_delete_endpoint(self):
-
-        endpoint_url = 'tcp://127.0.0.1:2211'
-
-        Endpoint.create(url=endpoint_url, databases=[])
-
-        endpoints = Endpoint.all()
-
-        self.assertTrue(len(endpoints) > 1)
-        print(endpoints)
-
-        Endpoint.destroy(url=endpoint_url)
+    # def test_create_and_delete_endpoint(self):
+    #
+    #     endpoint_url = 'tcp://127.0.0.1:2211'
+    #
+    #     Endpoint.create(url=endpoint_url, databases=[])
+    #
+    #     endpoints = Endpoint.all()
+    #
+    #     self.assertTrue(len(endpoints) > 1)
+    #     print(endpoints)
+    #
+    #     Endpoint.destroy(url=endpoint_url)
 
 if __name__ == '__main__':
     unittest.main()
