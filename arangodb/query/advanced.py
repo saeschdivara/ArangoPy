@@ -400,13 +400,141 @@ class Traveser(object):
         """
         """
 
-        related_docs = []
-
         request_data = {
             'startVertex': start_vertex,
             'edgeCollection': edge_collection,
             'direction': direction,
         }
+
+        return Traveser._send_follow(request_data=request_data)
+
+    @classmethod
+    def extended_follow(cls, start_vertex, edge_collection, graph_name=None, **kwargs):
+        """
+
+            :param start_vertex id of the startVertex, e.g. "users/foo".
+            :param edge_collection *Deprecated* name of the collection that contains the edges.
+            :param graph_name name of the graph that contains the edges.
+
+            Optionals:
+            :param filter  (optional, default is to include all nodes): body (JavaScript code) of custom filter
+            function function signature: (config, vertex, path) -> mixed can return four different string values:
+            - "exclude" -> this vertex will not be visited.
+            - "prune" -> the edges of this vertex will not be followed.
+            - "" or undefined -> visit the vertex and follow it's edges.
+            - Array -> containing any combination of the above. If there is at least one "exclude" or "prune"
+            respectively is contained, it's effect will occur.
+
+            :param min_depth (optional, ANDed with any existing filters): visits only nodes in at least the given depth
+            :param max_depth  (optional, ANDed with any existing filters): visits only nodes in at most the given depth
+
+            :param visitor  (optional): body (JavaScript) code of custom visitor function function signature:
+            (config, result, vertex, path) -> void visitor function can do anything, but its return value is ignored.
+            To populate a result, use the result variable by reference
+
+            :param direction  (optional): direction for traversal - if set, must be either
+            "outbound", "inbound", or "any" - if not set, the expander attribute must be specified
+
+            :param init (optional): body (JavaScript) code of custom result initialisation function function signature:
+            (config, result) -> void initialise any values in result with what is required
+
+            :param expander (optional): body (JavaScript) code of custom expander function must be set if direction
+            attribute is *not* set function signature: (config, vertex, path) -> array expander must return an array
+            of the connections for vertex each connection is an object with the attributes edge and vertex
+
+            :param sort (optional): body (JavaScript) code of a custom comparison function for the edges.
+            The signature of this function is (l, r) -> integer (where l and r are edges) and must return -1 if l
+            is smaller than, +1 if l is greater than, and 0 if l and r are equal. The reason for this is the following:
+            The order of edges returned for a certain vertex is undefined. This is because there is no natural order
+            of edges for a vertex with multiple connected edges. To explicitly define the order in which edges on
+            the vertex are followed, you can specify an edge comparator function with this attribute. Note that the
+            value here has to be a string to conform to the JSON standard, which in turn is parsed as function body
+            on the server side. Furthermore note that this attribute is only used for the standard expanders. If
+            you use your custom expander you have to do the sorting yourself within the expander code.
+
+            :param strategy (optional): traversal strategy can be "depthfirst" or "breadthfirst"
+            :param order (optional): traversal order can be "preorder" or "postorder"
+            :param item_order (optional): item iteration order can be "forward" or "backward"
+
+            :param uniqueness (optional): specifies uniqueness for vertices and edges visited if set, must be an object
+            like this: "uniqueness": {"vertices": "none"|"global"|path", "edges": "none"|"global"|"path"}
+
+            :param max_iterations (optional): Maximum number of iterations in each traversal.
+            This number can be set to prevent endless loops in traversal of cyclic graphs. When a traversal
+            performs as many iterations as the max_iterations value, the traversal will abort with an error.
+            If max_iterations is not set, a server-defined value may be used.
+        """
+
+        request_data = {
+            'startVertex': start_vertex,
+            'edgeCollection': edge_collection,
+        }
+
+        if graph_name:
+            request_data['graphName'] = graph_name
+
+        option_name = 'filter'
+        if option_name in kwargs:
+            request_data['filter'] = kwargs[option_name]
+
+        option_name = 'min_depth'
+        if option_name in kwargs:
+            request_data['minDepth'] = kwargs[option_name]
+
+        option_name = 'max_depth'
+        if option_name in kwargs:
+            request_data['maxDepth'] = kwargs[option_name]
+
+        option_name = 'visitor'
+        if option_name in kwargs:
+            request_data['visitor'] = kwargs[option_name]
+
+        option_name = 'direction'
+        if option_name in kwargs:
+            request_data['direction'] = kwargs[option_name]
+
+        option_name = 'init'
+        if option_name in kwargs:
+            request_data['init'] = kwargs[option_name]
+
+        option_name = 'expander'
+        if option_name in kwargs:
+            request_data['expander'] = kwargs[option_name]
+
+        option_name = 'sort'
+        if option_name in kwargs:
+            request_data['sort'] = kwargs[option_name]
+
+        option_name = 'strategy'
+        if option_name in kwargs:
+            request_data['strategy'] = kwargs[option_name]
+
+        option_name = 'order'
+        if option_name in kwargs:
+            request_data['order'] = kwargs[option_name]
+
+        option_name = 'item_order'
+        if option_name in kwargs:
+            request_data['itemOrder'] = kwargs[option_name]
+
+        option_name = 'uniqueness'
+        if option_name in kwargs:
+            request_data['uniqueness'] = kwargs[option_name]
+
+        option_name = 'max_iterations'
+        if option_name in kwargs:
+            request_data['maxIterations'] = kwargs[option_name]
+
+        print(request_data)
+
+        return Traveser._send_follow(request_data=request_data)
+
+    @classmethod
+    def _send_follow(cls, request_data):
+        """
+        """
+
+        related_docs = []
 
         api = Client.instance().api
         result_dict = api.traversal.post(data=request_data)
