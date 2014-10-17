@@ -620,7 +620,7 @@ class TraveserTestCase(ExtendedTestCase):
         result_doc4 = result_list[3]
         self.assertDocumentsEqual(result_doc4, self.doc3)
 
-    def test_advanced_follow(self):
+    def test_advanced_follow_only_direct_relations(self):
 
         document_id = self.doc1.id
 
@@ -637,12 +637,22 @@ class TraveserTestCase(ExtendedTestCase):
             start_vertex=document_id,
             edge_collection=self.test_1_edge_col.name,
             direction='outbound',
+            max_depth=1,
         )
 
-        for result in result_list:
-            print(result.ta)
+        # 1 -> 2 _ 4
+        # 1 -> 4
+        # 1 -> 3
+        self.assertEqual(len(result_list), 3)
 
-        self.fail('Not fully implemented yet')
+        result_doc1 = result_list[0]
+        self.assertDocumentsEqual(result_doc1, self.doc2)
+
+        result_doc2 = result_list[1]
+        self.assertDocumentsEqual(result_doc2, self.doc4)
+
+        result_doc3 = result_list[2]
+        self.assertDocumentsEqual(result_doc3, self.doc3)
 
 
 class CollectionModelTestCase(unittest.TestCase):
