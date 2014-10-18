@@ -17,10 +17,12 @@ class ModelField(object):
             Field cannot be null
         """
 
-    def __init__(self, required=True, blank=False, null=True, default=None, **kwargs):
+    def __init__(self, verbose_name='', help_text='', required=True, blank=False, null=True, default=None, **kwargs):
         """
         """
 
+        self.verbose_name = verbose_name
+        self.help_text = help_text
         self.required = required
         self.blank = blank
         self.null = null
