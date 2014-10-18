@@ -304,6 +304,8 @@ class CollectionModel(object):
         """
         """
 
+        # TODO: Deal with super classes
+
         name = cls.get_collection_name()
 
         # Set type
