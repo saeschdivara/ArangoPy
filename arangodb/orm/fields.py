@@ -560,7 +560,10 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        return u'%s' % self.relation_model.document
+        if self.relation_model:
+            return u'%s' % self.relation_model.document
+        else:
+            return None
 
     def loads(self, model_id):
         """
