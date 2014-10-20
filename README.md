@@ -39,6 +39,13 @@ At the moment I am only testing for ArangoDB 2.2
 At the moment I am only testing for Python 2.7
 
 
+Frameworks integration
+-----------------------
+
+Of course, this framework was built to be standing alone but still it has the goal that it can be integrated with
+Django. A bridge for this has been started: https://github.com/saeschdivara/ArangoDjango
+
+
 Features
 ------------
 
