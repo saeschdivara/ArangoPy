@@ -569,7 +569,13 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        model = self.relation_class.objects.get(_id=model_id)
+        if isinstance(model_id, basestring):
+            model = self.relation_class.objects.get(_id=model_id)
+        elif isinstance(model_id, self.relation_class):
+            model = model_id
+        else:
+            raise ForeignKeyField.WrongInputTypeException()
+
         self.relation_model = model
 
     def validate(self):

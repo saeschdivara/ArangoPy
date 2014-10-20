@@ -1297,6 +1297,15 @@ class ForeignkeyFieldTestCase(unittest.TestCase):
 
         self.assertEqual(field1, field2)
 
+    def test_model_loading(self):
+
+        model = ForeignkeyFieldTestCase.TestModel()
+
+        field1 = ForeignKeyField(to=ForeignkeyFieldTestCase.TestModel)
+        field1.loads(model)
+
+        self.assertEqual(field1.relation_model, model)
+
 
 class ManyToManyFieldTestCase(unittest.TestCase):
 
