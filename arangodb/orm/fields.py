@@ -710,6 +710,12 @@ class ManyToManyField(ModelField):
                     related_model_class=self.relation_class
                 )
 
+    def loads(self, model_list):
+        """
+        """
+
+        self.set(model_list)
+
     def __eq__(self, other):
         """
         """
