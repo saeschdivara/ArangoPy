@@ -442,6 +442,11 @@ class CollectionModel(object):
         """
         """
 
+        if name == 'id':
+            return self.document.id
+        elif name == 'key':
+            return self.document.key
+
         return self._instance_meta_data._fields[name]
 
     def _get_fields(self):
@@ -474,6 +479,10 @@ class CollectionModel(object):
 
         if item in self._instance_meta_data._fields:
             return self._instance_meta_data._fields[item].get()
+        elif item == 'id':
+            return self.document.id
+        elif item == 'key':
+            return self.document.key
         else:
             return super(CollectionModel, self).__getattribute__(item)
 

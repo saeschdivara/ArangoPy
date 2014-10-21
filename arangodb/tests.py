@@ -700,6 +700,21 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_get_model_key_and_id_directly(self):
+
+        class TestModel(CollectionModel):
+            collection_name = "test_model"
+
+        TestModel.init()
+
+        model = TestModel()
+        model.save()
+
+        self.assertEqual(model.key, model.document.key)
+        self.assertEqual(model.id, model.document.id)
+
+        TestModel.destroy()
+
     def test_save_model_with_one_field_not_required(self):
 
         class TestModel(CollectionModel):
