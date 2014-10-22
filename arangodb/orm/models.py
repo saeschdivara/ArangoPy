@@ -180,6 +180,19 @@ class CollectionModelManager(object):
 
         return queryset
 
+    def filter(self, **kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
+
+        queryset = CollectionQueryset(manager=self)
+        queryset.all()
+        queryset.filter(**kwargs)
+
+        return queryset
+
     def _create_model_from_doc(self, doc, model_class=None):
         """
         """
