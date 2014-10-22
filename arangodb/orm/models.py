@@ -52,6 +52,8 @@ class CollectionQueryset(object):
         self._query.set_collection(self._collection.name)
         self._query.clear()
 
+        return self
+
     def filter(self, bit_operator=Query.NO_BIT_OPERATOR, **kwargs):
         """
         """
@@ -59,6 +61,8 @@ class CollectionQueryset(object):
         self._has_cache = False
 
         self._query.filter(bit_operator=bit_operator, **kwargs)
+
+        return self
 
     def exclude(self, **kwargs):
         """
@@ -68,6 +72,8 @@ class CollectionQueryset(object):
 
         self._query.exclude(**kwargs)
 
+        return self
+
     def limit(self, count, start=-1):
         """
         """
@@ -75,6 +81,8 @@ class CollectionQueryset(object):
         self._has_cache = False
 
         self._query.limit(count, start)
+
+        return self
 
     def _clone(self):
         """
@@ -176,9 +184,7 @@ class CollectionModelManager(object):
         """
 
         queryset = CollectionQueryset(manager=self)
-        queryset.all()
-
-        return queryset
+        return queryset.all()
 
     def filter(self, **kwargs):
         """
@@ -188,10 +194,7 @@ class CollectionModelManager(object):
         """
 
         queryset = CollectionQueryset(manager=self)
-        queryset.all()
-        queryset.filter(**kwargs)
-
-        return queryset
+        return queryset.all().filter(**kwargs)
 
     def exclude(self, **kwargs):
         """
@@ -201,10 +204,7 @@ class CollectionModelManager(object):
         """
 
         queryset = CollectionQueryset(manager=self)
-        queryset.all()
-        queryset.exclude(**kwargs)
-
-        return queryset
+        return queryset.all().exclude(**kwargs)
 
     def _create_model_from_doc(self, doc, model_class=None):
         """
