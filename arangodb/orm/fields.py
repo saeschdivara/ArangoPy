@@ -537,12 +537,11 @@ class DateField(ModelField):
 
 class ForeignKeyField(ModelField):
 
-    def __init__(self, to, **kwargs):
+    def __init__(self, to, related_name=None, **kwargs):
         """
         """
 
         super(ForeignKeyField, self).__init__(**kwargs)
-
 
         # If null is allowed, default value is None
         if self.null and not self.default:
@@ -555,6 +554,22 @@ class ForeignKeyField(ModelField):
                 self.relation_model = ''
 
         self.relation_class = to
+        self.related_name = related_name
+
+        if 'other_side' in kwargs:
+            self.other_side = kwargs['other_side']
+        else:
+            self.other_side = False
+
+    def on_init(self, model_class):
+        """
+        """
+
+        # Set this only if there is a related name
+        if self.related_name:
+            fields = self.relation_class._model_meta_data._fields
+            otherside_field = ForeignKeyField(to=model_class, related_name=None, other_side=True)
+            fields[self.related_name] = otherside_field
 
     def dumps(self):
         """
@@ -600,7 +615,10 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        return self.relation_model
+        if self.other_side:
+            return None
+        else:
+            return self.relation_model
 
     def __eq__(self, other):
         """

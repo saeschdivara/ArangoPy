@@ -1375,6 +1375,22 @@ class ForeignkeyFieldTestCase(unittest.TestCase):
 
         self.assertEqual(field1.relation_model, model)
 
+    def test_other_side(self):
+
+        class OtherModel(CollectionModel):
+            my_side = ForeignKeyField(to=ForeignkeyFieldTestCase.TestModel, related_name='other_side')
+
+        OtherModel.init()
+
+        this_model = ForeignkeyFieldTestCase.TestModel()
+        this_model.save()
+
+        mo = OtherModel()
+        mo.my_side = this_model
+        mo.save()
+
+        OtherModel.destroy()
+
 
 class ManyToManyFieldTestCase(unittest.TestCase):
 
