@@ -193,6 +193,19 @@ class CollectionModelManager(object):
 
         return queryset
 
+    def exclude(self, **kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
+
+        queryset = CollectionQueryset(manager=self)
+        queryset.all()
+        queryset.exclude(**kwargs)
+
+        return queryset
+
     def _create_model_from_doc(self, doc, model_class=None):
         """
         """
