@@ -941,8 +941,34 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         self.assertEqual(model.id, model2.id)
 
-        for model in all_models:
-            self.assertTrue(isinstance(model, TestModel))
+        self.assertTrue(isinstance(model, TestModel))
+
+        TestModel.destroy()
+
+    def test_exclude_directly(self):
+
+        class TestModel(CollectionModel):
+            name = CharField()
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.name = 'test'
+        model1.save()
+
+        model2 = TestModel()
+        model2.name = 'foo'
+        model2.save()
+
+        all_models = TestModel.objects.exclude(name='foo')
+
+        self.assertEqual(len(all_models), 1)
+
+        model = all_models[0]
+
+        self.assertEqual(model.id, model1.id)
+
+        self.assertTrue(isinstance(model, TestModel))
 
         TestModel.destroy()
 
