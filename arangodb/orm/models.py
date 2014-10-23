@@ -179,6 +179,17 @@ class CollectionModelManager(object):
 
         return model
 
+    def get_or_create(self, **kwargs):
+        """
+        """
+
+        model = self.get(**kwargs)
+
+        if model is None:
+            model = self._model_class()
+
+        return model
+
     def all(self):
         """
         """
