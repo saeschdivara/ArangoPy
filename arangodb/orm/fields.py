@@ -28,6 +28,8 @@ class ModelField(object):
         self.null = null
         self.default = default
 
+        self._set_default_attribute(attribute_name='read_only', default_value=False, **kwargs)
+
         self._model_instance = None
 
     def dumps(self):
@@ -42,7 +44,7 @@ class ModelField(object):
 
         pass
 
-    def on_init(self, model_class):
+    def on_init(self, model_class, attribute_name):
         """
         """
 
@@ -83,6 +85,15 @@ class ModelField(object):
         """
 
         return self
+
+    def _set_default_attribute(self, attribute_name, default_value, **kwargs):
+        """
+        """
+
+        if attribute_name in kwargs:
+            setattr(self, attribute_name, kwargs[attribute_name])
+        else:
+            setattr(self, attribute_name, default_value)
 
     def __eq__(self, other):
         """
@@ -557,18 +568,20 @@ class ForeignKeyField(ModelField):
         self.related_name = related_name
 
         if 'other_side' in kwargs:
-            self.other_side = kwargs['other_side']
+            self.other_side = True
+            self.other_attribute_name = kwargs['other_side']
         else:
             self.other_side = False
 
-    def on_init(self, model_class):
+    def on_init(self, model_class, attribute_name):
         """
         """
 
         # Set this only if there is a related name
         if self.related_name:
             fields = self.relation_class._model_meta_data._fields
-            otherside_field = ForeignKeyField(to=model_class, related_name=None, other_side=True)
+            # Create field on other side
+            otherside_field = ForeignKeyField(to=model_class, other_side=attribute_name, read_only=True)
             fields[self.related_name] = otherside_field
 
     def dumps(self):
@@ -616,7 +629,8 @@ class ForeignKeyField(ModelField):
         """
 
         if self.other_side:
-            return None
+            kwargs = { self.other_attribute_name: self.model_instance.document.id }
+            return self.relation_class.objects.filter(**kwargs)
         else:
             return self.relation_model
 
@@ -648,7 +662,7 @@ class ManyToManyField(ModelField):
         self.unsaved_data = False
         self.related_queryset = None
 
-    def on_init(self, model_class):
+    def on_init(self, model_class, attribute_name):
         """
         """
 

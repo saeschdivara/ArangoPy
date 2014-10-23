@@ -358,9 +358,11 @@ class CollectionModel(object):
         cls._model_meta_data = cls.MetaDataObj()
 
         # Go through all fields
-        for attribute in cls.get_collection_fields():
+        fields_dict = cls.get_collection_fields_dict()
+        for attribute_name in fields_dict:
+            attribute = fields_dict[attribute_name]
             # Trigger init event
-            attribute.on_init(cls)
+            attribute.on_init(cls, attribute_name)
 
         # Go through all index
         model_index_list = cls.get_model_fields_index()
@@ -443,6 +445,11 @@ class CollectionModel(object):
                 if field_name in self._instance_meta_data._fields:
                     # Get field
                     field = self._instance_meta_data._fields[field_name]
+
+                    # Read only fields are ignored
+                    if field.read_only:
+                        continue
+
                     # Validate content by field
                     field.validate()
                     # Get content

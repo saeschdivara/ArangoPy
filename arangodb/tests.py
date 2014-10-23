@@ -1389,6 +1389,14 @@ class ForeignkeyFieldTestCase(unittest.TestCase):
         mo.my_side = this_model
         mo.save()
 
+        mo2 = OtherModel()
+        mo2.my_side = this_model
+        mo2.save()
+
+        # print(this_model.other_side)
+
+        self.assertEqual(len(this_model.other_side), 2)
+
         OtherModel.destroy()
 
 
