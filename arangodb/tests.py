@@ -1070,6 +1070,74 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_order_by_model_field_attribute_asc(self):
+
+        class TestModel(CollectionModel):
+            order = NumberField()
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.order = 3
+        model1.save()
+
+        model2 = TestModel()
+        model2.order = 1
+        model2.save()
+
+        model3 = TestModel()
+        model3.order = 2
+        model3.save()
+
+        all_models = TestModel.objects.all().order_by(field='order', order=Query.SORTING_ASC)
+
+        self.assertEqual(len(all_models), 3)
+
+        model = all_models[0]
+        self.assertEqual(model.id, model2.id)
+
+        model = all_models[1]
+        self.assertEqual(model.id, model3.id)
+
+        model = all_models[2]
+        self.assertEqual(model.id, model1.id)
+
+        TestModel.destroy()
+
+    def test_order_by_model_field_attribute_desc(self):
+
+        class TestModel(CollectionModel):
+            order = NumberField()
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.order = 3
+        model1.save()
+
+        model2 = TestModel()
+        model2.order = 1
+        model2.save()
+
+        model3 = TestModel()
+        model3.order = 2
+        model3.save()
+
+        all_models = TestModel.objects.all().order_by(field='order', order=Query.SORTING_DESC)
+
+        self.assertEqual(len(all_models), 3)
+
+        model = all_models[0]
+        self.assertEqual(model.id, model1.id)
+
+        model = all_models[1]
+        self.assertEqual(model.id, model3.id)
+
+        model = all_models[2]
+        self.assertEqual(model.id, model2.id)
+
+        TestModel.destroy()
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
