@@ -84,6 +84,16 @@ class CollectionQueryset(object):
 
         return self
 
+    def order_by(self, field, order):
+        """
+        """
+
+        self._has_cache = False
+
+        self._query.order_by(field=field, order=order)
+
+        return self
+
     def _clone(self):
         """
         """
