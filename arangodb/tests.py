@@ -1044,6 +1044,32 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_get_or_create_model(self):
+
+        class TestModel(CollectionModel):
+            active = BooleanField(null=False, default=False)
+
+        TestModel.init()
+
+        all_models = TestModel.objects.all()
+        self.assertEqual(len(all_models), 0)
+
+        model = TestModel.objects.get_or_create(active=True)
+
+        self.assertEqual(model.active, False)
+
+        model.active = True
+        model.save()
+
+        model = TestModel.objects.get_or_create(active=True)
+
+        self.assertEqual(model.active, True)
+
+        all_models = TestModel.objects.all()
+        self.assertEqual(len(all_models), 1)
+
+        TestModel.destroy()
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
@@ -1767,6 +1793,8 @@ class EndpointTestCase(unittest.TestCase):
             self.assertTrue('endpoint' in endpoint)
             self.assertTrue('databases' in endpoint)
 
+
+    # TODO: Take a look at it in the documentation in ArangoDB
     # def test_create_and_delete_endpoint(self):
     #
     #     endpoint_url = 'tcp://127.0.0.1:2211'
