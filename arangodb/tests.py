@@ -266,6 +266,34 @@ class AqlQueryTestCase(ExtendedTestCase):
         self.assertDocumentsEqual(doc2, self.col1_doc3)
         self.assertDocumentsEqual(doc3, self.col1_doc1)
 
+    def test_limit_simple_list(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.order_by('little_number')
+        q.limit(count=1)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc1 = docs[0]
+
+        self.assertDocumentsEqual(doc1, self.col1_doc2)
+
+    def test_limit_with_start_simple_list(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.order_by('little_number')
+        q.limit(count=1, start=1)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc1 = docs[0]
+
+        self.assertDocumentsEqual(doc1, self.col1_doc3)
+
 
 class SimpleQueryTestCase(ExtendedTestCase):
     def setUp(self):
