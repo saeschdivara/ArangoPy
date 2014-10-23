@@ -1399,6 +1399,39 @@ class ForeignkeyFieldTestCase(unittest.TestCase):
 
         OtherModel.destroy()
 
+    def test_other_side_filtering(self):
+
+        class OtherModel(CollectionModel):
+            my_side = ForeignKeyField(to=ForeignkeyFieldTestCase.TestModel, related_name='other_side')
+            username = CharField()
+
+        OtherModel.init()
+
+        this_model = ForeignkeyFieldTestCase.TestModel()
+        this_model.save()
+
+        mo = OtherModel()
+        mo.my_side = this_model
+        mo.username = 'test'
+        mo.save()
+
+        mo2 = OtherModel()
+        mo2.my_side = this_model
+        mo2.username = 'not test'
+        mo2.save()
+
+        self.assertEqual(len(this_model.other_side), 2)
+
+        filtered_other_side = this_model.other_side.filter(username='test')
+
+        self.assertEqual(len(filtered_other_side), 1)
+
+        filtered_model = filtered_other_side[0]
+
+        self.assertEqual(filtered_model.id, mo.id)
+
+        OtherModel.destroy()
+
 
 class ManyToManyFieldTestCase(unittest.TestCase):
 
