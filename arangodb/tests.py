@@ -1166,6 +1166,62 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_limit_model_list(self):
+
+        class TestModel(CollectionModel):
+            order = NumberField()
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.order = 3
+        model1.save()
+
+        model2 = TestModel()
+        model2.order = 1
+        model2.save()
+
+        model3 = TestModel()
+        model3.order = 2
+        model3.save()
+
+        all_models = TestModel.objects.all().order_by(field='order', order=Query.SORTING_ASC).limit(1)
+
+        self.assertEqual(len(all_models), 1)
+
+        model = all_models[0]
+        self.assertEqual(model.id, model2.id)
+
+        TestModel.destroy()
+
+    def test_limit_with_start_model_list(self):
+
+        class TestModel(CollectionModel):
+            order = NumberField()
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.order = 3
+        model1.save()
+
+        model2 = TestModel()
+        model2.order = 1
+        model2.save()
+
+        model3 = TestModel()
+        model3.order = 2
+        model3.save()
+
+        all_models = TestModel.objects.all().order_by(field='order', order=Query.SORTING_ASC).limit(1, 1)
+
+        self.assertEqual(len(all_models), 1)
+
+        model = all_models[0]
+        self.assertEqual(model.id, model3.id)
+
+        TestModel.destroy()
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
