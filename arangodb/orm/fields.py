@@ -699,6 +699,10 @@ class ManyToManyField(ModelField):
         if self.unsaved_data:
             new_models = self.related_queryset._cache
 
+            # We don't want to have problems
+            if not new_models:
+                return
+
             for model in new_models:
                 related_model_document = model.document
                 model_document = model_instance.document
