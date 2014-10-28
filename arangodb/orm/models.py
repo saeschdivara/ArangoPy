@@ -5,7 +5,7 @@ from arangodb.index.api import Index
 from arangodb.index.general import BaseIndex
 from arangodb.orm.fields import ModelField
 from arangodb.query.advanced import Query, Traveser
-from arangodb.query.simple import SimpleQuery
+from arangodb.query.simple import SimpleQuery, SimpleIndexQuery
 
 
 class LazyQueryset(object):
@@ -61,6 +61,7 @@ class IndexQueryset(LazyQueryset):
         super(IndexQueryset, self).__init__(manager=manager)
 
         self._index = None
+        self._filters = {}
 
     def set_index(self, index):
         """
@@ -76,6 +77,9 @@ class IndexQueryset(LazyQueryset):
 
         self._has_cache = False
 
+        for arg_name, arg_value in kwargs.items():
+            self._filters[arg_name] = arg_value
+
         return self
 
     def _generate_cache(self):
@@ -83,6 +87,51 @@ class IndexQueryset(LazyQueryset):
         """
 
         super(IndexQueryset, self)._generate_cache()
+
+        index_field = getattr(self._manager._model_class, self._index)
+
+        # Hash index
+        if index_field.index_type_obj.type_name == 'hash':
+
+            if 'skip' in self._filters:
+                skip = self._filters['skip']
+            else:
+                skip = None
+
+            if 'limit' in self._filters:
+                limit = self._filters['limit']
+            else:
+                limit = None
+
+            result = SimpleIndexQuery.get_by_example_hash(
+                collection=index_field.collection,
+                index_id=index_field.index_type_obj.id,
+                example_data=self._filters,
+                allow_multiple=True,
+                skip=skip,
+                limit=limit,
+            )
+
+            if isinstance(result, list):
+                self._cache = result
+            else:
+                self._cache.append(result)
+
+        # Skiplist index
+        if index_field.index_type_obj.type_name == 'skiplist':
+            pass
+
+        # Fulltext index
+        if index_field.index_type_obj.type_name == 'fulltext':
+            pass
+
+        # Cap constraint
+        if index_field.index_type_obj.type_name == 'cap':
+            pass
+
+        # Geo index
+        if index_field.index_type_obj.type_name == 'geo':
+            pass
 
 
 class CollectionQueryset(LazyQueryset):

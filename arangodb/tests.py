@@ -1248,8 +1248,12 @@ class CollectionModelManagerForIndexTestCase(unittest.TestCase):
         model2.username = 'test_user_2'
         model2.save()
 
-        model = TestModel.objects.search_by_index(index='username_index', username='test_user_1')
-        print(model)
+        models = TestModel.objects.search_by_index(index='username_index', username='test_user_2')
+
+        self.assertEqual(len(models), 1)
+
+        model = models[0]
+        self.assertEqual(model.id, model2.id)
 
         TestModel.destroy()
 
