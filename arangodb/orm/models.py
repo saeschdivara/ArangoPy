@@ -89,19 +89,21 @@ class IndexQueryset(LazyQueryset):
         super(IndexQueryset, self)._generate_cache()
 
         index_field = getattr(self._manager._model_class, self._index)
+        result = None
+
+        # All have these attributes
+        if 'skip' in self._filters:
+            skip = self._filters['skip']
+        else:
+            skip = None
+
+        if 'limit' in self._filters:
+            limit = self._filters['limit']
+        else:
+            limit = None
 
         # Hash index
         if index_field.index_type_obj.type_name == 'hash':
-
-            if 'skip' in self._filters:
-                skip = self._filters['skip']
-            else:
-                skip = None
-
-            if 'limit' in self._filters:
-                limit = self._filters['limit']
-            else:
-                limit = None
 
             result = SimpleIndexQuery.get_by_example_hash(
                 collection=index_field.collection,
@@ -112,23 +114,8 @@ class IndexQueryset(LazyQueryset):
                 limit=limit,
             )
 
-            if isinstance(result, list):
-                self._cache = result
-            else:
-                self._cache.append(result)
-
         # Skiplist index
         if index_field.index_type_obj.type_name == 'skiplist':
-
-            if 'skip' in self._filters:
-                skip = self._filters['skip']
-            else:
-                skip = None
-
-            if 'limit' in self._filters:
-                limit = self._filters['limit']
-            else:
-                limit = None
 
             result = SimpleIndexQuery.get_by_example_skiplist(
                 collection=index_field.collection,
@@ -138,11 +125,6 @@ class IndexQueryset(LazyQueryset):
                 skip=skip,
                 limit=limit,
             )
-
-            if isinstance(result, list):
-                self._cache = result
-            else:
-                self._cache.append(result)
 
         # Fulltext index
         if index_field.index_type_obj.type_name == 'fulltext':
@@ -155,6 +137,12 @@ class IndexQueryset(LazyQueryset):
         # Geo index
         if index_field.index_type_obj.type_name == 'geo':
             pass
+
+        # Save cache
+        if isinstance(result, list):
+            self._cache = result
+        else:
+            self._cache.append(result)
 
 
 class CollectionQueryset(LazyQueryset):
