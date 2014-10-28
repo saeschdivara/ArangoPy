@@ -49,6 +49,42 @@ class LazyQueryset(object):
 
         return len(self._cache)
 
+
+class IndexQueryset(LazyQueryset):
+    """
+    """
+
+    def __init__(self, manager):
+        """
+        """
+
+        super(IndexQueryset, self).__init__(manager=manager)
+
+        self._index = None
+
+    def set_index(self, index):
+        """
+        """
+
+        self._has_cache = False
+
+        self._index = index
+
+    def filter(self, **kwargs):
+        """
+        """
+
+        self._has_cache = False
+
+        return self
+
+    def _generate_cache(self):
+        """
+        """
+
+        super(IndexQueryset, self)._generate_cache()
+
+
 class CollectionQueryset(LazyQueryset):
     """
     """
@@ -244,6 +280,15 @@ class CollectionModelManager(object):
 
         queryset = CollectionQueryset(manager=self)
         return queryset.all().exclude(**kwargs)
+
+    def search_by_index(self, index, **kwargs):
+        """
+        """
+
+        queryset = IndexQueryset(manager=self)
+        queryset.set_index(index=index)
+
+        return queryset.filter(**kwargs)
 
     def _create_model_from_doc(self, doc, model_class=None):
         """
