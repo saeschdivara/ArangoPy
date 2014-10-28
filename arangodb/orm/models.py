@@ -8,7 +8,7 @@ from arangodb.query.advanced import Query, Traveser
 from arangodb.query.simple import SimpleQuery
 
 
-class CollectionQueryset(object):
+class LazyQueryset(object):
     """
     """
 
@@ -18,6 +18,47 @@ class CollectionQueryset(object):
 
         self._manager = manager
         self._collection = manager._model_class.collection_instance
+
+        # Cache
+        self._has_cache = False
+        self._cache = []
+
+    def _generate_cache(self):
+        """
+        """
+
+        self._cache = [] # TODO: Check how to best clear this list
+        self._has_cache = True
+
+    def __getitem__(self, item):
+        """
+            Is used for the index access
+        """
+
+        if not self._has_cache:
+            self._generate_cache()
+
+        return self._cache[item]
+
+    def __len__(self):
+        """
+        """
+
+        if not self._has_cache:
+            self._generate_cache()
+
+        return len(self._cache)
+
+class CollectionQueryset(LazyQueryset):
+    """
+    """
+
+    def __init__(self, manager):
+        """
+        """
+
+        super(CollectionQueryset, self).__init__(manager=manager)
+
         self._query = Query()
         # Relations
         self._is_working_on_relations = False
@@ -25,9 +66,6 @@ class CollectionQueryset(object):
         self._relations_end_model = None
         self._relations_relation_collection = None
         self._related_model_class = None
-        # Cache
-        self._has_cache = False
-        self._cache = []
 
     def get_field_relations(self, relation_collection, related_model_class, start_model=None, end_model=None):
         """
@@ -114,8 +152,7 @@ class CollectionQueryset(object):
         """
         """
 
-        self._cache = [] # TODO: Check how to best clear this list
-        self._has_cache = True
+        super(CollectionQueryset, self)._generate_cache()
 
         if self._is_working_on_relations:
 
@@ -146,25 +183,6 @@ class CollectionQueryset(object):
         for doc in result:
             model = self._manager._create_model_from_doc(doc=doc, model_class=result_class)
             self._cache.append(model)
-
-    def __getitem__(self, item):
-        """
-            Is used for the index access
-        """
-
-        if not self._has_cache:
-            self._generate_cache()
-
-        return self._cache[item]
-
-    def __len__(self):
-        """
-        """
-
-        if not self._has_cache:
-            self._generate_cache()
-
-        return len(self._cache)
 
 class CollectionModelManager(object):
 
