@@ -119,7 +119,30 @@ class IndexQueryset(LazyQueryset):
 
         # Skiplist index
         if index_field.index_type_obj.type_name == 'skiplist':
-            pass
+
+            if 'skip' in self._filters:
+                skip = self._filters['skip']
+            else:
+                skip = None
+
+            if 'limit' in self._filters:
+                limit = self._filters['limit']
+            else:
+                limit = None
+
+            result = SimpleIndexQuery.get_by_example_skiplist(
+                collection=index_field.collection,
+                index_id=index_field.index_type_obj.id,
+                example_data=self._filters,
+                allow_multiple=True,
+                skip=skip,
+                limit=limit,
+            )
+
+            if isinstance(result, list):
+                self._cache = result
+            else:
+                self._cache.append(result)
 
         # Fulltext index
         if index_field.index_type_obj.type_name == 'fulltext':

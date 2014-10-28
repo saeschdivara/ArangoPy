@@ -1257,6 +1257,32 @@ class CollectionModelManagerForIndexTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_search_for_skiplist_index_on_field(self):
+
+        class TestModel(CollectionModel):
+
+            username_index = SkiplistIndex(fields=['username'], unique=True)
+            username = CharField(required=True, null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.username = 'test_user_1'
+        model1.save()
+
+        model2 = TestModel()
+        model2.username = 'test_user_2'
+        model2.save()
+
+        models = TestModel.objects.search_by_index(index='username_index', username='test_user_2')
+
+        self.assertEqual(len(models), 1)
+
+        model = models[0]
+        self.assertEqual(model.id, model2.id)
+
+        TestModel.destroy()
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
