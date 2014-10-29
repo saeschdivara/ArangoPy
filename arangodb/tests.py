@@ -1261,7 +1261,7 @@ class CollectionModelManagerForIndexTestCase(unittest.TestCase):
 
         class TestModel(CollectionModel):
 
-            username_index = SkiplistIndex(fields=['username'], unique=True)
+            username_index = SkiplistIndex(fields=['username'])
             username = CharField(required=True, null=False)
 
         TestModel.init()
@@ -1280,6 +1280,53 @@ class CollectionModelManagerForIndexTestCase(unittest.TestCase):
 
         model = models[0]
         self.assertEqual(model.id, model2.id)
+
+        TestModel.destroy()
+
+    def test_search_for_skiplist_range_index_on_field(self):
+
+        class TestModel(CollectionModel):
+
+            rank_index = SkiplistIndex(fields=['rank'])
+            rank = NumberField(required=True, null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.rank = 3
+        model1.save()
+
+        model2 = TestModel()
+        model2.rank = 5
+        model2.save()
+
+        model3 = TestModel()
+        model3.rank = 4
+        model3.save()
+
+        model4 = TestModel()
+        model4.rank = 7
+        model4.save()
+
+        models = TestModel.objects.search_in_range(
+            index='rank_index',
+            attribute='rank',
+            left=5,
+            right=8,
+            closed=True,
+        )
+
+        self.assertEqual(len(models), 2)
+
+        model_id_pool = ( model2.id, model4.id, )
+
+        result_model_1 = models[0]
+        result_model_2 = models[1]
+
+        self.assertTrue( result_model_1.id in model_id_pool )
+        self.assertTrue( result_model_2.id in model_id_pool )
+
+        self.assertNotEqual( result_model_1.id, result_model_2.id )
 
         TestModel.destroy()
 
