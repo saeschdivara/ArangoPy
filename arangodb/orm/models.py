@@ -148,7 +148,15 @@ class IndexQueryset(LazyQueryset):
 
         # Fulltext index
         if index_field.index_type_obj.type_name == 'fulltext':
-            pass
+
+            result = SimpleIndexQuery.fulltext(
+                collection=index_field.collection,
+                index_id=index_field.index_type_obj.id,
+                attribute=self._filters['attribute'],
+                example_text=self._filters['example_text'],
+                skip=skip,
+                limit=limit,
+            )
 
         # Cap constraint
         if index_field.index_type_obj.type_name == 'cap':
@@ -381,6 +389,18 @@ class CollectionModelManager(object):
         kwargs['left'] = left
         kwargs['right'] = right
         kwargs['closed'] = closed
+
+        return queryset.filter(**kwargs)
+
+    def search_fulltext(self, index, attribute, example_text, **kwargs):
+        """
+        """
+
+        queryset = IndexQueryset(manager=self)
+        queryset.set_index(index=index)
+
+        kwargs['attribute'] = attribute
+        kwargs['example_text'] = example_text
 
         return queryset.filter(**kwargs)
 
