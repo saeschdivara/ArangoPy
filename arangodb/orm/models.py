@@ -370,19 +370,17 @@ class CollectionModelManager(object):
 
         return queryset.filter(**kwargs)
 
-    def search_in_range(self, index, attribute, left, right, closed):
+    def search_in_range(self, index, attribute, left, right, closed, **kwargs):
         """
         """
 
         queryset = IndexQueryset(manager=self)
         queryset.set_index(index=index)
 
-        kwargs = {
-            'attribute': attribute,
-            'left': left,
-            'right': right,
-            'closed': closed,
-        }
+        kwargs['attribute'] = attribute
+        kwargs['left'] = left
+        kwargs['right'] = right
+        kwargs['closed'] = closed
 
         return queryset.filter(**kwargs)
 
