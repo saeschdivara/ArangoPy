@@ -7,7 +7,7 @@ from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField, \
-    UuidField, ManyToManyField, ChoiceField
+    UuidField, ManyToManyField, ChoiceField, TextField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -1327,6 +1327,57 @@ class CollectionModelManagerForIndexTestCase(unittest.TestCase):
         self.assertTrue( result_model_2.id in model_id_pool )
 
         self.assertNotEqual( result_model_1.id, result_model_2.id )
+
+        TestModel.destroy()
+
+
+    def test_search_fulltext_index_on_field(self):
+
+        class TestModel(CollectionModel):
+
+            description_index = FulltextIndex(fields=['description'], minimum_length=5)
+            description = TextField(required=True, null=False)
+
+        TestModel.init()
+
+        model1 = TestModel()
+        model1.description = "I want to really parse this description."
+        model1.save()
+
+        model2 = TestModel()
+        model2.description = "Really, do I need to parse this description thing."
+        model2.save()
+
+        model3 = TestModel()
+        model3.description = "What is that crappy thing?"
+        model3.save()
+
+        # Show that the words can be upper or lower case
+        result = TestModel.objects.search_fulltext(
+            index='description_index',
+            attribute='description',
+            example_text='really'
+        )
+
+        self.assertEqual(len(result), 2)
+
+        # Show that . is ignored
+        result = TestModel.objects.search_fulltext(
+            index='description_index',
+            attribute='description',
+            example_text='description'
+        )
+
+        self.assertEqual(len(result), 2)
+
+        # There cannot always be found 2
+        result = TestModel.objects.search_fulltext(
+            index='description_index',
+            attribute='description',
+            example_text='crappy'
+        )
+
+        self.assertEqual(len(result), 1)
 
         TestModel.destroy()
 
