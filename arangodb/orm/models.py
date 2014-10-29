@@ -117,14 +117,34 @@ class IndexQueryset(LazyQueryset):
         # Skiplist index
         if index_field.index_type_obj.type_name == 'skiplist':
 
-            result = SimpleIndexQuery.get_by_example_skiplist(
-                collection=index_field.collection,
-                index_id=index_field.index_type_obj.id,
-                example_data=self._filters,
-                allow_multiple=True,
-                skip=skip,
-                limit=limit,
-            )
+            range_query = 'left' in self._filters
+            range_query = range_query and 'right' in self._filters
+            range_query = range_query and 'closed' in self._filters
+            range_query = range_query and 'attribute' in self._filters
+
+            # Range query
+            if range_query:
+                result = SimpleIndexQuery.range(
+                    collection=index_field.collection,
+                    index_id=index_field.index_type_obj.id,
+                    attribute=self._filters['attribute'],
+                    left=self._filters['left'],
+                    right=self._filters['right'],
+                    closed=self._filters['closed'],
+                    skip=skip,
+                    limit=limit,
+                )
+
+            # Normal search query
+            else:
+                result = SimpleIndexQuery.get_by_example_skiplist(
+                    collection=index_field.collection,
+                    index_id=index_field.index_type_obj.id,
+                    example_data=self._filters,
+                    allow_multiple=True,
+                    skip=skip,
+                    limit=limit,
+                )
 
         # Fulltext index
         if index_field.index_type_obj.type_name == 'fulltext':
@@ -347,6 +367,22 @@ class CollectionModelManager(object):
 
         queryset = IndexQueryset(manager=self)
         queryset.set_index(index=index)
+
+        return queryset.filter(**kwargs)
+
+    def search_in_range(self, index, attribute, left, right, closed):
+        """
+        """
+
+        queryset = IndexQueryset(manager=self)
+        queryset.set_index(index=index)
+
+        kwargs = {
+            'attribute': attribute,
+            'left': left,
+            'right': right,
+            'closed': closed,
+        }
 
         return queryset.filter(**kwargs)
 
