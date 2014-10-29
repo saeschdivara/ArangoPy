@@ -55,9 +55,6 @@ First version which had the following features:
 
 ### 0.5
 - Bitarray index
-- Batch execution
-- Replication
-- Endpoint
 - Better traversal query
 - ORM index queries
 - ORM additional fields:
@@ -66,12 +63,16 @@ First version which had the following features:
     - URL
     - MailAddress
     - Password
+    - List
 
 ### 0.6
+- Batch execution
 - Authentication
 - System
 - HTTP exception handling
 - Document revision
 
 ### 0.7
+- Endpoint
+- Replication
 - Graph
