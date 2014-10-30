@@ -166,7 +166,16 @@ class IndexQueryset(LazyQueryset):
         if index_field.index_type_obj.type_name == 'geo':
 
             if 'radius' in self._filters:
-                pass
+                result = SimpleIndexQuery.within(
+                    collection=index_field.collection,
+                    index_id=index_field.index_type_obj.id,
+                    latitude=self._filters['latitude'],
+                    longitude=self._filters['longitude'],
+                    radius=self._filters['radius'],
+                    distance=self._filters['distance'],
+                    skip=skip,
+                    limit=limit,
+                )
             else:
                 result = SimpleIndexQuery.near(
                     collection=index_field.collection,
@@ -429,6 +438,19 @@ class CollectionModelManager(object):
 
         return queryset.filter(**kwargs)
 
+    def search_within(self, index, latitude, longitude, radius, distance=None, **kwargs):
+        """
+        """
+
+        queryset = IndexQueryset(manager=self)
+        queryset.set_index(index=index)
+
+        kwargs['latitude'] = latitude
+        kwargs['longitude'] = longitude
+        kwargs['radius'] = radius
+        kwargs['distance'] = distance
+
+        return queryset.filter(**kwargs)
 
     def _create_model_from_doc(self, doc, model_class=None):
         """
