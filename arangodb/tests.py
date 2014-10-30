@@ -1082,14 +1082,16 @@ class CollectionModelManagerTestCase(unittest.TestCase):
         all_models = TestModel.objects.all()
         self.assertEqual(len(all_models), 0)
 
-        model = TestModel.objects.get_or_create(active=True)
+        model, is_created = TestModel.objects.get_or_create(active=True)
 
+        self.assertEqual(is_created, True)
         self.assertEqual(model.active, True)
 
         model.save()
 
-        model = TestModel.objects.get_or_create(active=True)
+        model, is_created = TestModel.objects.get_or_create(active=True)
 
+        self.assertEqual(is_created, False)
         self.assertEqual(model.active, True)
 
         all_models = TestModel.objects.all()

@@ -354,19 +354,23 @@ class CollectionModelManager(object):
 
     def get_or_create(self, **kwargs):
         """
-            All attributes which are in the query are set
-            if the object is newly created
+            Looks up an object with the given kwargs, creating one if necessary.
+            Returns a tuple of (object, created), where created is a boolean
+            specifying whether an object was created.
         """
 
         model = self.get(**kwargs)
 
+        is_created = False
+
         if model is None:
+            is_created = True
             model = self._model_class()
 
             for key, value in kwargs.items():
                 setattr(model, key, value)
 
-        return model
+        return model, is_created
 
     def all(self):
         """
