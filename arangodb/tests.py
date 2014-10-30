@@ -1418,6 +1418,47 @@ class CollectionModelManagerForIndexTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_search_geo_within_index(self):
+
+        class TestModel(CollectionModel):
+
+            position_index = GeoIndex(fields=['latitude', 'longitude'], geo_json=False)
+            latitude = NumberField(required=True, null=False)
+            longitude = NumberField(required=True, null=False)
+
+        TestModel.init()
+
+        # Paris
+        model1 = TestModel()
+        model1.latitude = 48.853333
+        model1.longitude = 2.348611
+        model1.save()
+
+        # Koeln
+        model2 = TestModel()
+        model2.latitude = 50.933333
+        model2.longitude = 6.95
+        model2.save()
+
+        radius_kilometers = 400
+        radius_meters = radius_kilometers * 1000
+
+        # Brussels
+        models = TestModel.objects.search_within(
+            index='position_index',
+            latitude=50.850278,
+            longitude=4.348611,
+            radius=radius_meters,
+            limit=1,
+        )
+
+        self.assertEqual(len(models), 1)
+
+        model = models[0]
+        self.assertEqual(model.id, model2.id)
+
+        TestModel.destroy()
+
 
 class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
     def setUp(self):
