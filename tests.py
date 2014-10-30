@@ -21,6 +21,7 @@ test_suites.append( unittest.TestLoader().loadTestsFromTestCase(SimpleIndexQuery
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(TraveserTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelManagerTestCase) )
+test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelManagerForIndexTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelForeignKeyFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(BooleanFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CharFieldTestCase) )
