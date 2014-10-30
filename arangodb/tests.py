@@ -1084,9 +1084,8 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         model = TestModel.objects.get_or_create(active=True)
 
-        self.assertEqual(model.active, False)
+        self.assertEqual(model.active, True)
 
-        model.active = True
         model.save()
 
         model = TestModel.objects.get_or_create(active=True)

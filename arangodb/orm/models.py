@@ -354,12 +354,17 @@ class CollectionModelManager(object):
 
     def get_or_create(self, **kwargs):
         """
+            All attributes which are in the query are set
+            if the object is newly created
         """
 
         model = self.get(**kwargs)
 
         if model is None:
             model = self._model_class()
+
+            for key, value in kwargs.items():
+                setattr(model, key, value)
 
         return model
 
