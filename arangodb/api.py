@@ -450,6 +450,8 @@ class Document(object):
             set properties but otherwise it will create a new document.
         """
 
+        # TODO: Add option force_insert
+
         if not self.is_loaded:
             data = self.api.document.post(data=self.data, collection=self.collection)
             self.id = data['_id']
