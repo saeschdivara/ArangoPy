@@ -766,10 +766,10 @@ class CollectionModelTestCase(unittest.TestCase):
         retrieved_model_2 = None
 
         for doc in all_docs:
-            if doc.get(key='_key') == model_1.document.get(key='_key'):
-                retrieved_model_1 = doc
-            else:
+            if doc.key == model_2.document.key:
                 retrieved_model_2 = doc
+            else:
+                retrieved_model_1 = doc
 
         if retrieved_model_1:
             self.assertEqual(retrieved_model_1.get('test_field'), None)
@@ -806,10 +806,10 @@ class CollectionModelTestCase(unittest.TestCase):
         retrieved_model_2 = None
 
         for doc in all_docs:
-            if doc.get(key='_key') == model_1.document.get(key='_key'):
-                retrieved_model_1 = doc
-            else:
+            if doc.key == model_2.document.key:
                 retrieved_model_2 = doc
+            else:
+                retrieved_model_1 = doc
 
         if retrieved_model_1:
             self.assertEqual(retrieved_model_1.get('test_field'), None)
