@@ -343,6 +343,11 @@ class CollectionModelManager(object):
 
         collection = self._model_class.collection_instance
 
+        # You can use this way models
+        for key, value in kwargs.items():
+            if isinstance(value, CollectionModel):
+                kwargs[key] = value.id
+
         doc = SimpleQuery.get_by_example(collection=collection, example_data=kwargs)
 
         if doc is None:
