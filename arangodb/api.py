@@ -454,6 +454,7 @@ class Document(object):
             data = self.api.document.post(data=self.data, collection=self.collection)
             self.id = data['_id']
             self.key = data['_key']
+            self.is_loaded = True
         else:
             self.resource(self.id).patch(data=self.data)
 
