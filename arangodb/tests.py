@@ -1099,6 +1099,30 @@ class CollectionModelManagerTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_get_or_create_with_foreign_key_model(self):
+
+        class ForeignTestModel(CollectionModel):
+            active = BooleanField(null=False, default=False)
+
+        class TestModel(CollectionModel):
+            active = BooleanField(null=False, default=False)
+            foreigner = ForeignKeyField(to=ForeignTestModel, related_name='other')
+
+        ForeignTestModel.init()
+        TestModel.init()
+
+        normal_model = ForeignTestModel()
+        normal_model.active = True
+        normal_model.save()
+
+        test_model, is_created = TestModel.objects.get_or_create(foreigner=normal_model)
+
+        if is_created:
+            test_model.save()
+
+        TestModel.destroy()
+        ForeignTestModel.destroy()
+
     def test_order_by_model_field_attribute_asc(self):
 
         class TestModel(CollectionModel):
