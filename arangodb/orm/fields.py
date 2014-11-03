@@ -446,7 +446,10 @@ class DatetimeField(ModelField):
         """
         """
 
-        return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
+        if self.time:
+            return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
+        else:
+            return None
 
     def loads(self, date_string):
         """
