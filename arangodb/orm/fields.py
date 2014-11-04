@@ -513,13 +513,19 @@ class DateField(ModelField):
         """
         """
 
-        return u'%s' % self.date.strftime(DateField.DATE_FORMAT)
+        if self.date and not self.null:
+            return u'%s' % self.date.strftime(DateField.DATE_FORMAT)
+        else:
+            return None
 
     def loads(self, date_string):
         """
         """
 
-        self.date = datetime.strptime(date_string, DateField.DATE_FORMAT)
+        if not self.null:
+            self.date = datetime.strptime(date_string, DateField.DATE_FORMAT)
+        else:
+            self.date = None
 
     def validate(self):
         """
