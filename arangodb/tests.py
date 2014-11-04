@@ -1210,7 +1210,7 @@ class CollectionModelManagerTestCase(unittest.TestCase):
         model3.order = 2
         model3.save()
 
-        all_models = TestModel.objects.all().order_by(field='order', order=Query.SORTING_ASC).limit(1)
+        all_models = TestModel.objects.limit(1).order_by(field='order', order=Query.SORTING_ASC)
 
         self.assertEqual(len(all_models), 1)
 
