@@ -12,6 +12,10 @@ class QueryFilterStatement(object):
     EQUAL_OPERATOR = '=='
     NOT_EQUAL_OPERATOR = '!='
 
+    QUERY_CONDITION_EXTENSIONS = {
+        'gt': '>',
+    }
+
     def __init__(self, collection, attribute, operator, value):
         """
         """
@@ -146,14 +150,28 @@ class Query(object):
 
             else:
 
-                filters.append(
-                    QueryFilterStatement(
-                        collection=splitted_filter[0],
-                        attribute=splitted_filter[1],
-                        operator=QueryFilterStatement.EQUAL_OPERATOR,
-                        value=value,
+                if len(splitted_filter) is 3:
+                    operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[2] ]
+
+                    filters.append(
+                        QueryFilterStatement(
+                            collection=splitted_filter[0],
+                            attribute=splitted_filter[1],
+                            operator=operator,
+                            value=value,
+                        )
                     )
-                )
+
+                else:
+
+                    filters.append(
+                        QueryFilterStatement(
+                            collection=splitted_filter[0],
+                            attribute=splitted_filter[1],
+                            operator=QueryFilterStatement.EQUAL_OPERATOR,
+                            value=value,
+                        )
+                    )
 
         return self
 
