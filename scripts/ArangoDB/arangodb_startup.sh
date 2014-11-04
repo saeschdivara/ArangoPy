@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
   if [ ! -d "$DIR/$NAME" ]; then
     # download ArangoDB
-    echo "wget http://www.arangodb.org/travisCI/$NAME.tar.gz"
+    echo "wget http://www.arangodb.com/travisCI/$NAME.tar.gz"
     wget http://www.arangodb.org/travisCI/$NAME.tar.gz
     echo "tar zxf $NAME.tar.gz"
     tar zvxf $NAME.tar.gz
