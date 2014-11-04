@@ -719,6 +719,9 @@ class CollectionModel(object):
                     if field.read_only:
                         continue
 
+                    # If the fields needs to do something before the save
+                    field.on_save(self)
+
                     # Validate content by field
                     field.validate()
                     # Get content
