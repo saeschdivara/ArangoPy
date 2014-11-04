@@ -217,6 +217,9 @@ class TextField(ModelField):
         if len(args) is 1:
             text = args[0]
 
+            if not text and not self.null:
+                raise Exception('Value cannot be None')
+
             if isinstance(text, basestring):
                 self.text = u'%s' % args[0]
             else:
