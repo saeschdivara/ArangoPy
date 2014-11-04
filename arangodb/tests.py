@@ -301,6 +301,10 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         docs = q.execute()
 
+        self.assertEqual(len(docs), 1)
+
+        self.assertDocumentsEqual(self.col1_doc1, docs[0])
+
 
 class SimpleQueryTestCase(ExtendedTestCase):
     def setUp(self):

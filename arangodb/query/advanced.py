@@ -179,8 +179,6 @@ class Query(object):
 
                     operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[1] ]
 
-                    print(operator)
-
                     return QueryFilterStatement(
                         collection=self.collections[-1],
                         attribute=splitted_filter[0],
