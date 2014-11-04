@@ -446,7 +446,7 @@ class DatetimeField(ModelField):
         """
         """
 
-        if self.time:
+        if self.time and not self.null:
             return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
         else:
             return None
@@ -455,7 +455,10 @@ class DatetimeField(ModelField):
         """
         """
 
-        self.time = datetime.strptime(date_string, DatetimeField.DATE_FORMAT)
+        if not self.null:
+            self.time = datetime.strptime(date_string, DatetimeField.DATE_FORMAT)
+        else:
+            self.time = None
 
     def validate(self):
         """
