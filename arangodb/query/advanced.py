@@ -15,6 +15,7 @@ class QueryFilterStatement(object):
     QUERY_CONDITION_EXTENSIONS = {
         'exact': EQUAL_OPERATOR,
         'gt': '>',
+        'gte': '>=',
     }
 
     def __init__(self, collection, attribute, operator, value):
