@@ -16,6 +16,8 @@ class QueryFilterStatement(object):
         'exact': EQUAL_OPERATOR,
         'gt': '>',
         'gte': '>=',
+        'lt': '<',
+        'lte': '<=',
     }
 
     def __init__(self, collection, attribute, operator, value):

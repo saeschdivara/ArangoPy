@@ -314,6 +314,26 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         self.assertEqual(len(docs), 2)
 
+    def test_lower_filtering(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.filter(little_number__lt=3)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        self.assertDocumentsEqual(self.col1_doc2, docs[0])
+
+    def test_lower_equals_filtering(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.filter(little_number__lte=3)
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 2)
+
 
 class SimpleQueryTestCase(ExtendedTestCase):
     def setUp(self):
