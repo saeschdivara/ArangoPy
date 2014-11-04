@@ -404,6 +404,15 @@ class CollectionModelManager(object):
         queryset = CollectionQueryset(manager=self)
         return queryset.all().exclude(**kwargs)
 
+    def limit(self, count, start=-1):
+        """
+
+        :return:
+        """
+
+        queryset = CollectionQueryset(manager=self)
+        return queryset.all().limit(count=count, start=start)
+
     def search_by_index(self, index, **kwargs):
         """
         """
