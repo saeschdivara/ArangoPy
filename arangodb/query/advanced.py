@@ -13,6 +13,7 @@ class QueryFilterStatement(object):
     NOT_EQUAL_OPERATOR = '!='
 
     QUERY_CONDITION_EXTENSIONS = {
+        'exact': EQUAL_OPERATOR,
         'gt': '>',
     }
 
@@ -135,43 +136,9 @@ class Query(object):
 
         for key, value in kwargs.iteritems():
 
-            splitted_filter = key.split('__')
-
-            if len(splitted_filter) is 1:
-
                 filters.append(
-                    QueryFilterStatement(
-                        collection=self.collections[-1],
-                        attribute=key,
-                        operator=QueryFilterStatement.EQUAL_OPERATOR,
-                        value=value,
-                    )
+                    self._get_filter_statement(key, value, QueryFilterStatement.EQUAL_OPERATOR)
                 )
-
-            else:
-
-                if len(splitted_filter) is 3:
-                    operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[2] ]
-
-                    filters.append(
-                        QueryFilterStatement(
-                            collection=splitted_filter[0],
-                            attribute=splitted_filter[1],
-                            operator=operator,
-                            value=value,
-                        )
-                    )
-
-                else:
-
-                    filters.append(
-                        QueryFilterStatement(
-                            collection=splitted_filter[0],
-                            attribute=splitted_filter[1],
-                            operator=QueryFilterStatement.EQUAL_OPERATOR,
-                            value=value,
-                        )
-                    )
 
         return self
 
@@ -181,31 +148,64 @@ class Query(object):
 
         for key, value in kwargs.iteritems():
 
-            splitted_filter = key.split('__')
-
-            if len(splitted_filter) is 1:
-
-                self.filters.append(
-                    QueryFilterStatement(
-                        collection=self.collections[-1],
-                        attribute=key,
-                        operator=QueryFilterStatement.NOT_EQUAL_OPERATOR,
-                        value=value,
-                    )
-                )
-
-            else:
-
-                self.filters.append(
-                    QueryFilterStatement(
-                        collection=splitted_filter[0],
-                        attribute=splitted_filter[1],
-                        operator=QueryFilterStatement.NOT_EQUAL_OPERATOR,
-                        value=value,
-                    )
-                )
+            self.filters.append(
+                self._get_filter_statement(key, value, QueryFilterStatement.NOT_EQUAL_OPERATOR)
+            )
 
         return self
+
+    def _get_filter_statement(self, filter_string, filter_value, default_operator):
+        """
+        """
+
+        splitted_filter = filter_string.split('__')
+
+        lenght_splitted_filter = len(splitted_filter)
+
+        if lenght_splitted_filter is 1:
+
+            return QueryFilterStatement(
+                collection=self.collections[-1],
+                attribute=filter_string,
+                operator=default_operator,
+                value=filter_value,
+            )
+
+        else:
+
+            if lenght_splitted_filter is 2:
+
+                if splitted_filter[1] in QueryFilterStatement.QUERY_CONDITION_EXTENSIONS:
+
+                    operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[1] ]
+
+                    print(operator)
+
+                    return QueryFilterStatement(
+                        collection=self.collections[-1],
+                        attribute=splitted_filter[0],
+                        operator=operator,
+                        value=filter_value,
+                    )
+
+                else:
+                    return QueryFilterStatement(
+                        collection=splitted_filter[0],
+                        attribute=splitted_filter[1],
+                        operator=default_operator,
+                        value=filter_value,
+                    )
+
+
+            else:
+                operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[2] ]
+
+                return QueryFilterStatement(
+                    collection=splitted_filter[0],
+                    attribute=splitted_filter[1],
+                    operator=operator,
+                    value=filter_value,
+                )
 
     def limit(self, count, start=-1):
         """

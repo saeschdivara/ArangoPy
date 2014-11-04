@@ -211,7 +211,7 @@ class AqlQueryTestCase(ExtendedTestCase):
         doc = docs[0]
         self.assertDocumentsEqual(doc, self.col1_doc2)
 
-    def test_filter_from_multiple_collections(self):
+    def test_filter_of_multiple_collections(self):
         q = Query()
         q.append_collection(self.test_1_col.name)
         q.append_collection(self.test_2_col.name)
@@ -293,6 +293,13 @@ class AqlQueryTestCase(ExtendedTestCase):
         doc1 = docs[0]
 
         self.assertDocumentsEqual(doc1, self.col1_doc3)
+
+    def test_greater_filtering(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.filter(little_number__gt=20)
+
+        docs = q.execute()
 
 
 class SimpleQueryTestCase(ExtendedTestCase):
