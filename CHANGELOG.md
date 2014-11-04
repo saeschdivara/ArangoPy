@@ -56,6 +56,7 @@ First version which had the following features:
 ### 0.5
 - Bitarray index
 - Better traversal query
+- Extending query as in Django
 - ORM index queries
 - ORM additional fields:
     - File
