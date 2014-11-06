@@ -626,6 +626,10 @@ class CollectionModel(object):
         # Create meta data for collection
         cls._model_meta_data = cls.MetaDataObj()
 
+        if hasattr(cls, 'Meta'):
+            cls._meta = cls.Meta()
+            cls._meta.model_name = name
+
         # Go through all fields
         fields_dict = cls.get_collection_fields_dict()
         for attribute_name in fields_dict:
