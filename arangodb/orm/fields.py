@@ -449,10 +449,13 @@ class DatetimeField(ModelField):
         """
         """
 
-        if self.time and not self.null:
-            return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
-        else:
+        if self.null and self.time is None:
             return None
+        else:
+            if self.time is None:
+                raise Exception('Datetime cannot be None')
+            else:
+                return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
 
     def loads(self, date_string):
         """
@@ -516,10 +519,13 @@ class DateField(ModelField):
         """
         """
 
-        if self.date and not self.null:
-            return u'%s' % self.date.strftime(DateField.DATE_FORMAT)
-        else:
+        if self.null and self.date is None:
             return None
+        else:
+            if self.date is None:
+                raise Exception('Datetime cannot be None')
+            else:
+                return u'%s' % self.date.strftime(DateField.DATE_FORMAT)
 
     def loads(self, date_string):
         """
