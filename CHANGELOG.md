@@ -60,7 +60,7 @@ First version which had the following features:
 - ORM index queries
 - ORM additional fields:
     - List
-    - Object
+    - Dict
 
 ### 0.6
 - Batch execution

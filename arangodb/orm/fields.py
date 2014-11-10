@@ -207,6 +207,105 @@ class ListField(ModelField):
         return self.dumps()
 
 
+class DictField(ModelField):
+
+    def __init__(self, **kwargs):
+        """
+        """
+
+        super(DictField, self).__init__(**kwargs)
+
+        # If null is allowed, default value is None
+        if self.null and self.default is None:
+            self.saved_dict = None
+        else:
+            # If default value was set
+            if not self.default is None:
+                self.saved_dict = self.default
+            else:
+                self.saved_dict = {}
+
+
+    def dumps(self):
+        """
+        """
+
+        json_save_dict = []
+        for key, saved_entry in enumerate(self.saved_dict):
+            is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
+
+            # Check if entry is base type
+            if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
+                json_save_dict[key] = saved_entry
+            else:
+                json_save_dict[key] = self._get_json_save_value(saved_entry)
+
+
+        return json_save_dict
+
+    def _get_json_save_value(self, value):
+        """
+        """
+
+        if isinstance(value, list) or isinstance(value, tuple):
+            return value
+
+        if isinstance(value, dict):
+            return value
+
+        else:
+            return u'%s' % value
+
+    def loads(self, saved_dict):
+        """
+        """
+
+        self.saved_dict = saved_dict
+
+    def validate(self):
+        """
+        """
+
+        if self.saved_dict is None and self.null is False:
+            raise DictField.NotNullableFieldException()
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            saved_dict = args[0]
+
+            if saved_dict is None and self.null is False:
+                raise DictField.NotNullableFieldException()
+
+            if isinstance(saved_dict, dict):
+                self.saved_dict = saved_dict
+            else:
+                self.saved_dict = args
+
+    def get(self):
+        """
+        """
+
+        if self.saved_dict is None and self.null is False:
+            self.saved_dict = {}
+
+        return self.saved_dict
+
+    def __eq__(self, other):
+        """
+        """
+
+        return super(DictField, self).__eq__(other)
+
+    def __unicode__(self):
+        """
+        """
+
+        return self.dumps()
+
+
 class BooleanField(ModelField):
 
     def __init__(self, **kwargs):
