@@ -59,12 +59,8 @@ First version which had the following features:
 - Extending query as in Django
 - ORM index queries
 - ORM additional fields:
-    - File
-    - NumberRange
-    - URL
-    - MailAddress
-    - Password
     - List
+    - Object
 
 ### 0.6
 - Batch execution
