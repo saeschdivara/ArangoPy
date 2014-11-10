@@ -20,7 +20,7 @@ class QueryFilterStatement(object):
         'lte': '<=',
     }
 
-    QUERY_FUNCTION_EXTENSIONS = ( 'contains', )
+    QUERY_FUNCTION_EXTENSIONS = ( 'contains', 'icontains', )
 
     def __init__(self, collection, attribute, value, **kwargs):
         """
@@ -52,6 +52,16 @@ class QueryFilterStatement(object):
                         collection_name,
                         self.attribute,
                         self.get_value_string(),
+                    )
+
+        elif self.function == 'icontains':
+
+            filter_string = ' LIKE (%s.%s, "%s%s%s", true) ' % (
+                        collection_name,
+                        self.attribute,
+                        '%',
+                        self.value,
+                        '%',
                     )
 
         else:
