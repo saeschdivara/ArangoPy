@@ -42,12 +42,32 @@ class QueryFilterStatement(object):
         self.value = value
 
 
-    def get_function_name(self):
+    def get_filter_function_string(self, collection_name):
         """
         """
 
         if self.function == 'contains':
-            return 'CONTAINS'
+
+            filter_string = ' CONTAINS (%s.%s, %s) ' % (
+                        collection_name,
+                        self.attribute,
+                        self.get_value_string(),
+                    )
+
+        else:
+            filter_string = ''
+
+        return filter_string
+
+
+    def get_value_string(self):
+        """
+        """
+
+        if isinstance(self.value, basestring):
+            return '"%s"' % self.value
+        else:
+            return '%s' % self.value
 
 
 class QueryFilterContainer(object):
@@ -396,20 +416,8 @@ class Query(object):
                     filter_statement.value,
                 )
         elif not filter_statement.function is None:
-            if isinstance(filter_statement.value, basestring):
-                filter_string = ' %s (%s.%s, "%s") ' % (
-                    filter_statement.get_function_name(),
-                    self._get_collection_ident(filter_statement.collection),
-                    filter_statement.attribute,
-                    filter_statement.value,
-                )
-            else:
-                filter_string = ' %s (%s.%s, %s) ' % (
-                    filter_statement.get_function_name(),
-                    self._get_collection_ident(filter_statement.collection),
-                    filter_statement.attribute,
-                    filter_statement.value,
-                )
+            collection_name = self._get_collection_ident(filter_statement.collection)
+            filter_string =  filter_statement.get_filter_function_string(collection_name)
 
         return filter_string
 
@@ -423,20 +431,20 @@ class Query(object):
             collection = self.collections[0]
             return_statement += ' RETURN %s' % self._get_collection_ident(collection_name=collection)
         else:
-            colletions_string = ''
+            collections_string = ''
             is_first = True
 
             for collection in self.collections:
                 if is_first:
                     is_first = False
 
-                    colletions_string += self._get_collection_ident(collection)
+                    collections_string += self._get_collection_ident(collection)
 
                 else:
-                    colletions_string += ' , %s ' % self._get_collection_ident(collection)
+                    collections_string += ' , %s ' % self._get_collection_ident(collection)
 
 
-            return_statement += ' RETURN [ %s ]' % colletions_string
+            return_statement += ' RETURN [ %s ]' % collections_string
 
         return return_statement
 
