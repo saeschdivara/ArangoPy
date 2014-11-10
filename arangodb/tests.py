@@ -7,7 +7,7 @@ from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField, \
-    UuidField, ManyToManyField, ChoiceField, TextField, ListField
+    UuidField, ManyToManyField, ChoiceField, TextField, ListField, DictField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -1657,6 +1657,80 @@ class ListFieldTestCase(unittest.TestCase):
 
         # Destroy
         TestModel.destroy()
+
+
+class DictFieldTestCase(unittest.TestCase):
+    def setUp(self):
+        self.database_name = 'test_case_dict_field_123'
+        self.db = Database.create(name=self.database_name)
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_field_not_null_without_default(self):
+
+        class TestModel(CollectionModel):
+
+            dict_field = DictField(null=False)
+
+        # Init collections
+        TestModel.init()
+
+        # Create model
+        model = TestModel()
+        model.dict_field = {
+            'test_1': 'foo',
+            'test_2': 'bar',
+        }
+        model.save()
+
+        documents = TestModel.collection_instance.documents()
+        self.assertEqual(len(documents), 1)
+
+        doc1 = documents[0]
+        self.assertTrue(isinstance(doc1.dict_field, dict))
+
+        self.assertTrue('test_1' in doc1.dict_field)
+        self.assertEqual(doc1.dict_field['test_1'], 'foo')
+
+        self.assertTrue('test_2' in doc1.dict_field)
+        self.assertEqual(doc1.dict_field['test_2'], 'bar')
+
+        # Destroy
+        TestModel.destroy()
+    #
+    # def test_field_with_special_values(self):
+    #
+    #     class TestModel(CollectionModel):
+    #
+    #         list_field = ListField(null=False)
+    #
+    #     # Init collections
+    #     TestModel.init()
+    #
+    #     # Create model
+    #     model = TestModel()
+    #     model.list_field = 13, {'test': 'foo'}, [50, 60]
+    #     model.save()
+    #
+    #     documents = TestModel.collection_instance.documents()
+    #     self.assertEqual(len(documents), 1)
+    #
+    #     doc1 = documents[0]
+    #     self.assertTrue(isinstance(doc1.list_field, list))
+    #
+    #     self.assertEqual(len(doc1.list_field), 3)
+    #
+    #     val1 = doc1.list_field[0]
+    #     val2 = doc1.list_field[1]
+    #     val3 = doc1.list_field[2]
+    #
+    #     self.assertTrue(isinstance(val1, int))
+    #     self.assertTrue(isinstance(val2, dict))
+    #     self.assertTrue(isinstance(val3, list))
+    #
+    #     # Destroy
+    #     TestModel.destroy()
 
 
 class BooleanFieldTestCase(unittest.TestCase):

@@ -230,8 +230,8 @@ class DictField(ModelField):
         """
         """
 
-        json_save_dict = []
-        for key, saved_entry in enumerate(self.saved_dict):
+        json_save_dict = {}
+        for key, saved_entry in self.saved_dict.iteritems():
             is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
 
             # Check if entry is base type
