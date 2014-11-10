@@ -139,10 +139,23 @@ class ListField(ModelField):
             if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
                 json_save_list.append(saved_entry)
             else:
-                json_save_list.append(u'%s' % saved_entry)
+                json_save_list.append(self._get_json_save_value(saved_entry))
 
 
         return json_save_list
+
+    def _get_json_save_value(self, value):
+        """
+        """
+
+        if isinstance(value, list) or isinstance(value, tuple):
+            return value
+
+        if isinstance(value, dict):
+            return value
+
+        else:
+            return u'%s' % value
 
     def loads(self, saved_list):
         """
@@ -167,10 +180,10 @@ class ListField(ModelField):
             if saved_list is None and self.null is False:
                 raise ListField.NotNullableFieldException()
 
-            if isinstance(saved_list, list):
+            if isinstance(saved_list, list) or isinstance(saved_list, tuple):
                 self.saved_list = saved_list
             else:
-                raise ListField.WrongInputTypeException()
+                self.saved_list = args
 
     def get(self):
         """
