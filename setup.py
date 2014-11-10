@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ArangoPy',
-    version= '0.4.4.2',
+    version= '0.4.5',
     packages=find_packages(),
     requires=[
         'slumber',
