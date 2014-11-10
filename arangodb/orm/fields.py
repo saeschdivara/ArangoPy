@@ -108,6 +108,81 @@ class ModelField(object):
         return self.dumps()
 
 
+class ListField(ModelField):
+
+    def __init__(self, **kwargs):
+        """
+        """
+
+        super(ListField, self).__init__(**kwargs)
+
+        # If null is allowed, default value is None
+        if self.null and self.default is None:
+            self.saved_list = None
+        else:
+            # If default value was set
+            if not self.default is None:
+                self.saved_list = self.default
+            else:
+                self.saved_list = []
+
+
+    def dumps(self):
+        """
+        """
+
+        return self.saved_list
+
+    def loads(self, saved_list):
+        """
+        """
+
+        self.saved_list = saved_list
+
+    def validate(self):
+        """
+        """
+
+        if self.saved_list is None and self.null is False:
+            raise ListField.NotNullableFieldException()
+
+    def set(self, *args, **kwargs):
+        """
+        """
+
+        if len(args) is 1:
+            saved_list = args[0]
+
+            if saved_list is None and self.null is False:
+                raise ListField.NotNullableFieldException()
+
+            if isinstance(saved_list, list):
+                self.saved_list = saved_list
+            else:
+                raise ListField.WrongInputTypeException()
+
+    def get(self):
+        """
+        """
+
+        if self.saved_list is None and self.null is False:
+            self.saved_list = []
+
+        return self.saved_list
+
+    def __eq__(self, other):
+        """
+        """
+
+        return super(ListField, self).__eq__(other)
+
+    def __unicode__(self):
+        """
+        """
+
+        return self.dumps()
+
+
 class BooleanField(ModelField):
 
     def __init__(self, **kwargs):
