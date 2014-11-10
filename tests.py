@@ -23,6 +23,7 @@ test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelT
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelManagerTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelManagerForIndexTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CollectionModelForeignKeyFieldTestCase) )
+test_suites.append( unittest.TestLoader().loadTestsFromTestCase(ListFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(BooleanFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(CharFieldTestCase) )
 test_suites.append( unittest.TestLoader().loadTestsFromTestCase(UuidFieldTestCase) )
