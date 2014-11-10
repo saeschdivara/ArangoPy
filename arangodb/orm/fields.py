@@ -131,7 +131,18 @@ class ListField(ModelField):
         """
         """
 
-        return self.saved_list
+        json_save_list = []
+        for saved_entry in self.saved_list:
+            is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
+
+            # Check if entry is base type
+            if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
+                json_save_list.append(saved_entry)
+            else:
+                json_save_list.append(u'%s' % saved_entry)
+
+
+        return json_save_list
 
     def loads(self, saved_list):
         """
