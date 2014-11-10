@@ -20,14 +20,34 @@ class QueryFilterStatement(object):
         'lte': '<=',
     }
 
-    def __init__(self, collection, attribute, operator, value):
+    QUERY_FUNCTION_EXTENSIONS = ( 'contains', )
+
+    def __init__(self, collection, attribute, value, **kwargs):
         """
         """
 
         self.collection = collection
         self.attribute = attribute
-        self.operator = operator
+
+        if 'operator' in kwargs:
+            self.operator = kwargs['operator']
+        else:
+            self.operator = None
+
+        if 'function' in kwargs:
+            self.function = kwargs['function']
+        else:
+            self.function = None
+
         self.value = value
+
+
+    def get_function_name(self):
+        """
+        """
+
+        if self.function == 'contains':
+            return 'CONTAINS'
 
 
 class QueryFilterContainer(object):
@@ -178,9 +198,12 @@ class Query(object):
 
             if lenght_splitted_filter is 2:
 
-                if splitted_filter[1] in QueryFilterStatement.QUERY_CONDITION_EXTENSIONS:
+                second_filter_value = splitted_filter[1]
 
-                    operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[1] ]
+                # Is this a normal condition
+                if second_filter_value in QueryFilterStatement.QUERY_CONDITION_EXTENSIONS:
+
+                    operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ second_filter_value ]
 
                     return QueryFilterStatement(
                         collection=self.collections[-1],
@@ -189,24 +212,48 @@ class Query(object):
                         value=filter_value,
                     )
 
+                # Is this a function condition
+                elif second_filter_value in QueryFilterStatement.QUERY_FUNCTION_EXTENSIONS:
+
+                    return QueryFilterStatement(
+                        collection=self.collections[-1],
+                        attribute=splitted_filter[0],
+                        function=second_filter_value,
+                        value=filter_value,
+                    )
+
+                # Just collection and attribute
                 else:
                     return QueryFilterStatement(
                         collection=splitted_filter[0],
-                        attribute=splitted_filter[1],
+                        attribute=second_filter_value,
                         operator=default_operator,
                         value=filter_value,
                     )
 
 
             else:
-                operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[2] ]
 
-                return QueryFilterStatement(
-                    collection=splitted_filter[0],
-                    attribute=splitted_filter[1],
-                    operator=operator,
-                    value=filter_value,
-                )
+
+                if splitted_filter[2] in QueryFilterStatement.QUERY_CONDITION_EXTENSIONS:
+                    operator = QueryFilterStatement.QUERY_CONDITION_EXTENSIONS[ splitted_filter[2] ]
+
+                    return QueryFilterStatement(
+                        collection=splitted_filter[0],
+                        attribute=splitted_filter[1],
+                        operator=operator,
+                        value=filter_value,
+                    )
+
+                # Is this a function condition
+                elif splitted_filter[2] in QueryFilterStatement.QUERY_FUNCTION_EXTENSIONS:
+
+                    return QueryFilterStatement(
+                        collection=self.collections[-1],
+                        attribute=splitted_filter[0],
+                        function=splitted_filter[2],
+                        value=filter_value,
+                    )
 
     def limit(self, count, start=-1):
         """
@@ -330,20 +377,39 @@ class Query(object):
         """
         """
 
-        if isinstance(filter_statement.value, basestring):
-            filter_string = '%s.%s %s "%s"' % (
-                self._get_collection_ident(filter_statement.collection),
-                filter_statement.attribute,
-                filter_statement.operator,
-                filter_statement.value,
-            )
-        else:
-            filter_string = '%s.%s %s %s' % (
-                self._get_collection_ident(filter_statement.collection),
-                filter_statement.attribute,
-                filter_statement.operator,
-                filter_statement.value,
-            )
+        filter_string = ''
+
+        # Operator
+        if not filter_statement.operator is None:
+            if isinstance(filter_statement.value, basestring):
+                filter_string = '%s.%s %s "%s"' % (
+                    self._get_collection_ident(filter_statement.collection),
+                    filter_statement.attribute,
+                    filter_statement.operator,
+                    filter_statement.value,
+                )
+            else:
+                filter_string = '%s.%s %s %s' % (
+                    self._get_collection_ident(filter_statement.collection),
+                    filter_statement.attribute,
+                    filter_statement.operator,
+                    filter_statement.value,
+                )
+        elif not filter_statement.function is None:
+            if isinstance(filter_statement.value, basestring):
+                filter_string = ' %s (%s.%s, "%s") ' % (
+                    filter_statement.get_function_name(),
+                    self._get_collection_ident(filter_statement.collection),
+                    filter_statement.attribute,
+                    filter_statement.value,
+                )
+            else:
+                filter_string = ' %s (%s.%s, %s) ' % (
+                    filter_statement.get_function_name(),
+                    self._get_collection_ident(filter_statement.collection),
+                    filter_statement.attribute,
+                    filter_statement.value,
+                )
 
         return filter_string
 

@@ -334,6 +334,18 @@ class AqlQueryTestCase(ExtendedTestCase):
 
         self.assertEqual(len(docs), 2)
 
+    def test_contains_filtering(self):
+        q = Query()
+        q.append_collection(self.test_1_col.name)
+        q.filter(small_text__contains='ll')
+
+        docs = q.execute()
+
+        self.assertEqual(len(docs), 1)
+
+        doc1 = docs[0]
+        self.assertDocumentsEqual(doc1, self.col1_doc1)
+
 
 class SimpleQueryTestCase(ExtendedTestCase):
     def setUp(self):
