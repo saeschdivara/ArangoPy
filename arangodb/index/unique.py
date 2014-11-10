@@ -38,6 +38,26 @@ class SkiplistIndex(HashIndex):
     type_name = 'skiplist'
 
 
+class BitarrayIndex(HashIndex):
+    """
+        Bitarray
+    """
+
+    type_name = 'bitarray'
+
+    def __init__(self, fields):
+        """
+            *Note*: unique indexes on non-shard keys are not supported in a cluster.
+
+            :param fields A list of pairs. A pair consists of an attribute path followed by a list of values.
+        """
+
+        super(BitarrayIndex, self).__init__()
+
+        self.fields = fields
+        self.unique = False
+
+
 class GeoIndex(HashIndex):
     """
     """
