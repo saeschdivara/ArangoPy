@@ -7,7 +7,7 @@ from arangodb.index.api import Index
 from arangodb.index.general import FulltextIndex, CapConstraintIndex
 from arangodb.index.unique import HashIndex, SkiplistIndex, GeoIndex
 from arangodb.orm.fields import CharField, ForeignKeyField, NumberField, DatetimeField, DateField, BooleanField, \
-    UuidField, ManyToManyField, ChoiceField, TextField
+    UuidField, ManyToManyField, ChoiceField, TextField, ListField
 from arangodb.orm.models import CollectionModel
 from arangodb.query.advanced import Query, Traveser
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -1567,6 +1567,32 @@ class CollectionModelForeignKeyFieldTestCase(unittest.TestCase):
 
         # Destroy collections
         ForeignTestModel.destroy()
+        TestModel.destroy()
+
+
+class ListFieldTestCase(unittest.TestCase):
+    def setUp(self):
+        self.database_name = 'test_case_list_field_123'
+        self.db = Database.create(name=self.database_name)
+
+    def tearDown(self):
+        Database.remove(name=self.database_name)
+
+    def test_field_not_null_without_default(self):
+
+        class TestModel(CollectionModel):
+
+            list_field = ListField(null=False)
+
+        # Init collections
+        TestModel.init()
+
+        # Create model
+        model = TestModel()
+        model.list_field = 13, 15, 16
+        model.save()
+
+        # Destroy
         TestModel.destroy()
 
 
