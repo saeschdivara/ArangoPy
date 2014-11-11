@@ -3,14 +3,14 @@ Versions
 
 ## Current
 
-### 0.4
-- Better code documentation
-- Index for model fields
-- Index queries
+### 0.5
+- Bitarray index
+- Better traversal query
+- (Partly) Extending query as in Django
+- ORM index queries
 - ORM additional fields:
-    - Choice
-    - Text
-    - ManyToMany
+    - List
+    - Dict
 
 ## Old
 
@@ -51,16 +51,16 @@ First version which had the following features:
     - UUID
     - Boolean
 
-## Future
-
-### 0.5
-- Bitarray index
-- Better traversal query
-- (Partly) Extending query as in Django
-- ORM index queries
+### 0.4
+- Better code documentation
+- Index for model fields
+- Index queries
 - ORM additional fields:
-    - List
-    - Dict
+    - Choice
+    - Text
+    - ManyToMany
+
+## Future
 
 ### 0.6
 - Batch execution
