@@ -68,8 +68,10 @@ First version which had the following features:
 - System
 - HTTP exception handling
 - Document revision
+- Model collection prefixes
 
 ### 0.7
 - Endpoint
 - Replication
 - Graph
+- Through model define
