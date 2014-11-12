@@ -526,6 +526,7 @@ class ChoiceField(ModelField):
         for choice_pair in self.choices:
             if choice_pair[1] == self.choice_value:
                 has_match = True
+                break
 
         if not has_match:
             raise ChoiceField.WrongInputTypeException()
