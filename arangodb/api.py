@@ -88,7 +88,7 @@ class Client(object):
 
 class Database(object):
     @classmethod
-    def create(cls, name):
+    def create(cls, name, users=None):
         """
             Creates database and sets itself as the active database.
 
@@ -103,6 +103,9 @@ class Database(object):
             'name': name,
             'active': True,
         }
+
+        if isinstance(users, list) or isinstance(users, tuple):
+            database_data['users'] = users
 
         data = api.database.post(data=database_data)
 
