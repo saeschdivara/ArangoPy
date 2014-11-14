@@ -882,6 +882,18 @@ class CollectionModelTestCase(unittest.TestCase):
 
         TestModel.destroy()
 
+    def test_field_has_its_own_name(self):
+
+        class TestModel(CollectionModel):
+
+            test_field = CharField(required=True)
+
+        TestModel.init()
+
+        self.assertEqual(TestModel.test_field.name, 'test_field')
+
+        TestModel.destroy()
+
     def test_hash_index_on_model_field(self):
 
         class TestModel(CollectionModel):

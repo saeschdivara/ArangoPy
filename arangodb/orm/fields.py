@@ -21,6 +21,7 @@ class ModelField(object):
         """
         """
 
+        self.name = None
         self.verbose_name = verbose_name
         self.help_text = help_text
         self.required = required
@@ -48,7 +49,7 @@ class ModelField(object):
         """
         """
 
-        pass
+        self.name = attribute_name
 
     def on_destroy(self, model_class):
         """
@@ -797,6 +798,8 @@ class ForeignKeyField(ModelField):
         """
         """
 
+        super(ForeignKeyField, self).on_init(model_class=model_class, attribute_name=attribute_name)
+
         # Set this only if there is a related name
         if self.related_name:
             fields = self.relation_class._model_meta_data._fields
@@ -885,6 +888,8 @@ class ManyToManyField(ModelField):
     def on_init(self, model_class, attribute_name):
         """
         """
+
+        super(ManyToManyField, self).on_init(model_class=model_class, attribute_name=attribute_name)
 
         if not self.related_name is None:
             relation_name = self._get_relation_collection_name(model_class)
