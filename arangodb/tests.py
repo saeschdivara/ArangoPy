@@ -17,7 +17,7 @@ from arangodb.transaction.controller import Transaction, TransactionController
 from arangodb.user import User
 
 
-client = Client(hostname='localhost')
+client = Client(hostname='localhost', auth=('root', ''))
 
 class ExtendedTestCase(unittest.TestCase):
     def assertDocumentsEqual(self, doc1, doc2):

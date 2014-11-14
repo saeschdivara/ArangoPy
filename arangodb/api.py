@@ -9,7 +9,7 @@ class Client(object):
     class_instance = None
 
 
-    def __init__(self, hostname, protocol='http', port=8529, database=SYSTEM_DATABASE):
+    def __init__(self, hostname, auth=None, protocol='http', port=8529, database=SYSTEM_DATABASE):
         """
             This should be done only once and sets the instance
         """
@@ -17,6 +17,7 @@ class Client(object):
         Client.class_instance = self
 
         self.hostname = hostname
+        self.auth = auth
         self.protocol = protocol
         self.port = port
         self.database = database
@@ -33,10 +34,11 @@ class Client(object):
     def _create_api(self):
 
         url = '%s://%s:%s/_db/%s/_api/' % (self.protocol, self.hostname, self.port, self.database)
-        self.api = slumber.API(url, append_slash=False)
+
+        self.api = slumber.API(url, auth=self.auth, append_slash=False)
 
     @classmethod
-    def instance(cls, hostname=None, protocol=None, port=None, database=None):
+    def instance(cls, hostname=None, auth=None, protocol=None, port=None, database=None):
         """
             This method is called from everywhere in the code which accesses the database.
 
@@ -44,10 +46,10 @@ class Client(object):
         """
 
         if cls.class_instance is None:
-            if hostname is None and protocol is None and port is None and database is None:
+            if hostname is None and auth is None and protocol is None and port is None and database is None:
                 cls.class_instance = Client(hostname='localhost')
             else:
-                cls.class_instance = Client(hostname=hostname, protocol=protocol, port=port, database=database)
+                cls.class_instance = Client(hostname=hostname, auth=auth, protocol=protocol, port=port, database=database)
         else:
             if hostname is not None:
                 cls.class_instance.hostname = hostname
@@ -60,6 +62,9 @@ class Client(object):
 
             if database is not None:
                 cls.class_instance.database = database
+
+            if auth is not None:
+                cls.class_instance.auth = auth
 
             cls.class_instance._create_api()
 
