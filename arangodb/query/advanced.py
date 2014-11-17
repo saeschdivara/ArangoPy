@@ -118,8 +118,10 @@ class Query(object):
             post_result = api.cursor.post(data=post_data)
             end_time = time()
 
-            time_result = '%0.3f ms' % (end_time - start_time) * 1000
-            logger.debug('Query took' + time_result)
+            calculated_time = (end_time - start_time) * 1000
+            time_result = '%s ms' % calculated_time
+            logger_output = 'Query took %s' % time_result
+            logger.debug(logger_output)
 
             result_dict_list = post_result['result']
 
