@@ -1838,8 +1838,8 @@ class ChoiceFieldTestCase(unittest.TestCase):
     def test_field_validation(self):
 
         choice = ChoiceField(choices=[
-            ('DESCRIPTION', 'value'),
-            ('DESCRIPTION 2', 'value2'),
+            ('value', 'DESCRIPTION'),
+            ('value2', 'DESCRIPTION 2'),
         ])
 
         had_exception = False
@@ -1858,15 +1858,15 @@ class ChoiceFieldTestCase(unittest.TestCase):
     def test_equals(self):
 
         choice1 = ChoiceField(choices=[
-            ('DESCRIPTION', 'value'),
-            ('DESCRIPTION 2', 'value2'),
+            ('value', 'DESCRIPTION'),
+            ('value2', 'DESCRIPTION 2'),
         ])
 
         choice1.set('value')
 
         choice2 = ChoiceField(choices=[
-            ('DESCRIPTION', 'value'),
-            ('DESCRIPTION 2', 'value2'),
+            ('value', 'DESCRIPTION'),
+            ('value2', 'DESCRIPTION 2'),
         ])
 
         choice2.set('value')
@@ -1876,8 +1876,8 @@ class ChoiceFieldTestCase(unittest.TestCase):
     def test_none_validation(self):
 
         choice = ChoiceField(choices=[
-            ('DESCRIPTION', 'value'),
-            ('DESCRIPTION 2', 'value2'),
+            ('value', 'DESCRIPTION'),
+            ('value2', 'DESCRIPTION 2'),
         ], null=False)
 
         had_exception = False

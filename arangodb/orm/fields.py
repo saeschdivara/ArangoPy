@@ -525,7 +525,7 @@ class ChoiceField(ModelField):
         has_match = False
 
         for choice_pair in self.choices:
-            if choice_pair[1] == self.choice_value:
+            if choice_pair[0] == self.choice_value:
                 has_match = True
                 break
 
