@@ -777,11 +777,14 @@ class CollectionModel(object):
 
         for attribute in dir(self):
 
-            attr_val = getattr(self, attribute)
-            attr_cls = attr_val.__class__
+            try:
+                attr_val = getattr(self, attribute)
+                attr_cls = attr_val.__class__
 
-            if issubclass(attr_cls, ModelField):
-                fields[attribute] = attr_val
+                if issubclass(attr_cls, ModelField):
+                    fields[attribute] = attr_val
+            except:
+                pass
 
         model_fields = self.__class__._model_meta_data._fields
         for field_key in  model_fields:
