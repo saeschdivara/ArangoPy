@@ -635,6 +635,7 @@ class CollectionModel(object):
         if hasattr(cls, 'Meta'):
             cls._meta = cls.Meta()
             cls._meta.model_name = name
+            cls._meta.object_name = name
 
         # Go through all fields
         fields_dict = cls.get_collection_fields_dict()
