@@ -591,12 +591,16 @@ class CollectionModel(object):
 
         for attribute in dir(cls):
 
-            attr_val = getattr(cls, attribute)
-            attr_cls = attr_val.__class__
+            try:
+                attr_val = getattr(cls, attribute)
+                attr_cls = attr_val.__class__
 
-            # If it is a model field, call on init
-            if issubclass(attr_cls, BaseIndex):
-                index_list[attribute] = attr_val
+                # If it is a model field, call on init
+                if issubclass(attr_cls, BaseIndex):
+                    index_list[attribute] = attr_val
+
+            except:
+                pass
 
         return index_list
 
