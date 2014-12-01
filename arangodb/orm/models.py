@@ -790,7 +790,7 @@ class CollectionModel(object):
             return self._instance_meta_data._fields[item].get()
         elif item == 'id':
             return self.document.id
-        elif item == 'key':
+        elif item == 'key' or item == 'pk':
             return self.document.key
         else:
             return super(CollectionModel, self).__getattribute__(item)
