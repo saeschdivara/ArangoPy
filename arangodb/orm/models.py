@@ -531,6 +531,49 @@ class CollectionModel(object):
             self._fields = {}
 
     @classmethod
+    def get_all_fields(cls, class_obj=None, fields=None):
+        """
+            TODO: This needs to be properly used
+        """
+
+        def return_fields(obj):
+
+            internal_fields = fields
+            if internal_fields is None:
+                internal_fields = {}
+
+            for attribute in dir(obj):
+
+                try:
+                    attr_val = getattr(obj, attribute)
+                    attr_cls = attr_val.__class__
+
+                    # If it is a model field, call on init
+                    if issubclass(attr_cls, ModelField):
+                        internal_fields[attribute] = attr_val
+                except:
+                    pass
+
+            return internal_fields
+
+        if class_obj is None:
+            class_obj = cls
+
+            fields = return_fields(class_obj)
+            for parent_class in cls.__bases__:
+                parent_fields = cls.get_all_fields(parent_class, fields)
+                for field_name, field_value in parent_fields.items():
+                    if not field_name in fields:
+                        fields[field_name] = field_value
+
+            return fields
+
+        else:
+            if not isinstance(class_obj, CollectionModel):
+                return fields
+
+
+    @classmethod
     def get_collection_fields_dict(cls):
         """
         """
