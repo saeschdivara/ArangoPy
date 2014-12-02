@@ -641,6 +641,10 @@ class CollectionModel(object):
             cls._meta.model_name = name
             cls._meta.object_name = name
 
+            # Giving other classes the chance to extend the meta data on init
+            if hasattr(cls, 'extend_meta_data'):
+                cls.extend_meta_data(cls, cls._meta)
+
         # Go through all fields
         fields_dict = cls.get_collection_fields_dict()
         for attribute_name in fields_dict:
