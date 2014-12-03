@@ -23,6 +23,15 @@ class LazyQueryset(object):
         self._has_cache = False
         self._cache = []
 
+    def count(self):
+        """
+        """
+
+        if not self._has_cache:
+            self._generate_cache()
+
+        return len(self._cache)
+
     def _generate_cache(self):
         """
         """
@@ -44,10 +53,7 @@ class LazyQueryset(object):
         """
         """
 
-        if not self._has_cache:
-            self._generate_cache()
-
-        return len(self._cache)
+        return self.count()
 
 
 class IndexQueryset(LazyQueryset):
@@ -226,6 +232,12 @@ class CollectionQueryset(LazyQueryset):
 
         return self
 
+    def get(self, **kwargs):
+        """
+        """
+
+        return self._manager.get(**kwargs)
+
     def all(self):
         """
         """
@@ -331,6 +343,8 @@ class CollectionQueryset(LazyQueryset):
 
 class CollectionModelManager(object):
 
+    queryset = CollectionQueryset
+
     def __init__(self, cls):
         """
         """
@@ -381,7 +395,7 @@ class CollectionModelManager(object):
         """
         """
 
-        queryset = CollectionQueryset(manager=self)
+        queryset = self.queryset(manager=self)
         return queryset.all()
 
     def filter(self, **kwargs):
@@ -391,7 +405,7 @@ class CollectionModelManager(object):
         :return:
         """
 
-        queryset = CollectionQueryset(manager=self)
+        queryset = self.queryset(manager=self)
         return queryset.all().filter(**kwargs)
 
     def exclude(self, **kwargs):
@@ -401,7 +415,7 @@ class CollectionModelManager(object):
         :return:
         """
 
-        queryset = CollectionQueryset(manager=self)
+        queryset = self.queryset(manager=self)
         return queryset.all().exclude(**kwargs)
 
     def limit(self, count, start=-1):
@@ -410,7 +424,7 @@ class CollectionModelManager(object):
         :return:
         """
 
-        queryset = CollectionQueryset(manager=self)
+        queryset = self.queryset(manager=self)
         return queryset.all().limit(count=count, start=start)
 
     def search_by_index(self, index, **kwargs):
@@ -839,6 +853,12 @@ class CollectionModel(object):
             fields[field_key] = field
 
         return fields
+
+    def serializable_value(self, attr):
+        """
+        """
+
+        return getattr(self, attr)
 
     def __getattribute__(self, item):
         """

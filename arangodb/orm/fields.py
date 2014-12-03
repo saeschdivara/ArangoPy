@@ -45,6 +45,12 @@ class ModelField(object):
 
         pass
 
+    def to_python(self, value):
+        """
+        """
+
+        return value
+
     def on_init(self, model_class, attribute_name):
         """
         """
@@ -107,6 +113,17 @@ class ModelField(object):
         """
 
         return self.dumps()
+
+    def __getattribute__(self, item):
+        """
+        """
+
+        if item == 'attname':
+            return object.__getattribute__(self, 'name')
+        elif item == 'rel':
+            return None
+        else:
+            return super(ModelField, self).__getattribute__(item)
 
 
 class ListField(ModelField):
@@ -465,6 +482,15 @@ class CharField(TextField):
             if len(self.text) > self.max_length:
                 raise CharField.TooLongStringException()
 
+    def __getattribute__(self, item):
+        """
+        """
+
+        if item == 'flatchoices':
+            return None
+        else:
+            return super(CharField, self).__getattribute__(item)
+
 
 class UuidField(CharField):
 
@@ -559,6 +585,15 @@ class ChoiceField(ModelField):
             return self.choice_value == other.choice_value
         else:
             return False
+
+    def __getattribute__(self, item):
+        """
+        """
+
+        if item == 'flatchoices':
+            return object.__getattribute__(self, 'choices')
+        else:
+            return super(ChoiceField, self).__getattribute__(item)
 
 
 class NumberField(ModelField):
