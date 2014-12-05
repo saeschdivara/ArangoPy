@@ -690,6 +690,8 @@ class CollectionModel(object):
         except:
             pass # This is the case if init was called more than once
 
+        cls._default_manager = cls.objects
+
         # Create meta data for collection
         cls._model_meta_data = cls.MetaDataObj()
 
