@@ -34,7 +34,9 @@ Supported versions
 
 ### ArangoDB
 
-At the moment I am only testing for ArangoDB 2.2
+2.2, 2.3
+
+I am running 2.3 at the moment.
 
 ### Python
 
