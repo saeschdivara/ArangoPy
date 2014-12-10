@@ -64,10 +64,10 @@ First version which had the following features:
 
 ### 0.6
 - Batch execution
-- Authentication
+- Authentication (done)
 - System
 - HTTP exception handling
-- Document revision
+- Document revision (done)
 - Model collection prefixes
 
 ### 0.7
