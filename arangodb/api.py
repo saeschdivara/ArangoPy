@@ -427,12 +427,14 @@ class Document(object):
 
         return doc
 
-    def __init__(self, id, key, collection, api):
+    def __init__(self, id, key, collection, api, **kwargs):
         """
             :param id Document id (collection_name/number)
             :param key Document key (number)
             :param collection Collection name
             :param api Slumber API object
+
+            :param rev Document revision, default value is key
         """
 
         self.data = {}
@@ -440,7 +442,7 @@ class Document(object):
 
         self.id = id
         self.key = key
-        self.revision = key
+        self.revision = kwargs.pop('rev', key)
         self.collection = collection
         self.api = api
         self.resource = api.document

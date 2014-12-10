@@ -7,6 +7,7 @@ def create_document_from_result_dict(result_dict, api):
     doc = Document(
         id=result_dict['_id'],
         key=result_dict['_key'],
+        rev=result_dict['_rev'],
         collection=collection_name,
         api=api,
     )
