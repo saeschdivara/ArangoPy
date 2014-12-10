@@ -397,6 +397,9 @@ class Collection(object):
                 collection=self,
                 api=self.api
             )
+
+            doc.is_loaded = True
+
             document_list.append(doc)
 
         return document_list
@@ -468,7 +471,8 @@ class Document(object):
             self.revision = data['_rev']
             self.is_loaded = True
         else:
-            self.resource(self.id).patch(data=self.data)
+            data = self.resource(self.id).patch(data=self.data)
+            self.revision = data['_rev']
 
     def get(self, key):
         """
