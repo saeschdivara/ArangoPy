@@ -398,8 +398,6 @@ class Collection(object):
                 api=self.api
             )
 
-            doc.is_loaded = True
-
             document_list.append(doc)
 
         return document_list
@@ -466,7 +464,7 @@ class Document(object):
 
         # TODO: Add option force_insert
 
-        if not self.is_loaded:
+        if not self.is_loaded and self.id is None or self.id == '':
             data = self.api.document.post(data=self.data, collection=self.collection)
             self.id = data['_id']
             self.key = data['_key']
