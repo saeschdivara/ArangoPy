@@ -255,6 +255,7 @@ class CollectionQueryset(LazyQueryset):
 
         self._has_cache = False
 
+        kwargs = self._normalize_kwargs(**kwargs)
         self._query.filter(bit_operator=bit_operator, **kwargs)
 
         return self
@@ -265,6 +266,7 @@ class CollectionQueryset(LazyQueryset):
 
         self._has_cache = False
 
+        kwargs = self._normalize_kwargs(**kwargs)
         self._query.exclude(**kwargs)
 
         return self
@@ -288,6 +290,17 @@ class CollectionQueryset(LazyQueryset):
         self._query.order_by(field=field, order=order)
 
         return self
+
+    def _normalize_kwargs(self, **kwargs):
+        """
+        """
+
+        # You can use this way models
+        for key, value in kwargs.items():
+            if isinstance(value, CollectionModel):
+                kwargs[key] = value.id
+
+        return kwargs
 
     def _clone(self):
         """
@@ -357,10 +370,7 @@ class CollectionModelManager(object):
 
         collection = self._model_class.collection_instance
 
-        # You can use this way models
-        for key, value in kwargs.items():
-            if isinstance(value, CollectionModel):
-                kwargs[key] = value.id
+        kwargs = self._normalize_kwargs(**kwargs)
 
         doc = SimpleQuery.get_by_example(collection=collection, example_data=kwargs)
 
@@ -406,6 +416,8 @@ class CollectionModelManager(object):
         """
 
         queryset = self.queryset(manager=self)
+        kwargs = self._normalize_kwargs(**kwargs)
+
         return queryset.all().filter(**kwargs)
 
     def exclude(self, **kwargs):
@@ -416,6 +428,8 @@ class CollectionModelManager(object):
         """
 
         queryset = self.queryset(manager=self)
+        kwargs = self._normalize_kwargs(**kwargs)
+
         return queryset.all().exclude(**kwargs)
 
     def limit(self, count, start=-1):
@@ -433,6 +447,7 @@ class CollectionModelManager(object):
 
         queryset = IndexQueryset(manager=self)
         queryset.set_index(index=index)
+        kwargs = self._normalize_kwargs(**kwargs)
 
         return queryset.filter(**kwargs)
 
@@ -460,6 +475,8 @@ class CollectionModelManager(object):
         kwargs['attribute'] = attribute
         kwargs['example_text'] = example_text
 
+        kwargs = self._normalize_kwargs(**kwargs)
+
         return queryset.filter(**kwargs)
 
     def search_near(self, index, latitude, longitude, distance=None, **kwargs):
@@ -472,6 +489,8 @@ class CollectionModelManager(object):
         kwargs['latitude'] = latitude
         kwargs['longitude'] = longitude
         kwargs['distance'] = distance
+
+        kwargs = self._normalize_kwargs(**kwargs)
 
         return queryset.filter(**kwargs)
 
@@ -487,7 +506,20 @@ class CollectionModelManager(object):
         kwargs['radius'] = radius
         kwargs['distance'] = distance
 
+        kwargs = self._normalize_kwargs(**kwargs)
+
         return queryset.filter(**kwargs)
+
+    def _normalize_kwargs(self, **kwargs):
+        """
+        """
+
+        # You can use this way models
+        for key, value in kwargs.items():
+            if isinstance(value, CollectionModel):
+                kwargs[key] = value.id
+
+        return kwargs
 
     def _create_model_from_doc(self, doc, model_class=None):
         """
