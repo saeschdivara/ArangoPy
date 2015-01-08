@@ -1,4 +1,5 @@
 from datetime import datetime, date
+import json
 from uuid import uuid4
 from arangodb.api import Collection, Client
 
@@ -150,14 +151,17 @@ class ListField(ModelField):
         """
 
         json_save_list = []
-        for saved_entry in self.saved_list:
-            is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
 
-            # Check if entry is base type
-            if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
-                json_save_list.append(saved_entry)
-            else:
-                json_save_list.append(self._get_json_save_value(saved_entry))
+        # Check if there was set anything
+        if isinstance(self.saved_list, (list, tuple)):
+            for saved_entry in self.saved_list:
+                is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
+
+                # Check if entry is base type
+                if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
+                    json_save_list.append(saved_entry)
+                else:
+                    json_save_list.append(self._get_json_save_value(saved_entry))
 
 
         return json_save_list
@@ -200,6 +204,8 @@ class ListField(ModelField):
 
             if isinstance(saved_list, list) or isinstance(saved_list, tuple):
                 self.saved_list = saved_list
+            elif isinstance(saved_list, basestring):
+                self.saved_list = json.loads(saved_list)
             else:
                 self.saved_list = args
 
@@ -299,6 +305,8 @@ class DictField(ModelField):
 
             if isinstance(saved_dict, dict):
                 self.saved_dict = saved_dict
+            elif isinstance(saved_dict, basestring):
+                self.saved_list = json.loads(saved_dict)
             else:
                 self.saved_dict = args
 
