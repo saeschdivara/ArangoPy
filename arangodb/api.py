@@ -456,6 +456,13 @@ class Document(object):
 
         return data
 
+    def delete(self):
+        """
+            Removes the document from the collection
+        """
+
+        self.resource(self.id).delete()
+
     def save(self):
         """
             If its internal state is loaded than it will only updated the
@@ -465,7 +472,7 @@ class Document(object):
         # TODO: Add option force_insert
 
         if not self.is_loaded and self.id is None or self.id == '':
-            data = self.api.document.post(data=self.data, collection=self.collection)
+            data = self.resource.post(data=self.data, collection=self.collection)
             self.id = data['_id']
             self.key = data['_key']
             self.revision = data['_rev']

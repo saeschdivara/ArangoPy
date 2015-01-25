@@ -73,3 +73,22 @@ class CollectionTestCase(unittest.TestCase):
         self.assertNotEqual(doc.revision, doc1.revision)
 
         Collection.remove(name=collection_name)
+
+    def test_remove_document_from_collection(self):
+
+        collection_name = 'test_remove_document_from_collection'
+
+        col = Collection.create(name=collection_name)
+        doc1 = col.create_document()
+        doc1.save()
+
+        all_documents = col.documents()
+        self.assertEqual(len(all_documents), 1)
+        doc = all_documents[0]
+
+        doc.delete()
+
+        all_documents = col.documents()
+        self.assertEqual(len(all_documents), 0)
+
+        Collection.remove(name=collection_name)
