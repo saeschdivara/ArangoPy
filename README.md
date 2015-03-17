@@ -34,7 +34,7 @@ Supported versions
 
 ### ArangoDB
 
-2.2, 2.3, 2.4
+2.2, 2.3, 2.4, 2.5
 
 I am running 2.4 at the moment.
 
