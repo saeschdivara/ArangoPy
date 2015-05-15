@@ -356,7 +356,7 @@ class Query(object):
                     # Check if the collection is already in the filters for collections
                     if filter.collection in collection_filters:
                         container = collection_filters[filter.collection]
-                        container.append(filter)
+                        container.filters.append(filter)
                     else:
                         container = QueryFilterContainer(bit_operator=Query.AND_BIT_OPERATOR)
                         container.filters.append(filter)
