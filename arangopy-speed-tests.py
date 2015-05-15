@@ -25,19 +25,20 @@ timer = timeit.default_timer
 def timer_decorator(message):
     def outer_wrapper(func):
         def wrapper(*args, **kwargs):
+            global document_number
             start = timer()
             func(*args, **kwargs)
             elapsed = timer() - start
-            print(message % elapsed)
+            print(message % (document_number,elapsed))
 
         return wrapper
 
     return outer_wrapper
 
 
-document_number = 10**6 # 10 thousand
+document_number = 10**4 # 1 thousand
 
-@timer_decorator('Adding documents to the collection took %s seconds')
+@timer_decorator('Adding %s documents to the collection took %s seconds')
 def create_big_number_of_documents(big_collection):
     """
     """
