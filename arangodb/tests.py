@@ -23,6 +23,7 @@ from arangodb.tests.orm.model_manager import CollectionModelManagerTestCase
 from arangodb.tests.query.advanced import TraveserTestCase
 from arangodb.tests.query.aql import AqlQueryTestCase
 from arangodb.tests.query.basic import SimpleQueryTestCase
+from arangodb.tests.query.escaping import AqlEscapingTestCase
 from arangodb.tests.query.index import SimpleIndexQueryTestCase
 from arangodb.tests.transaction import TransactionTestCase
 from arangodb.tests.user import UserTestCase
