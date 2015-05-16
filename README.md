@@ -12,6 +12,7 @@ Code Health Dev: [![Code Health](https://landscape.io/github/saeschdivara/Arango
 [![Version](https://pypip.in/v/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
 [![Downloads](http://img.shields.io/pypi/dm/ArangoPy.svg)](https://pypi.python.org/pypi/ArangoPy)
 [![License](https://pypip.in/license/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
+[![Build](https://readthedocs.org/projects/arangopy/badge/?version=latest)](https://arangopy.readthedocs.org/en/stable/)
 
 
 Installation
