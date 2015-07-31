@@ -1,4 +1,5 @@
 import unittest
+from arangodb import six
 
 from arangodb.orm.fields import UuidField
 
@@ -19,4 +20,4 @@ class UuidFieldTestCase(unittest.TestCase):
 
         uuid.on_create(model_instance=None)
 
-        self.assertTrue(isinstance(uuid.text, basestring))
+        self.assertTrue(isinstance(uuid.text, six.string_types))

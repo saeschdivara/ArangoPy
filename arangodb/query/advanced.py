@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from time import time
+from arangodb import six
 
 from arangodb.api import Client, Document
 from arangodb.query.utils.document import create_document_from_result_dict
@@ -74,7 +75,7 @@ class QueryFilterStatement(object):
         """
         """
 
-        if isinstance(self.value, basestring):
+        if isinstance(self.value, six.string_types):
             return '"%s"' % self.value
         else:
             return '%s' % self.value
@@ -189,7 +190,7 @@ class Query(object):
             filters = filter_container.filters
             self.filters.append(filter_container)
 
-        for key, value in kwargs.iteritems():
+        for key, value in six.iteritems(kwargs):
 
                 filters.append(
                     self._get_filter_statement(key, value, QueryFilterStatement.EQUAL_OPERATOR)
@@ -201,7 +202,7 @@ class Query(object):
         """
         """
 
-        for key, value in kwargs.iteritems():
+        for key, value in six.iteritems(kwargs):
 
             self.filters.append(
                 self._get_filter_statement(key, value, QueryFilterStatement.NOT_EQUAL_OPERATOR)
@@ -413,7 +414,7 @@ class Query(object):
 
         # Operator
         if not filter_statement.operator is None:
-            if isinstance(filter_statement.value, basestring):
+            if isinstance(filter_statement.value, six.string_types):
                 filter_string = '%s.%s %s "%s"' % (
                     self._get_collection_ident(filter_statement.collection),
                     filter_statement.attribute,

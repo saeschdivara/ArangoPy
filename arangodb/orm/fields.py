@@ -1,6 +1,7 @@
 from datetime import datetime, date
 import json
 from uuid import uuid4
+from arangodb import six
 from arangodb.api import Collection, Client
 
 
@@ -158,7 +159,7 @@ class ListField(ModelField):
                 is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
 
                 # Check if entry is base type
-                if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
+                if isinstance(saved_entry, six.string_types) or is_number or isinstance(saved_entry, bool):
                     json_save_list.append(saved_entry)
                 else:
                     json_save_list.append(self._get_json_save_value(saved_entry))
@@ -204,7 +205,7 @@ class ListField(ModelField):
 
             if isinstance(saved_list, list) or isinstance(saved_list, tuple):
                 self.saved_list = saved_list
-            elif isinstance(saved_list, basestring):
+            elif isinstance(saved_list, six.string_types):
                 self.saved_list = json.loads(saved_list)
             else:
                 self.saved_list = args
@@ -255,11 +256,11 @@ class DictField(ModelField):
         """
 
         json_save_dict = {}
-        for key, saved_entry in self.saved_dict.iteritems():
+        for key, saved_entry in six.iteritems(self.saved_dict):
             is_number =  isinstance(saved_entry, int) or isinstance(saved_entry, float)
 
             # Check if entry is base type
-            if isinstance(saved_entry, basestring) or is_number or isinstance(saved_entry, bool):
+            if isinstance(saved_entry, six.string_types) or is_number or isinstance(saved_entry, bool):
                 json_save_dict[key] = saved_entry
             else:
                 json_save_dict[key] = self._get_json_save_value(saved_entry)
@@ -305,7 +306,7 @@ class DictField(ModelField):
 
             if isinstance(saved_dict, dict):
                 self.saved_dict = saved_dict
-            elif isinstance(saved_dict, basestring):
+            elif isinstance(saved_dict, six.string_types):
                 self.saved_list = json.loads(saved_dict)
             else:
                 self.saved_dict = args
@@ -444,7 +445,7 @@ class TextField(ModelField):
             if not text and not self.null:
                 raise Exception('Value cannot be None')
 
-            if isinstance(text, basestring):
+            if isinstance(text, six.string_types):
                 self.text = u'%s' % args[0]
             else:
                 raise TextField.WrongInputTypeException()
@@ -719,7 +720,7 @@ class DatetimeField(ModelField):
 
         if len(args) is 1:
             time = args[0]
-            if isinstance(args, basestring):
+            if isinstance(args, six.string_types):
                 self.loads(time)
             else:
                 self.time = time
@@ -789,7 +790,7 @@ class DateField(ModelField):
 
         if len(args) is 1:
             date = args[0]
-            if isinstance(args, basestring):
+            if isinstance(args, six.string_types):
                 self.loads(date)
             else:
                 self.date = date
@@ -863,7 +864,7 @@ class ForeignKeyField(ModelField):
         """
         """
 
-        if isinstance(model_id, basestring):
+        if isinstance(model_id, six.string_types):
             model = self.relation_class.objects.get(_id=model_id)
         elif isinstance(model_id, self.relation_class):
             model = model_id
