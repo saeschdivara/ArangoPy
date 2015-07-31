@@ -41,7 +41,7 @@ I am running 2.6 at the moment.
 
 ### Python
 
-At the moment I am only testing for Python 2.7
+I am testing with Python 2.7 and 3.4
 
 
 Frameworks integration
