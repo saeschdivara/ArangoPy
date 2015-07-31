@@ -31,6 +31,9 @@ class DateFieldTestCase(unittest.TestCase):
     def test_not_equals(self):
 
         field1 = DateField(null=False)
+        field1.set(datetime.date(2012, 12, 2))
+
         field2 = DateField(null=False)
+        field2.set(datetime.date(2011, 11, 4))
 
         self.assertTrue(field1 != field2)
