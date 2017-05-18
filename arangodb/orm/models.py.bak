@@ -83,7 +83,7 @@ class IndexQueryset(LazyQueryset):
 
         self._has_cache = False
 
-        for arg_name, arg_value in list(kwargs.items()):
+        for arg_name, arg_value in kwargs.items():
             self._filters[arg_name] = arg_value
 
         return self
@@ -296,7 +296,7 @@ class CollectionQueryset(LazyQueryset):
         """
 
         # You can use this way models
-        for key, value in list(kwargs.items()):
+        for key, value in kwargs.items():
             if isinstance(value, CollectionModel):
                 kwargs[key] = value.id
 
@@ -396,7 +396,7 @@ class CollectionModelManager(object):
             is_created = True
             model = self._model_class()
 
-            for key, value in list(kwargs.items()):
+            for key, value in kwargs.items():
                 setattr(model, key, value)
 
         return model, is_created
@@ -515,7 +515,7 @@ class CollectionModelManager(object):
         """
 
         # You can use this way models
-        for key, value in list(kwargs.items()):
+        for key, value in kwargs.items():
             if isinstance(value, CollectionModel):
                 kwargs[key] = value.id
 
@@ -608,7 +608,7 @@ class CollectionModel(object):
             fields = return_fields(class_obj)
             for parent_class in cls.__bases__:
                 parent_fields = cls.get_all_fields(parent_class, fields)
-                for field_name, field_value in list(parent_fields.items()):
+                for field_name, field_value in parent_fields.items():
                     if not field_name in fields:
                         fields[field_name] = field_value
 

@@ -88,7 +88,7 @@ class TraveserTestCase(ExtendedTestCase):
         )
 
         for result in result_list:
-            print((result.ta))
+            print(result.ta)
 
         result_list = Traveser.extended_follow(
             start_vertex=document_id,
