@@ -29,7 +29,7 @@ def timer_decorator(message):
             start = timer()
             func(*args, **kwargs)
             elapsed = timer() - start
-            print((message % (document_number,elapsed)))
+            print(message % (document_number,elapsed))
 
         return wrapper
 
@@ -77,7 +77,7 @@ try:
     big_collection_name = 'big_collection'
     big_collection = Collection.create(big_collection_name)
 
-    print(('All tests are using either %s documents, edges or models' % document_number))
+    print('All tests are using either %s documents, edges or models' % document_number)
 
     # Create first all documents
     create_big_number_of_documents(big_collection)
