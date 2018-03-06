@@ -9,9 +9,9 @@ Coverage Master: [![Coverage Status](https://coveralls.io/repos/saeschdivara/Ara
 Coverage Dev: [![Coverage Status](https://img.shields.io/coveralls/saeschdivara/ArangoPy/0.5.svg)](https://coveralls.io/r/saeschdivara/ArangoPy?branch=0.5)
 Code Health Master: [![Code Health](https://landscape.io/github/saeschdivara/ArangoPy/master/landscape.png)](https://landscape.io/github/saeschdivara/ArangoPy/master)
 Code Health Dev: [![Code Health](https://landscape.io/github/saeschdivara/ArangoPy/0.5/landscape.png)](https://landscape.io/github/saeschdivara/ArangoPy/0.5)
-[![Version](https://pypip.in/v/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
+[![Version](https://img.shields.io/pypi/v/ArangoPy.svg)](https://pypi.python.org/pypi/ArangoPy)
 [![Downloads](http://img.shields.io/pypi/dm/ArangoPy.svg)](https://pypi.python.org/pypi/ArangoPy)
-[![License](https://pypip.in/license/ArangoPy/badge.svg)](https://pypi.python.org/pypi/ArangoPy)
+[![License](https://img.shields.io/pypi/l/ArangoPy.svg)](https://pypi.python.org/pypi/ArangoPy)
 [![Build](https://readthedocs.org/projects/arangopy/badge/?version=latest)](https://arangopy.readthedocs.org/en/stable/)
 
 
