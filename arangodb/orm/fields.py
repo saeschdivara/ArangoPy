@@ -178,7 +178,7 @@ class ListField(ModelField):
             return value
 
         else:
-            return u'%s' % value
+            return '%s' % value
 
     def loads(self, saved_list):
         """
@@ -279,7 +279,7 @@ class DictField(ModelField):
             return value
 
         else:
-            return u'%s' % value
+            return '%s' % value
 
     def loads(self, saved_dict):
         """
@@ -414,7 +414,7 @@ class TextField(ModelField):
             if self.default:
                 self.text = self.default
             else:
-                self.text = u''
+                self.text = ''
 
     def dumps(self):
         """
@@ -446,7 +446,7 @@ class TextField(ModelField):
                 raise Exception('Value cannot be None')
 
             if isinstance(text, six.string_types):
-                self.text = u'%s' % args[0]
+                self.text = '%s' % args[0]
             else:
                 raise TextField.WrongInputTypeException()
 
@@ -539,7 +539,7 @@ class ChoiceField(ModelField):
             if self.default:
                 self.choice_value = self.default
             else:
-                self.choice_value = u''
+                self.choice_value = ''
 
     def dumps(self):
         """
@@ -699,7 +699,7 @@ class DatetimeField(ModelField):
             if self.time is None:
                 raise Exception('Datetime cannot be None')
             else:
-                return u'%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
+                return '%s' % self.time.strftime(DatetimeField.DATE_FORMAT)
 
     def loads(self, date_string):
         """
@@ -769,7 +769,7 @@ class DateField(ModelField):
             if self.date is None:
                 raise Exception('Datetime cannot be None')
             else:
-                return u'%s' % self.date.strftime(DateField.DATE_FORMAT)
+                return '%s' % self.date.strftime(DateField.DATE_FORMAT)
 
     def loads(self, date_string):
         """
@@ -856,7 +856,7 @@ class ForeignKeyField(ModelField):
         """
 
         if self.relation_model:
-            return u'%s' % self.relation_model.document
+            return '%s' % self.relation_model.document
         else:
             return None
 

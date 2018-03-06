@@ -550,7 +550,7 @@ class Document(object):
         return self.__unicode__()
 
     def __unicode__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
 
 class Edge(Document):

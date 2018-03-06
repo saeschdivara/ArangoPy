@@ -41,10 +41,10 @@ if PY3:
 
     MAXSIZE = sys.maxsize
 else:
-    string_types = basestring,
-    integer_types = (int, long)
-    class_types = (type, types.ClassType)
-    text_type = unicode
+    string_types = str,
+    integer_types = (int, int)
+    class_types = (type, type)
+    text_type = str
     binary_type = str
 
     if sys.platform.startswith("java"):
@@ -442,7 +442,7 @@ try:
     advance_iterator = next
 except NameError:
     def advance_iterator(it):
-        return it.next()
+        return it.__next__()
 next = advance_iterator
 
 
@@ -462,14 +462,14 @@ if PY3:
     Iterator = object
 else:
     def get_unbound_function(unbound):
-        return unbound.im_func
+        return unbound.__func__
 
     def create_bound_method(func, obj):
         return types.MethodType(func, obj, obj.__class__)
 
     class Iterator(object):
 
-        def next(self):
+        def __next__(self):
             return type(self).__next__(self)
 
     callable = callable
@@ -507,7 +507,7 @@ if PY3:
         return s.encode("latin-1")
     def u(s):
         return s
-    unichr = chr
+    chr = chr
     if sys.version_info[1] <= 1:
         def int2byte(i):
             return bytes((i,))
@@ -525,8 +525,8 @@ else:
         return s
     # Workaround for standalone backslash
     def u(s):
-        return unicode(s.replace(r'\\', r'\\\\'), "unicode_escape")
-    unichr = unichr
+        return str(s.replace(r'\\', r'\\\\'), "unicode_escape")
+    chr = chr
     int2byte = chr
     def byte2int(bs):
         return ord(bs[0])
@@ -534,8 +534,8 @@ else:
         return ord(buf[i])
     def iterbytes(buf):
         return (ord(byte) for byte in buf)
-    import StringIO
-    StringIO = BytesIO = StringIO.StringIO
+    import io
+    StringIO = BytesIO = io.StringIO
 _add_doc(b, """Byte literal""")
 _add_doc(u, """Text literal""")
 
@@ -576,11 +576,11 @@ if print_ is None:
         if fp is None:
             return
         def write(data):
-            if not isinstance(data, basestring):
+            if not isinstance(data, str):
                 data = str(data)
             # If the file has an encoding, encode unicode with it.
             if (isinstance(fp, file) and
-                isinstance(data, unicode) and
+                isinstance(data, str) and
                 fp.encoding is not None):
                 errors = getattr(fp, "errors", None)
                 if errors is None:
@@ -590,13 +590,13 @@ if print_ is None:
         want_unicode = False
         sep = kwargs.pop("sep", None)
         if sep is not None:
-            if isinstance(sep, unicode):
+            if isinstance(sep, str):
                 want_unicode = True
             elif not isinstance(sep, str):
                 raise TypeError("sep must be None or a string")
         end = kwargs.pop("end", None)
         if end is not None:
-            if isinstance(end, unicode):
+            if isinstance(end, str):
                 want_unicode = True
             elif not isinstance(end, str):
                 raise TypeError("end must be None or a string")
@@ -604,12 +604,12 @@ if print_ is None:
             raise TypeError("invalid keyword arguments to print()")
         if not want_unicode:
             for arg in args:
-                if isinstance(arg, unicode):
+                if isinstance(arg, str):
                     want_unicode = True
                     break
         if want_unicode:
-            newline = unicode("\n")
-            space = unicode(" ")
+            newline = str("\n")
+            space = str(" ")
         else:
             newline = "\n"
             space = " "

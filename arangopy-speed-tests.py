@@ -1,5 +1,5 @@
 import timeit
-from arangodb.api import Client, Database, Collection
+from .arangodb.api import Client, Database, Collection
 
 
 ##################################
@@ -7,8 +7,8 @@ from arangodb.api import Client, Database, Collection
 ##################################
 
 # Init client
-from arangodb.query.advanced import Query
-from arangodb.query.simple import SimpleQuery
+from .arangodb.query.advanced import Query
+from .arangodb.query.simple import SimpleQuery
 
 client = Client('localhost')
 

@@ -69,7 +69,7 @@ class DictFieldTestCase(unittest.TestCase):
         doc1 = documents[0]
         self.assertTrue(isinstance(doc1.dict_field, dict))
 
-        self.assertEqual(len(doc1.dict_field.keys()), 3)
+        self.assertEqual(len(list(doc1.dict_field.keys())), 3)
 
         val1 = doc1.dict_field['number']
         val2 = doc1.dict_field['a_dict']
